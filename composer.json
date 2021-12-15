@@ -1,0 +1,19 @@
+{
+    "require": {
+        "thecodebunny/pa-api": "dev-main",
+        "thecodebunny/sp-api": "dev-main",
+        "thecodebunny/amz-mws-api": "dev-main"
+    },
+    "replace": {
+        "guzzlehttp/guzzle": "*",
+        "guzzlehttp/psr7": "*",
+        "laravel/framework": "*",
+        "omnipay/common": "*",
+        "symfony/http-foundation": "*"
+    },
+    "scripts": {
+        "test": [
+            "composer install --prefer-dist --no-interaction --no-scripts --no-suggest --no-progress --no-ansi"
+        ]
+    }
+}

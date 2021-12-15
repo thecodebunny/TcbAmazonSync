@@ -1,0 +1,206 @@
+.tcb-card-header {
+    border-bottom: 1px solid rgb(221, 221, 221);
+    border-top: 1px solid rgb(221, 221, 221);
+    margin-bottom: 10px;
+    padding: 10px 0px;
+    background: rgb(238, 238, 238);
+    text-align: center;
+}
+
+.tab-content {
+    margin-top: 10px;
+}
+
+.tcb-inlineblock {
+    margin: 0 10px;
+}
+
+.tcb-helptext {
+    font-size: 12px
+}
+
+.file-drop-zone-title {
+    font-size: 14px;
+}
+
+.kv-file-content img {
+    max-width: 100% !important;
+    max-height: 100% !important;
+}
+
+input.hasDatepicker {
+    cursor: pointer;
+}
+
+.ui-datepicker {
+    border-width: 0;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    width: 18.5rem;
+}
+
+@media (max-width: 480px) {
+    .ui-datepicker {
+        width: 17rem;
+    }
+}
+
+.ui-datepicker.ui-corner-all {
+    border-radius: 0;
+}
+
+.ui-datepicker .ui-datepicker-header {
+    background: #55588b;
+    padding: 15px 0;
+    border-width: 0;
+}
+
+.ui-datepicker .ui-datepicker-prev,
+.ui-datepicker .ui-datepicker-next {
+    cursor: pointer;
+    top: 15px;
+}
+
+.ui-datepicker .ui-datepicker-prev span,
+.ui-datepicker .ui-datepicker-next span {
+    background: transparent;
+    width: 0px;
+    height: 0px;
+    border-width: 5px 9px;
+    border-style: solid;
+    border-color: transparent;
+    margin-top: 0;
+    top: 32%;
+}
+
+.ui-datepicker .ui-datepicker-prev span {
+    left: 59%;
+    border-right-color: #fff;
+    border-left-width: 0;
+}
+
+.ui-datepicker .ui-datepicker-next span {
+    left: 67%;
+    border-left-color: #fff;
+    border-right-width: 0;
+}
+
+.ui-datepicker .ui-datepicker-title {
+    text-shadow: none;
+}
+
+.ui-datepicker .ui-datepicker-title select {
+    border: 0;
+    height: 27px;
+    width: 45%;
+    width: calc(49% - 5px);
+    font-size: 14px;
+    color: #414141;
+    padding-left: 5px;
+}
+
+.ui-datepicker .ui-datepicker-title select:focus {
+    outline: none;
+}
+
+.ui-datepicker .ui-datepicker-title .ui-datepicker-month {
+    margin-right: 5px;
+}
+
+.ui-datepicker .ui-datepicker-title .ui-datepicker-year {
+    margin-left: 5px;
+}
+
+.ui-datepicker .ui-datepicker-buttonpane button {
+    -webkit-transition: all 0.15s ease-in-out;
+    -moz-transition: all 0.15s ease-in-out;
+    transition: all 0.15s ease-in-out;
+    background: #fff;
+    border: 0px;
+    font-weight: 600;
+    margin: 10px 5px;
+    padding: 5px 12px;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.ui-datepicker .ui-datepicker-buttonpane button[data-handler=today]:hover,
+.ui-datepicker .ui-datepicker-buttonpane button[data-handler=today]:active {
+    opacity: 1;
+    color: #4f4f4f;
+}
+
+.ui-datepicker .ui-datepicker-buttonpane button[data-handler=hide]:hover,
+.ui-datepicker .ui-datepicker-buttonpane button[data-handler=hide]:active {
+    color: #55588b;
+}
+
+.ui-datepicker table {
+    margin-top: 0.625rem;
+    font-size: 14px;
+}
+
+.ui-datepicker th {
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.ui-datepicker th.ui-datepicker-week-end * {
+    color: #55588b;
+}
+
+.ui-datepicker td span,
+.ui-datepicker td a {
+    padding: 0.4em 0.2em;
+    font-size: 14px;
+    text-align: center;
+}
+
+.ui-datepicker td .ui-state-default.ui-state-hover {
+    border-color: transparent;
+    text-shadow: none;
+    background: #ededed;
+    font-weight: normal;
+    color: inherit;
+}
+
+.ui-datepicker td .ui-state-highlight {
+    border-color: transparent;
+}
+
+.ui-datepicker td .ui-state-active,
+.ui-datepicker td .ui-state-active.ui-state-highlight,
+.ui-datepicker td .ui-state-active.ui-state-hover {
+    text-shadow: none;
+    font-weight: 400;
+    background: #55588b;
+    border-color: #55588b;
+    color: #fff;
+}
+
+.ui-datepicker td.ui-datepicker-week-end * {
+    color: #949494;
+}
+
+.ui-datepicker td.ui-datepicker-week-end .ui-state-active {
+    color: #fff;
+}
+
+.ui-datepicker .ui-datepicker-today {
+    border: solid 1px #dbdbdb;
+}
+
+.ui-datepicker .ui-widget-content {
+    border-color: #e3e3e3;
+}
+
+.ui-datepicker .ui-widget-content [type=button] {
+    font-size: 14px;
+}
+
+.ui-datepicker-trigger {
+    margin: 10px;
+}
+
+.datepicker.sample {
+    margin-left: 50px;
+}

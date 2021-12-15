@@ -1,0 +1,42 @@
+{
+    "name": "thecodebunny/sp-api",
+    "version": "4.2",
+    "description": "PHP client for Amazon's Selling Partner API",
+    "keywords": [
+        "api",
+        "selling-partner-api",
+        "amazon",
+        "ecommerce",
+        "sp-api",
+        "php",
+        "sdk",
+        "rest",
+        "api"
+    ],
+    "license": "BSD-3-Clause",
+    "type": "library",
+    "authors": [{
+        "name": "TheCodeBunny",
+        "homepage": "https://thecodebunny.com"
+    }],
+    "require": {
+        "php": ">=7.3",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "guzzlehttp/guzzle": "^6.0|^7.0",
+        "phpoffice/phpspreadsheet": "^1.18",
+        "aws/aws-sdk-php": "^3.185"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0 || ^9.0",
+        "friendsofphp/php-cs-fixer": "^2.12"
+    },
+    "autoload": {
+        "psr-4": { "Thecodebunny\\SpApi\\": "lib/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Thecodebunny\\SpApi\\": "lib/" }
+    },
+    "minimum-stability": "dev"
+}
