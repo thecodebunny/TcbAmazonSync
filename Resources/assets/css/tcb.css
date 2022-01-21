@@ -19,6 +19,10 @@
     font-size: 12px
 }
 
+.navbar-vertical .navbar-nav .nav-link.active i {
+    color: #11cdef !important;
+}
+
 .file-drop-zone-title {
     font-size: 14px;
 }

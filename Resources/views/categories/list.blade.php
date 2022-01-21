@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('tcb-amazon-sync::layouts.tcbmaster')
 
 @section('title', trans_choice('tcb-amazon-sync::general.amzcategories', 2))
 

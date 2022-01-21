@@ -1,0 +1,8 @@
+.long-texts {
+    display: none !important;
+}
+
+.tcb-image {
+    max-width: 100%;
+    height: auto;
+}

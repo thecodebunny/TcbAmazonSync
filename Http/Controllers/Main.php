@@ -8,6 +8,17 @@ use Illuminate\Http\Response;
 
 class Main extends Controller
 {
+
+    public function items()
+    {
+
+    }
+
+    public function ukitems()
+    {
+        return view('tcb-amazon-sync::amazon.items.list');
+    }
+
     /**
      * Display a listing of the resource.
      *

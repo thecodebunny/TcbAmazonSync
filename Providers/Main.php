@@ -31,9 +31,9 @@ class Main extends Provider
         $this->loadTranslations();
         $this->loadMigrations();
         //$this->loadConfig();
-        Item::observe('Modules\TcbAmazonSync\Observers\Inventory\Item');
+        Item::observe('Modules\TcbAmazonSync\Observers\Common\Item');
         View::composer(
-            ['inventory::items.create', 'inventory::items.edit'], 'Modules\TcbAmazonSync\Http\ViewComposers\Items'
+            ['common.items.create', 'common.items.edit'], 'Modules\TcbAmazonSync\Http\ViewComposers\Items'
         );
         View::composer(
             ['tcb-amazon-sync::items.edit'], 'Modules\TcbAmazonSync\Http\ViewComposers\Categories'

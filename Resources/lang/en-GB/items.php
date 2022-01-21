@@ -10,6 +10,10 @@ return [
     'sale_end_date'     => 'Sale End Date',
     'price'             => 'Price',
     'size'              => 'Size',
+    'height'            => 'Height',
+    'weight'            => 'Weight',
+    'length'            => 'Length',
+    'width'             => 'Width',
     'color'             => 'Color',
     'brand'             => 'Brand',
     'material'          => 'Material',
@@ -19,7 +23,21 @@ return [
     'description'       =>  'Description',
     'sale_price_gbp'    => 'Sale Price in GBP',
     'price_gbp'         => 'Price in GBP',
-    'amazon'            =>  [
+    'bulletpoints'      => 'Bullet Points',
+    'bullet_point_1'    => 'Bullet Point 1',
+    'bullet_point_2'    => 'Bullet Point 2',
+    'bullet_point_3'    => 'Bullet Point 3',
+    'bullet_point_4'    => 'Bullet Point 4',
+    'bullet_point_5'    => 'Bullet Point 5',
+    'bullet_point_6'    => 'Bullet Point 6',
+    'attributes'        => 'Attributes',
+    'warnings'          => [
+        'otherseller'       => 'Other Seller is Selling this Item',
+        'shorttitle'        => 'Title too Short',
+        'bulletpoints'      => 'There are less than 5 bullet points',
+        'images'            => 'There are less than 7 images',
+    ],
+    'amazon'            => [
         'uk'            =>  'UK',
         'de'            =>  'Germany',
         'fr'            =>  'France',
@@ -52,6 +70,7 @@ return [
         ]
     ],
     'images'        =>  [
+        'images'        =>  'Images',
         'mainpic'       =>  'Main Image',
         'pic1'          =>  'Image 1',
         'pic2'          =>  'Image 2',
@@ -60,10 +79,11 @@ return [
         'pic5'          =>  'Image 5',
         'pic6'          =>  'Image 6',
     ],
-    'bullet_point_1'            =>  'Bullet Point 1',
-    'bullet_point_2'            =>  'Bullet Point 2',
-    'bullet_point_3'            =>  'Bullet Point 3',
-    'bullet_point_4'            =>  'Bullet Point 4',
-    'bullet_point_5'            =>  'Bullet Point 5',
-    'bullet_point_6'            =>  'Bullet Point 6',
+    'show'          =>  [
+        'sales'         =>  'Sales',
+        'amzorderid'    =>  'Amazon Order ID',
+        'marketplace'   =>  'Marketplace',
+        'Status'       =>  'Status',
+        'ordertotal'    =>  'Order Total'
+    ]
 ];

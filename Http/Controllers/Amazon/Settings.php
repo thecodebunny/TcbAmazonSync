@@ -3,12 +3,14 @@
 namespace Modules\TcbAmazonSync\Http\Controllers\Amazon;
 
 use App\Abstracts\Http\Controller;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request as LRequest;
-use Modules\Inventory\Models\Warehouse;
+use Modules\TcbAmazonSync\Models\Warehouse;
 use Modules\TcbAmazonSync\Models\Amazon\Setting;
 use Modules\TcbAmazonSync\Models\Amazon\SpApiSetting;
 use Modules\TcbAmazonSync\Models\Amazon\PaApiSetting;
 use Modules\TcbAmazonSync\Models\Amazon\MwsApiSetting;
+use Modules\TcbAmazonSync\Http\Requests\Settings as SRequest;
 use Modules\TcbAmazonSync\Http\Requests\SpApiSetting as SpRequest;
 use Modules\TcbAmazonSync\Http\Requests\PaApiSetting as PaRequest;
 use Modules\TcbAmazonSync\Http\Requests\MwsApiSetting as MwsRequest;
@@ -16,40 +18,41 @@ use Modules\TcbAmazonSync\Http\Requests\MwsApiSetting as MwsRequest;
 class Settings extends Controller
 {
 
-    public function settings(LRequest $request)
+    public function __construct()
     {
-        $settings = Setting::where('company_id', $request->input('company_id'))->first();
+        $this->middleware('admin');
+    }
+
+    public function settings(SRequest $request)
+    {
+        $settings = Setting::where('company_id', Route::current()->originalParameter('company_id'))->first();
+        $company_id = Route::current()->originalParameter('company_id');
         $warehouses = Warehouse::enabled()->pluck('name', 'id');
-        return view('tcb-amazon-sync::settings.amazon', compact('settings', 'warehouses'));
+        return view('tcb-amazon-sync::settings.amazon', compact('settings', 'company_id', 'warehouses'));
     }
     
     public function update(SRequest $request)
     {
-        $settings = Setting::where('company_id', $request->input('company_id'))->first();
-        if (! $settings || empty($settings)) {
-            $settings = new Setting;
-        }
-        $settings->default_warehouse = $request->get('default_warehouse');
+        $settings = Setting::where('company_id', Route::current()->originalParameter('company_id'))->first();
+        if (! $settings) { $settings = new Setting; }
+
+        $settings->de = $request->get('de');
+        $settings->fr = $request->get('fr');
+        $settings->it = $request->get('it');
+        $settings->es = $request->get('es');
+        $settings->uk = $request->get('uk');
+        $settings->se = $request->get('se');
+        $settings->nl = $request->get('nl');
+        $settings->pl = $request->get('pl');
+
         $settings->save();
         return redirect(route('tcb-amazon-sync.amazon.settings'));
     }
 
     public function spapisettings(LRequest $request)
     {
-        $spsettings = SpApiSetting::where($request->input('company_id'))->first();
+        $spsettings = SpApiSetting::where('company_id',Route::current()->originalParameter('company_id'))->first();
         return view('tcb-amazon-sync::settings.spapisettings', compact('spsettings'));
-    }
-
-    public function paapisettings(LRequest $request)
-    {
-        $pasettings = PaApiSetting::where($request->input('company_id'))->first();
-        return view('tcb-amazon-sync::settings.paapisettings', compact('pasettings'));
-    }
-
-    public function mwsapisettings(LRequest $request)
-    {
-        $mwssettings = MwsApiSetting::where($request->input('company_id'))->first();
-        return view('tcb-amazon-sync::settings.mwsapisettings', compact('mwssettings'));
     }
 
     public function updateSpApiSettings(SpRequest $request)
@@ -76,30 +79,16 @@ class Settings extends Controller
         return redirect(route('tcb-amazon-sync.amazon.spapisettings'));
     }
 
-    public function updateMwsApiSettings(MwsRequest $request)
+    public function paapisettings(LRequest $request)
     {
-        $settings = MwsApiSetting::where('company_id', $request->get('company_id'))->first();
-        if (! $settings) {$settings = new MwsApiSetting;}
+        $pasettings = PaApiSetting::where('company_id',Route::current()->originalParameter('company_id'))->first();
+        return view('tcb-amazon-sync::settings.paapisettings', compact('pasettings'));
+    }
 
-        $settings->merchant_id = $request->get('merchant_id');
-        $settings->key_id = $request->get('key_id');
-        $settings->secret_key = $request->get('secret_key');
-        $settings->auth_token = $request->get('auth_token');
-        $settings->company_id = $request->get('company_id');
-        $settings->uk = $request->get('uk');
-        $settings->de = $request->get('de');
-        $settings->fr = $request->get('fr');
-        $settings->it = $request->get('it');
-        $settings->es = $request->get('es');
-        $settings->se = $request->get('se');
-        $settings->nl = $request->get('nl');
-        $settings->pl = $request->get('pl');
-
-        $settings->save();
-
-        $message = trans('tcb-amazon-sync::general.settings.apisetting.updated');
-        
-        return redirect(route('tcb-amazon-sync.amazon.mwsapisettings'));
+    public function mwsapisettings(LRequest $request)
+    {
+        $mwssettings = MwsApiSetting::where('company_id',Route::current()->originalParameter('company_id'))->first();
+        return view('tcb-amazon-sync::settings.mwsapisettings', compact('mwssettings'));
     }
 
     public function updatePaApiSettings(PaRequest $request)
@@ -132,6 +121,32 @@ class Settings extends Controller
         $message = trans('tcb-amazon-sync::general.settings.apisetting.updated');
         
         return redirect(route('tcb-amazon-sync.amazon.paapisettings'));
+    }
+
+    public function updateMwsApiSettings(MwsRequest $request)
+    {
+        $settings = MwsApiSetting::where('company_id', $request->get('company_id'))->first();
+        if (! $settings) {$settings = new MwsApiSetting;}
+
+        $settings->merchant_id = $request->get('merchant_id');
+        $settings->key_id = $request->get('key_id');
+        $settings->secret_key = $request->get('secret_key');
+        $settings->auth_token = $request->get('auth_token');
+        $settings->company_id = $request->get('company_id');
+        $settings->uk = $request->get('uk');
+        $settings->de = $request->get('de');
+        $settings->fr = $request->get('fr');
+        $settings->it = $request->get('it');
+        $settings->es = $request->get('es');
+        $settings->se = $request->get('se');
+        $settings->nl = $request->get('nl');
+        $settings->pl = $request->get('pl');
+
+        $settings->save();
+
+        $message = trans('tcb-amazon-sync::general.settings.apisetting.updated');
+        
+        return redirect(route('tcb-amazon-sync.amazon.mwsapisettings'));
     }
 
 }

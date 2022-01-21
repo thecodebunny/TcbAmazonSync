@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('tcb-amazon-sync::layouts.tcbmaster')
 
 @section('title', trans_choice('tcb-amazon-sync::general.settings.paname', 1))
 
@@ -19,14 +19,6 @@
         $associate_tag_pl = '';
         $associate_tag_us = '';
         $associate_tag_ca = '';
-        $de = 0;
-        $uk = 0;
-        $fr = 0;
-        $it = 0;
-        $es = 0;
-        $se = 0;
-        $nl = 0;
-        $pl = 0;
     } else {
         $api_key = $pasettings->api_key;
         $api_secret_key = $pasettings->api_secret_key;
@@ -41,14 +33,6 @@
         $associate_tag_pl = $pasettings->associate_tag_pl;
         $associate_tag_us = $pasettings->associate_tag_us;
         $associate_tag_ca = $pasettings->associate_tag_ca;
-        $de = $pasettings->de;
-        $uk = $pasettings->uk;
-        $fr = $pasettings->fr;
-        $it = $pasettings->it;
-        $es = $pasettings->es;
-        $se = $pasettings->se;
-        $nl = $pasettings->nl;
-        $pl = $pasettings->pl;
     }
 
     @endphp
@@ -90,39 +74,6 @@
                 {{ Form::textGroup('associate_tag_nl', trans('tcb-amazon-sync::general.settings.apisetting.associattagpl'), 'user-secret', [], $associate_tag_pl) }}
 
                 {{ Form::textGroup('associate_tag_pl', trans('tcb-amazon-sync::general.settings.apisetting.associattagnl'), 'user-secret', [], $associate_tag_nl) }}
-                
-                <div class="col-md-4 mb-3">
-                    <input @if($uk) checked="checked" @endif  name="uk" type="checkbox" value="{{ $uk }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock" for="">{{ trans('tcb-amazon-sync::general.settings.apisetting.uk') }}</label>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <input @if($de) checked="checked" @endif  name="de" type="checkbox" value="{{ $de }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock" for="de">{{ trans('tcb-amazon-sync::general.settings.apisetting.de') }}</label>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <input @if($fr) checked="checked" @endif  name="fr" type="checkbox" value="{{ $fr }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock" for="">{{ trans('tcb-amazon-sync::general.settings.apisetting.fr') }}</label>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <input @if($it) checked="checked" @endif  name="it" type="checkbox" value="{{ $it }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock" for="">{{ trans('tcb-amazon-sync::general.settings.apisetting.it') }}</label>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <input @if($es) checked="checked" @endif  name="es" type="checkbox" value="{{ $es }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock" for=""> {{ trans('tcb-amazon-sync::general.settings.apisetting.es') }}</label>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <input @if($se) checked="checked" @endif  name="se" type="checkbox" value="{{ $se }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock" for="">{{ trans('tcb-amazon-sync::general.settings.apisetting.se') }}</label>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <input @if($nl) checked="checked" @endif  name="nl" type="checkbox" value="{{ $nl }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock" for="">{{ trans('tcb-amazon-sync::general.settings.apisetting.nl') }}</label>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <input @if($pl) checked="checked" @endif  name="pl" type="checkbox" value="{{ $pl }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock" for="">{{ trans('tcb-amazon-sync::general.settings.apisetting.pl') }}</label>
-                </div>
             </div>
         </div>
         
@@ -138,9 +89,3 @@
 
     {!! Form::close() !!}
 @stop
-
-
-@push('scripts_start')
-    <script src="{{ asset('modules/TcbAmazonSync/Resources/assets/js/app.js?v=' . module_version('tcb-amazon-sync')) }}"></script>
-    <link rel="stylesheet" href="{{ asset('modules/TcbAmazonSync/Resources/assets/css/tcb.css?v=' . module_version('tcb-amazon-sync')) }}" type="text/css">
-@endpush

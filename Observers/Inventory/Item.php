@@ -2,7 +2,8 @@
 
 namespace Modules\TcbAmazonSync\Observers\Inventory;
 
-use App\Models\Common\Item as Model;
+use Modules\Inventory\Models\Item as ComItem;
+use App\Abstracts\Observer;
 use App\Traits\Jobs;
 use App\Traits\Modules;
 use Modules\TcbAmazonSync\Jobs\CreateItem;
@@ -10,85 +11,111 @@ use Modules\TcbAmazonSync\Jobs\DeleteItem;
 use Modules\TcbAmazonSync\Jobs\UpdateItem;
 use Modules\Inventory\Models\Item as InvItem;
 use Modules\TcbAmazonSync\Models\Amazon\UkItem;
+use Modules\TcbAmazonSync\Models\Amazon\Asin as AmzAsin;
 
-class Item
+class Item extends Observer
 {
     use Jobs, Modules;
 
     /**
      * Listen to the created event.
      *
-     * @param  Model $item
+     * @param  ComItem $item
      *
      * @return void
      */
-    public function created(Model $item)
+    public function created(ComItem $item)
     {
-        /*
         if (!$this->moduleIsEnabled('tcb-amazon-sync')) {
             return;
         }
-
         $request = request();
-
-        $this->dispatch(new CreateItem($request, $item));
-        */
+        $amzItem = AmzAsin::where('item_id', $item->item_id)->first();
+        $invItem = InvItem::where('item_id', $item->item_id)->first();
+        if (!$amzItem && empty($amzItem)) {
+            $amzItem = new AmzAsin;
+        }
+        $amzItem->ean = $request->ean;
+        $amzItem->item_id = $item->item_id;
+        $amzItem->inv_item_id = $invItem->id;
+        $amzItem->save();
     }
 
-    public function saved(Model $item)
+    public function saved(ComItem $item)
     {
-        /*
-        if (!$this->moduleIsEnabled('tcb-amazon-sync')) {
-            return;
-        }
-
-        $dbInvtentory = InvItem::where('item_id', $item->id);
-
-        $dbAsin = UkItem::where('com_item_id', $item->id)->first();
-        if (!$dbAsin) {
-            $dbAsin = new UkItem;
-        }
-        $dbAsin->com_item_id = $item->id;
-        $dbAsin->item_id = $dbInvtentory->id;
-        $dbAsin->save();
-        */
+        
     }
 
     /**
-     * Listen to the created event.
+     * Listen to the updated event.
      *
-     * @param  Model $item
+     * @param  ComItem $item
      *
      * @return void
      */
-    public function updated(Model $item)
+    public function updated(ComItem $item)
     {
-        /*
         if (!$this->moduleIsEnabled('tcb-amazon-sync')) {
             return;
         }
-
         $request = request();
-        $this->dispatch(new UpdateItem($request, $item));
-        */
+        $amzItem = AmzAsin::where('item_id', $item->item_id)->first();
+        $invItem = InvItem::where('item_id', $item->item_id)->first();
+        if (!$amzItem && empty($amzItem)) {
+            $amzItem = new AmzAsin;
+        }
+        $amzItem->ean = $request->ean;
+        $amzItem->item_id = $item->item_id;
+        $amzItem->inv_item_id = $invItem->id;
+        $amzItem->save();
     }
 
     /**
      * Listen to the deleted event.
      *
-     * @param  Model $item
+     * @param  ComItem $item
      *
      * @return void
      */
-    public function deleted(Model $item)
+    public function deleted(ComItem $item)
     {
         
         if (!$this->moduleIsEnabled('tcb-amazon-sync')) {
             return;
         }
+            error_log('ITEM');
+            $dbItem = UkItem::where('item_id', $item->item_id)->first();
+            $amzItem = AmzAsin::where('item_id', $item->item_id)->first();
+            if ($dbItem && !empty($dbItem)) {
 
-        $dbAsin = UkItem::where('com_item_id', $item->id)->first();
+                if ($dbItem->main_picture) {
+                    Storage::delete($dbItem->main_picture);
+                }
+                if ($dbItem->picture_1) {
+                    Storage::delete($dbItem->picture_1);
+                }
+                if ($dbItem->picture_2) {
+                    Storage::delete($dbItem->picture_2);
+                }
+                if ($dbItem->picture_3) {
+                    Storage::delete($dbItem->picture_3);
+                }
+                if ($dbItem->picture_4) {
+                    Storage::delete($dbItem->picture_4);
+                }
+                if ($dbItem->picture_5) {
+                    Storage::delete($dbItem->picture_5);
+                }
+                if ($dbItem->picture_6) {
+                    Storage::delete($dbItem->picture_6);
+                }
+                $dbItem->delete();
 
-        $this->dispatch(new DeleteItem($dbAsin));
+            }
+            if ($amzItem && !empty($amzItem)) {
+                
+                $amzItem->delete();
+
+            }
     }
 }

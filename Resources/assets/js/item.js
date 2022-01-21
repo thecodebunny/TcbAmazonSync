@@ -1,7 +1,8 @@
 var mainPic = $('input[name="main_picture"]');
 var basImage = $(mainPic[0]).data('image');
+console.log($(".file-preview").children(""));
 if ($(mainPic[0]).data('image') != '') {
-    $("#mainPicture").find(".file-preview-thumbnails").html('<div class="file-preview-thumbnails clearfix"><div class="file-preview-frame krajee-default  kv-preview-thumb" data-fileindex="0" data-template="image" data-zoom=""><div class="kv-file-content"><img id="main_picture" src="' + basImage + '" class="file-preview-image kv-preview-data" style="width: auto; height: auto; max-width: 100%; max-height: 100%; image-orientation: from-image;"></div></div></div></div></div>');
+    $(".file-preview-thumbnails").html('<div class="file-preview-thumbnails clearfix"><div class="file-preview-frame krajee-default  kv-preview-thumb" data-fileindex="0" data-template="image" data-zoom=""><div class="kv-file-content"><img id="main_picture" src="' + basImage + '" class="file-preview-image kv-preview-data" style="width: auto; height: auto; max-width: 100%; max-height: 100%; image-orientation: from-image;"></div></div></div></div></div>');
 }
 
 var pic1 = $('input[name="picture_1"]');

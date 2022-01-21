@@ -280,13 +280,7 @@ button.fileinput-upload {
     border: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
     padding: 6px;
-    float: left;
     text-align: center;
-}
-
-.krajee-default.file-preview-frame .kv-file-content {
-    width: 213px;
-    height: 160px;
 }
 
 .krajee-default .file-preview-other-frame {

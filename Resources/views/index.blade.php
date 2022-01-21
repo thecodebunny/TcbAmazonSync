@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('tcb-amazon-sync::layouts.tcbmaster')
 
 @section('content')
     <h1>Hello World</h1>

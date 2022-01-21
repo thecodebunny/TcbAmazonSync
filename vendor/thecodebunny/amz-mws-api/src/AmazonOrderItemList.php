@@ -167,6 +167,12 @@ class AmazonOrderItemList extends AmazonOrderCore implements Iterator
             }
         }
 
+        $amzData = str_replace("ns2:","",$response['body']);
+        $json = json_encode(simplexml_load_string($amzData));
+        $result = json_decode($json,TRUE);
+
+        return($result);
+
         $this->parseXML($xml->OrderItems);
 
         $this->checkToken($xml);

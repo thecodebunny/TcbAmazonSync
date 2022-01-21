@@ -1,10 +1,9 @@
-# thecodebunny/pa-api
+# Product Advertising API SDK
 
 ## Installation
 
-### Composer
+The Product Advertising API PHP SDK can be installed with [Composer](https://getcomposer.org/). Run this command:
 
-``` bash
+```sh
 $ composer require thecodebunny/pa-api
 ```
-

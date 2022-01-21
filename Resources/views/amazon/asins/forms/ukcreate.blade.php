@@ -25,46 +25,44 @@
             
         {{ Form::textGroup('brand', trans('tcb-amazon-sync::items.brand'), 'money-bill-wave-alt', [], '', 'col-md-6') }}
             
-        {{ Form::textGroup('size', trans('tcb-amazon-sync::items.color'), 'money-bill-wave-alt', [], '', 'col-md-6') }}
+        {{ Form::textGroup('size', trans('tcb-amazon-sync::items.size'), 'money-bill-wave-alt', [], !empty($uk_item->size) ? $uk_item->size : '', 'col-md-4') }}
             
-        {{ Form::textGroup('color', trans('tcb-amazon-sync::items.size'), 'money-bill-wave-alt', [], '', 'col-md-6') }}
+        {{ Form::textGroup('height', trans('tcb-amazon-sync::items.height'), 'money-bill-wave-alt', [], !empty($uk_item->height) ? $uk_item->height : '', 'col-md-4') }}
             
-        {{ Form::textGroup('material', trans('tcb-amazon-sync::items.material'), 'money-bill-wave-alt', [], '', 'col-md-6') }}
+        {{ Form::textGroup('length', trans('tcb-amazon-sync::items.length'), 'money-bill-wave-alt', [], !empty($uk_item->length) ? $uk_item->length : '', 'col-md-4') }}
+            
+        {{ Form::textGroup('weight', trans('tcb-amazon-sync::items.weight'), 'money-bill-wave-alt', [], !empty($uk_item->weight) ? $uk_item->weight : '', 'col-md-4') }}
+            
+        {{ Form::textGroup('width', trans('tcb-amazon-sync::items.width'), 'money-bill-wave-alt', [], !empty($uk_item->width) ? $uk_item->width : '', 'col-md-4') }}
+            
+        {{ Form::textGroup('color', trans('tcb-amazon-sync::items.color'), 'money-bill-wave-alt', [], !empty($uk_item->color) ? $uk_item->color : '', 'col-md-4') }}
+            
+        {{ Form::textGroup('material', trans('tcb-amazon-sync::items.material'), 'money-bill-wave-alt', [], !empty($uk_item->material) ? $uk_item->material : '', 'col-md-4') }}
 
-        {{ Form::textGroup('price', trans('tcb-amazon-sync::items.price'), 'money-bill-wave-alt', [], !empty($com_item->sale_price) ? $com_item->sale_price : '', 'col-md-6') }}
+        {{ Form::textGroup('price', trans('tcb-amazon-sync::items.price'), 'money-bill-wave-alt', [], !empty($uk_item->price) ? $uk_item->price : '', 'col-md-4') }}
 
-        {{ Form::textGroup('sale_price', trans('tcb-amazon-sync::items.sale_price'), 'money-bill-wave-alt', [], !empty($uk_item->sale_price) ? $uk_item->sale_price : '', 'col-md-6') }}
-
-        <div class="col-md-6">
-            <label class="form-control-label" for="enable">Warehouse</label>
-            {{ Form::select('warehouse', $warehouses,  !empty($warehouses) ? $warehouses : '', ['class' => 'tcb-select form-control']) }}
+        {{ Form::textGroup('sale_price', trans('tcb-amazon-sync::items.sale_price'), 'money-bill-wave-alt', [], !empty($uk_item->sale_price) ? $uk_item->sale_price : '', 'col-md-4') }}
+        
+        <div class="form-group col-md-4">
+            <label class="datelabel form-control-label" for="sale_start_date">{{ trans('tcb-amazon-sync::items.sale_start_date') }}</label>
+            <div class="input-group input-group-merge ">
+            <input type="text" class="form-control datepicker" name="sale_start_date" placeholder="Enter {{ trans('tcb-amazon-sync::items.sale_start_date') }}">
+            </div>
         </div>
         
-        <label class="datelabel" for="sale_start_date">{{ trans('tcb-amazon-sync::items.sale_start_date') }}</label>
-        <div class="date-picker">
-            <div class="input">
-                <div class="result"><span></span></div>
-                <button><i class="fa fa-calendar"></i></button>
+        <div class="form-group col-md-4">
+            <label class="datelabel form-control-label" for="sale_end_date">{{ trans('tcb-amazon-sync::items.sale_end_date') }}</label>
+            <div class="input-group input-group-merge ">
+            <input type="text" class="form-control datepicker" name="sale_end_date" placeholder="Enter {{ trans('tcb-amazon-sync::items.sale_end_date') }}">
             </div>
-            <input type="hidden" name="sale_start_date" value="{{!empty($uk_item->sale_start_date) ? $uk_item->sale_start_date : ''}}">
-            <div class="calendar"></div>
-        </div>
-        <label class="datelabel" for="sale_start_date">{{ trans('tcb-amazon-sync::items.sale_end_date') }}</label>
-        <div class="date-picker">
-            <div class="input">
-                <div class="result"><span></span></div>
-                <button><i class="fa fa-calendar"></i></button>
-                <input type="hidden" name="sale_end_date" value="{{!empty($uk_item->sale_end_date) ? $uk_item->sale_end_date : ''}}">
-            </div>
-            <div class="calendar"></div>
         </div>
 
-        {{ Form::textGroup('quantity', trans('tcb-amazon-sync::items.quantity'), '', [], !empty($com_item->quantity) ? $com_item->quantity : '', 'col-md-6') }}
+        {{ Form::textGroup('quantity', trans('tcb-amazon-sync::items.quantity'), '', [], !empty($item->quantity) ? $item->quantity : '', 'col-md-4') }}
 
-        {{ Form::textGroup('title', trans('tcb-amazon-sync::items.title'), '', [], !empty($com_item->name) ? $com_item->name : '', 'col-md-12') }}
+        {{ Form::textGroup('title', trans('tcb-amazon-sync::items.title'), '', [], !empty($item->name) ? $item->name : '', 'col-md-12') }}
 
         <p class="col-md-6 tcb-helptext p-3 text-center">Find your category at <a href="{{ route('tcb-amazon-sync.amazon.categories') }}" target="_blank">Amazon Categories List</a>, and enter UK Node ID value</p>
-        {{ Form::textGroup('category', trans('tcb-amazon-sync::items.category'), '', ['help' => 'Help Text'], !empty($uk_item->category) ? $uk_item->category : '', 'col-md-6') }}
+        {{ Form::textGroup('category_id', trans('tcb-amazon-sync::items.category_id'), '', ['help' => 'Help Text'], !empty($uk_item->category_id) ? $uk_item->category_id : '', 'col-md-6') }}
 
         {{ Form::textGroup('bullet_point_1', trans('tcb-amazon-sync::items.bullet_point_1'), '', [], !empty($uk_item->bullet_point_1) ? $uk_item->bullet_point_1 : '', 'col-md-6') }}
 
@@ -127,7 +125,7 @@
             </button>
         </div>
         <div class="col-md-4">
-            <button id="fetchAmazonItem" class="btn btn-lg btn-icon btn-info" data-url="{{ route('tcb-amazon-sync.amazon.item.fetch', ['item_id' => $com_item->id, 'inv_item_id' => $inventory_item->id, 'sku' => $sku, 'ean' => $ean, 'country' => 'Uk']) }}">
+            <button id="fetchAmazonItem" class="btn btn-lg btn-icon btn-info" data-url="{{ route('tcb-amazon-sync.amazon.item.fetch', ['item_id' => $item->id, 'inv_item_id' => $inventory_item->id, 'sku' => $sku, 'ean' => $ean, 'country' => 'Uk']) }}">
                 <span class="btn-inner--text">{{ trans('tcb-amazon-sync::items.amazon.fetch') }}</span>
             </button>
         </div>

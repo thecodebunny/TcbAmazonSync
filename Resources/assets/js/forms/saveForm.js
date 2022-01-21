@@ -1,15 +1,3 @@
-if ($(".tcb-checkbox").checked == true) {
-    $(".tcb-checkbox").value = "on";
-} else {
-    $(".tcb-checkbox").value = null;
-}
-$(".tcb-checkbox").on("change", function() {
-    if (this.checked == true) {
-        this.value = "on";
-    } else {
-        this.value = null;
-    }
-});
 $(function() {
     $('input.datepicker').datepicker({
         dateFormat: 'yy-mm-dd',

@@ -16,15 +16,18 @@ class Asin extends Model
         'id',
         'item_id',
         'ean',
-        'amazon_sale_price',
-        'amazon_sku',
-        'amazon_title',
-        'amazon_description',
-        'amazon_asin',
-        'amazon_quantity',
-        'amazon_description',
-        'amazon_price',
-        'amazon_category',
+        'uk_asin',
+        'de_asin',
+        'fr_asin',
+        'it_asin',
+        'es_asin',
+        'se_asin',
+        'nl_asin',
+        'pl_asin',
+        'in_asin',
+        'us_asin',
+        'mx_asin',
+        'ca_asin'
     ];
 
 }

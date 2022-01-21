@@ -1,3 +1,3 @@
 @stack('ean_input_start')
-{{ Form::textGroup('ean', trans('inventory::general.ean'), 'fa fa-key', ['required' => 'required'], !empty($amz_item->ean) ? $amz_item->ean : '') }}
+{{ Form::textGroup('ean', trans('tcb-amazon-sync::general.ean'), 'fa fa-key', ['required' => 'required'], !empty($amzItem->ean) ? $amzItem->ean : '') }}
 @stack('ean_input_ean')

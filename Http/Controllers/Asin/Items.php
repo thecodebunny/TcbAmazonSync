@@ -5,7 +5,10 @@ namespace Modules\TcbAmazonSync\Http\Controllers\Asin;
 use App\Abstracts\Http\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Modules\TcbAmazonSync\Models\Amazon\UkItem;
+use Illuminate\Support\Facades\Route;
+use App\Models\Banking\Transaction;
+use Modules\TcbAmazonSync\Models\Amazon\Item;
+use Modules\TcbAmazonSync\Models\Amazon\Order;
 use Modules\TcbAmazonSync\Models\Amazon\Categories;
 use Modules\TcbAmazonSync\Models\Amazon\MwsApiSetting;
 use App\Traits\Jobs;
@@ -16,6 +19,15 @@ use Thecodebunny\AmzMwsApi\AmazonOrderList;
 class Items extends Controller
 {
     use Jobs;
+
+    private $company_id;
+    private $country;
+
+    public function __construct(Request $request)
+    {
+        $this->country = Route::current()->originalParameter('country');
+        $this->company_id = Route::current()->originalParameter('company_id');
+    }
 
     public function create()
     {
@@ -35,14 +47,21 @@ class Items extends Controller
         
     }
 
+    public function showItem($id, $country)
+    {
+        $itemModel = 'Modules\TcbAmazonSync\Models\Amazon\Item';
+        $item = $itemModel::where('id',$id)->first();
+        $orders = Order::where('asin_ids', 'LIKE', '%'.$item->asin.'%')->get();
+        $ukCategories = Categories::get(['uk_node_id', 'node_path']);
+        return $this->response('tcb-amazon-sync::amazon.items.show', compact('item','orders'));
+        
+    }
+
     public function updateItem(Request $request)
     {
 
-        $amzItem = UkItem::where('item_id', $request->get('inv_item_id'))->first();
-
-        if (! $amzItem) {
-            $amzItem = new UkItem;
-        }
+        $amzItem = Item::where('item_id', $request->get('inv_item_id'))->where('country', $this->country)->first();
+        $picFolder = 'items/uk/'. $amzItem->uk_asin;
 
         $amzItem->item_id = $request->get('inv_item_id');
         $amzItem->enable = $request->get('enable');
@@ -65,9 +84,9 @@ class Items extends Controller
         if ($request->file('main_picture')) {
             $mainPic = $request->file('main_picture');
             $fileName   = $mainPic->getClientOriginalName();
-            $newPath = 'items/'. $amzItem->item_id .'/' .$fileName;
+            $newPath = $picFolder .'/' .$fileName;
             $path = $request->file('main_picture')->storeAs(
-                'items/'. $amzItem->item_id, $fileName, 'local'
+                $picFolder, $fileName, 'local'
             );
             if ($amzItem->main_picture && $amzItem->main_picture !== $newPath) {
                 Storage::delete($amzItem->main_picture);
@@ -78,10 +97,10 @@ class Items extends Controller
         // Upload Other Images
         if ($request->file('picture_1')) {
             $pic1 = $request->file('picture_1');
-            $fileName   = $pic1->getClientOriginalName();
-            $pic1Path = 'items/'. $amzItem->item_id .'/' .$fileName;
+            $fileName   = '1-' . $amzItem->uk_asin;
+            $pic1Path = $picFolder .'/' .$fileName;
             $path1 = $request->file('picture_1')->storeAs(
-                'items/'. $amzItem->item_id, $fileName, 'public'
+                $picFolder, $fileName, 'public'
             );
             if ($amzItem->picture_1 && $amzItem->picture_1 !== $pic1Path) {
                 Storage::delete($amzItem->picture_1);
@@ -91,10 +110,10 @@ class Items extends Controller
 
         if ($request->file('picture_2')) {
             $pic2 = $request->file('picture_2');
-            $fileName   = $pic2->getClientOriginalName();
-            $pic2Path = 'items/'. $amzItem->item_id .'/' .$fileName;
+            $fileName   = '2-' . $amzItem->uk_asin;
+            $pic2Path = $picFolder .'/mainImage/' .$fileName;
             $path2 = $request->file('picture_2')->storeAs(
-                'items/'. $amzItem->item_id, $fileName, 'public'
+                $picFolder, $fileName, 'public'
             );
             if ($amzItem->picture_2 && $amzItem->picture_2 !== $pic2Path) {
                 Storage::delete($amzItem->picture_2);
@@ -104,10 +123,10 @@ class Items extends Controller
 
         if ($request->file('picture_3')) {
             $pic3 = $request->file('picture_3');
-            $fileName   = $pic3->getClientOriginalName();
-            $pic3Path = 'items/'. $amzItem->item_id .'/' .$fileName;
+            $fileName   = '3-' . $amzItem->uk_asin;
+            $pic3Path = $picFolder .'/variants/' .$fileName;
             $path3 = $request->file('picture_3')->storeAs(
-                'items/'. $amzItem->item_id, $fileName, 'public'
+                $picFolder, $fileName, 'public'
             );
             if ($amzItem->picture_3 && $amzItem->picture_3 !== $pic3Path) {
                 Storage::delete($amzItem->picture_3);
@@ -117,10 +136,10 @@ class Items extends Controller
 
         if ($request->file('picture_4')) {
             $pic4 = $request->file('picture_4');
-            $fileName   = $pic4->getClientOriginalName();
-            $pic4Path = 'items/'. $amzItem->item_id .'/' .$fileName;
+            $fileName   = '4-' . $amzItem->uk_asin;
+            $pic4Path = $picFolder .'/variants/' .$fileName;
             $path4 = $request->file('picture_4')->storeAs(
-                'items/'. $amzItem->item_id, $fileName, 'public'
+                $picFolder, $fileName, 'public'
             );
             if ($amzItem->picture_4 && $amzItem->picture_4 !== $pic4Path) {
                 Storage::delete($amzItem->picture_4);
@@ -130,10 +149,10 @@ class Items extends Controller
 
         if ($request->file('picture_5')) {
             $pic5 = $request->file('picture_5');
-            $fileName   = $pic5->getClientOriginalName();
-            $pic5Path = 'items/'. $amzItem->item_id .'/' .$fileName;
+            $fileName   = '5-' . $amzItem->uk_asin;
+            $pic5Path = $picFolder .'/' .$fileName;
             $path5 = $request->file('picture_5')->storeAs(
-                'items/'. $amzItem->item_id, $fileName, 'public'
+                $picFolder, $fileName, 'public'
             );
             if ($amzItem->picture_5 && $amzItem->picture_5 !== $pic5Path) {
                 Storage::delete($amzItem->picture_5);
@@ -143,10 +162,10 @@ class Items extends Controller
 
         if ($request->file('picture_6')) {
             $pic6 = $request->file('picture_6');
-            $fileName   = $pic6->getClientOriginalName();
-            $pic6Path = 'items/'. $amzItem->item_id .'/' .$fileName;
+            $fileName   = '6-' . $amzItem->uk_asin;
+            $pic6Path = $picFolder .'/' .$fileName;
             $path6 = $request->file('picture_6')->storeAs(
-                'items/'. $amzItem->item_id, $fileName, 'public'
+                $picFolder, $fileName, 'public'
             );
             if ($amzItem->picture_6 && $amzItem->picture_6 !== $pic6Path) {
                 Storage::delete($amzItem->picture_6);

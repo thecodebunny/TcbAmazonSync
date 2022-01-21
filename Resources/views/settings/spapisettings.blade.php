@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('tcb-amazon-sync::layouts.tcbmaster')
 
 @section('title', trans_choice('tcb-amazon-sync::general.settings.spname', 1))
 
@@ -16,14 +16,6 @@
         $us_token = '';
         $endpoint = '';
         $iam_arn = '';
-        $de = 0;
-        $uk = 0;
-        $fr = 0;
-        $it = 0;
-        $es = 0;
-        $se = 0;
-        $nl = 0;
-        $pl = 0;
     } else {
         $app_name = $spsettings->app_name;
         $app_id = $spsettings->app_id;
@@ -35,14 +27,6 @@
         $us_token = $spsettings->us_token;
         $endpoint = $spsettings->endpoint;
         $iam_arn = $spsettings->iam_arn;
-        $de = $spsettings->de;
-        $uk = $spsettings->uk;
-        $fr = $spsettings->fr;
-        $it = $spsettings->it;
-        $es = $spsettings->es;
-        $se = $spsettings->se;
-        $nl = $spsettings->nl;
-        $pl = $spsettings->pl;
     }
     @endphp
 
@@ -82,39 +66,6 @@
                 {{ Form::textGroup('endpoint', trans('tcb-amazon-sync::general.settings.endpoint'), 'wifi', [], $endpoint) }}
 
                 {{ Form::textGroup('iam_arn', trans('tcb-amazon-sync::general.settings.iamarn'), 'user-astronaut', [], $iam_arn) }}
-                
-                <div class="col-md-6 mb-3">
-                    <input @if($uk) checked="checked" @endif  name="uk" type="checkbox" value="{{ $uk }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock tcb-checkbox-label" for="">{{ trans('tcb-amazon-sync::general.settings.apisetting.uk') }}</label>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input @if($de) checked="checked" @endif  name="de" type="checkbox" value="{{ $de }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock tcb-checkbox-label" for="de">{{ trans('tcb-amazon-sync::general.settings.apisetting.de') }}</label>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input @if($fr) checked="checked" @endif  name="fr" type="checkbox" value="{{ $fr }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock tcb-checkbox-label" for="">{{ trans('tcb-amazon-sync::general.settings.apisetting.fr') }}</label>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input @if($it) checked="checked" @endif  name="it" type="checkbox" value="{{ $it }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock tcb-checkbox-label" for="">{{ trans('tcb-amazon-sync::general.settings.apisetting.it') }}</label>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input @if($es) checked="checked" @endif  name="es" type="checkbox" value="{{ $es }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock tcb-checkbox-label" for=""> {{ trans('tcb-amazon-sync::general.settings.apisetting.es') }}</label>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input @if($se) checked="checked" @endif  name="se" type="checkbox" value="{{ $se }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock tcb-checkbox-label" for="">{{ trans('tcb-amazon-sync::general.settings.apisetting.se') }}</label>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input @if($nl) checked="checked" @endif  name="nl" type="checkbox" value="{{ $nl }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock tcb-checkbox-label" for="">{{ trans('tcb-amazon-sync::general.settings.apisetting.nl') }}</label>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <input @if($pl) checked="checked" @endif  name="pl" type="checkbox" value="{{ $pl }}" class="tcb-checkbox">
-                    <label class="tcb-inlineblock tcb-checkbox-label" for="">{{ trans('tcb-amazon-sync::general.settings.apisetting.pl') }}</label>
-                </div>
             </div>
         </div>
         

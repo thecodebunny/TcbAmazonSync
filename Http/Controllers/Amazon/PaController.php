@@ -5,9 +5,13 @@ namespace Modules\TcbAmazonSync\Http\Controllers\Amazon;
 use App\Abstracts\Http\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
 use Modules\Inventory\Models\Item;
 use Modules\Inventory\Models\Warehouse;
-use Modules\Inventory\Models\Amazon\Item as AmzItem;
+use Modules\TcbAmazonSync\Models\Amazon\Item as AmzItem;
+use Modules\TcbAmazonSync\Models\Amazon\Asin as AmzAsin;
 use Modules\TcbAmazonSync\Models\Amazon\Categories;
 use Modules\TcbAmazonSync\Models\Amazon\PaApiSetting;
 
@@ -25,17 +29,21 @@ class PaController extends Controller
 
     public function fetchAllProducts(Request $request, $country)
     {
-        $settings = PaApiSetting::where($request->input('company_id'))->first();
+        $settings = PaApiSetting::where('company_id',Route::current()->originalParameter('company_id'))->first();
+        if ($country == 'Uk') {
+            $pTag = $settings->associate_tag_uk;
+            $host = 'webservices.amazon.co.uk';
+            $asins = AmzItem::where('company_id',Route::current()->originalParameter('company_id'))->where('country', 'Uk')->get()->toArray();
+        }
         $config = new Configuration();
         $config->setAccessKey($settings->api_key);
         $config->setSecretKey($settings->api_secret_key);
-        $partnerTag = $settings->associate_tag_uk;
-        $config->setHost('webservices.amazon.co.uk');
+        $partnerTag = $pTag;
+        $config->setHost($host);
         $config->setRegion('eu-west-1');
         $apiInstance = new DefaultApi(
             new \GuzzleHttp\Client(), $config);
-        $itemIds = array("B091253FBD", "B08FMJPN5C");
-
+        $itemIds = array_column($asins, 'asin');
         $resources = array(
             GetItemsResource::BROWSE_NODE_INFOBROWSE_NODES,
             GetItemsResource::BROWSE_NODE_INFOBROWSE_NODESANCESTOR,
@@ -104,16 +112,140 @@ class PaController extends Controller
     try {
         $getItemsResponse = $apiInstance->getItems($getItemsRequest);
         $items = $this->parseResponse = $getItemsResponse->getItemsResult()->getItems();
-        dump($items);
+        
         foreach ($items as $item)
         {
-            if ($country == 'Uk') {
-                $amzItem = AmzItem::where('uk_item', $item->getAsin())->first();
-                $dbAsin = UkItem::where('item_id', $amzItem->inv_item_id)->first();
+            $dbItem = AmzItem::where('company_id',Route::current()->originalParameter('company_id'))->where('country', 'Uk')->where('asin', $item->getAsin())->first();
+
+            //Set Company ID for ASIN
+            $dbItem->company_id = Route::current()->originalParameter('company_id');
+
+            //Get & Set Browsnode ID
+            $browseNodes = $item->getBrowseNodeInfo()->getBrowseNodes();
+            foreach ($browseNodes as $node) {
+                if (! $node->getChildren()) {
+                    $dbItem->category_id = $node->getId();
+                }
             }
 
+            //Get & Set Images
+            $images = $item->getImages();
+            $mainImage = $images->getPrimary();
+            $url = $mainImage->getLarge()->getUrl();
+            $mainPic = file_get_contents($url);
+            $mainName = basename($url);
+            $picFolder = 'items/'. $country .'/'. $dbItem->asin . '/mainImage/' . $mainName;
+            Storage::disk('public')->deleteDirectory('items/'. $country .'/'. $dbItem->asin . '/mainImage/');
+            Storage::disk('public')->put($picFolder, $mainPic, 'public');
+            $dbItem->main_picture = $picFolder;
+            $variants = $images->getVariants();
+            array_shift($variants);
+            $i = 1;
+            Storage::disk('public')->deleteDirectory('items/'. $country .'/'. $dbItem->asin . '/variants/');
+            foreach ($variants as $i => $image) {
+                $imageUrl = $image->getLarge()->getUrl();
+                $image = file_get_contents($imageUrl);
+                $imageName = basename($imageUrl);
+                if ($i == 0) {
+                    $imageFolder = 'items/'. $country .'/'. $dbItem->asin . '/variants/1-' .$imageName;
+                    Storage::disk('public')->put($imageFolder, $image, 'public');
+                    $dbItem->picture_1 = $imageFolder;
+                }
+                if ($i == 1) {
+                    $imageFolder = 'items/'. $country .'/'. $dbItem->asin . '/variants/2-' .$imageName;
+                    Storage::disk('public')->put($imageFolder, $image, 'public');
+                    $dbItem->picture_2 = $imageFolder;
+                }
+                if ($i == 2) {
+                    $imageFolder = 'items/'. $country .'/'. $dbItem->asin . '/variants/3-' .$imageName;
+                    Storage::disk('public')->put($imageFolder, $image, 'public');
+                    $dbItem->picture_3 = $imageFolder;
+                }
+                if ($i == 3) {
+                    $imageFolder = 'items/'. $country .'/'. $dbItem->asin . '/variants/4-' .$imageName;
+                    Storage::disk('public')->put($imageFolder, $image, 'public');
+                    $dbItem->picture_4 = $imageFolder;
+                }
+                if ($i == 4) {
+                    $imageFolder = 'items/'. $country .'/'. $dbItem->asin . '/variants/5-' .$imageName;
+                    Storage::disk('public')->put($imageFolder, $image, 'public');
+                    $dbItem->picture_5 = $imageFolder;
+                }
+                if ($i == 5) {
+                    $imageFolder = 'items/'. $country .'/'. $dbItem->asin . '/variants/6-' .$imageName;
+                    Storage::disk('public')->put($imageFolder, $image, 'public');
+                    $dbItem->picture_6 = $imageFolder;
+                }
+                $i++;
+            }
 
+            //Get & Set Bullet Points
+            $bulletPoints = $item->getItemInfo()->getFeatures()->getDisplayValues();
+            if ($bulletPoints && !empty($bulletPoints)) {
+                foreach ($bulletPoints as $i => $point) {
+                    if ($i == 0) {
+                        $dbItem->bullet_point_1 = $point;
+                    }
+                    if ($i == 1) {
+                        $dbItem->bullet_point_2 = $point;
+                    }
+                    if ($i == 2) {
+                        $dbItem->bullet_point_3 = $point;
+                    }
+                    if ($i == 3) {
+                        $dbItem->bullet_point_4 = $point;
+                    }
+                    if ($i == 4) {
+                        $dbItem->bullet_point_5 = $point;
+                    }
+                    if ($i == 5) {
+                        $dbItem->bullet_point_6 = $point;
+                    }
+                }
+            }
 
+            //Get & Set Product Dimensions
+            $dimensions = $item->getItemInfo()->getProductInfo()->getItemDimensions();
+            if ($dimensions && !empty($dimensions)) {
+                if ( $dimensions->getHeight()){
+                    $dbItem->height = $dimensions->getHeight()->getDisplayValue();
+                }
+                if ( $dimensions->getLength()) {
+                    $dbItem->length = $dimensions->getLength()->getDisplayValue();
+                }
+                if ( $dimensions->getWeight()) {
+                    $dbItem->weight = $dimensions->getWeight()->getDisplayValue();
+                }
+                if ( $dimensions->getWidth()) {
+                    $dbItem->width = $dimensions->getWidth()->getDisplayValue();
+                }
+            }
+
+            //Get & Set Product Prices
+            $offers = $item->getOffers();
+            if ($offers && !empty($offers)) {
+                $listings = $offers->getListings();
+                foreach ($listings as $offer) {
+                    if ($offer->getMerchantInfo()->getName() == 'zoomyo' || 
+                        $offer->getMerchantInfo()->getName() == 'meateor' || 
+                        $offer->getMerchantInfo()->getName() == 'Zoomyo' || 
+                        $offer->getMerchantInfo()->getName() == 'Meateor') {
+                           $dbItem->price = $offer->getPrice()->getAmount();
+                        }
+                }
+                $summaries = $offers->getSummaries();
+                if ($summaries && !empty($summaries)) {
+                    if ($summaries[0]->getOfferCount() > 1) {
+                        $dbItem->otherseller_warning = 1;
+                    }
+                }
+            }
+
+            dump($dbItem);
+
+            //Save Asin
+            $dbItem->save();
+            dump($item);
         }
 
         } catch (ApiException $exception) {
@@ -132,7 +264,6 @@ class PaController extends Controller
         } catch (Exception $exception) {
             echo "Error Message: ", $exception->getMessage(), PHP_EOL;
         }
-
     }
 
     public function parseResponse($items)

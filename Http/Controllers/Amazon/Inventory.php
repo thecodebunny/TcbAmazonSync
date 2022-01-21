@@ -35,8 +35,8 @@ class Inventory extends Controller
 
     public function __construct(Request $request)
     {
-        $settings = MwsApiSetting::where('company_id', $request->input('company_id'))->first();
-        $this->companyId = $request->input('company_id');
+        $settings = MwsApiSetting::where('company_id', Route::current()->parameter('company_id'))->first();
+        $this->companyId = Route::current()->parameter('company_id');
         $this->config = [
             'merchantId' => $settings->merchant_id,
             'marketplaceId' => 'A1PA6795UKMFR9',
@@ -125,7 +125,7 @@ class Inventory extends Controller
         $date = date("Y/m/d");
         $disk = Storage::disk('public');
         $files = $disk->files('reports/inventory/'.$date.'/');
-        $settings = Setting::where('company_id', $request->input('company_id'))->first();
+        $settings = Setting::where('company_id', Route::current()->originalParameter('company_id'))->first();
 
         $fileData = collect();
         foreach($files as $file) {
@@ -157,41 +157,41 @@ class Inventory extends Controller
         //dump($this->companyId);
         dump($item);
         if ($item && !empty($item) && $item[0] !== '') {
-            $dbAsin = UkItem::where('asin', $item[16])->first();
-            if ($dbAsin && !empty($dbAsin)) {
-                $com_item_id = $dbAsin->com_item_id;
-                $item_id = $dbAsin->item_id;
+            $dbItem = UkItem::where('asin', $item[16])->first();
+            if ($dbItem && !empty($dbItem)) {
+                $item_id = $dbItem->item_id;
+                $item_id = $dbItem->item_id;
                 //dump($item_id);
             } else {
-                $dbAsin = new UkItem;
-                $com_item_id = $this->createUpdateCommonItem($this->companyId, $item);
-                $item_id = $this->createUpdateInventoryItem($this->companyId, $com_item_id, $item);
+                $dbItem = new UkItem;
+                $item_id = $this->createUpdateCommonItem($this->companyId, $item);
+                $item_id = $this->createUpdateInventoryItem($this->companyId, $item_id, $item);
                 //dump($item_id);
             }
             dump($item_id);
 
-            $dbAsin->item_id = $item_id;
-            $dbAsin->com_item_id = $com_item_id;
-            $dbAsin->enable = 'on';
-            $dbAsin->amazon_status = $item[28];
-            $dbAsin->ean = $item[22];
-            $dbAsin->asin = $item[16];
-            $dbAsin->sku = $item[3];
+            $dbItem->item_id = $item_id;
+            $dbItem->item_id = $item_id;
+            $dbItem->enable = 'on';
+            $dbItem->amazon_status = $item[28];
+            $dbItem->ean = $item[22];
+            $dbItem->asin = $item[16];
+            $dbItem->sku = $item[3];
             if ( $defaultWarehouse ) {
-                $dbAsin->warehouse = $defaultWarehouse;
+                $dbItem->warehouse = $defaultWarehouse;
             } else {
-                $dbAsin->warehouse = 1;
+                $dbItem->warehouse = 1;
             }
-            //$dbAsin->sale_price = $item[28];
+            //$dbItem->sale_price = $item[28];
             if ($item[4] && !empty($item[4])) {
-                $dbAsin->price = $item[4];
+                $dbItem->price = $item[4];
             } else {
-                $dbAsin->price = 0;
+                $dbItem->price = 0;
             }
-            $dbAsin->title = htmlspecialchars($item[0]);
-            $dbAsin->description = htmlspecialchars($item[1]);
-            $dbAsin->quantity = (int) $item[5];
-            $dbAsin->save();
+            $dbItem->title = htmlspecialchars($item[0]);
+            $dbItem->description = htmlspecialchars($item[1]);
+            $dbItem->quantity = (int) $item[5];
+            $dbItem->save();
         }
     }
 
@@ -217,14 +217,14 @@ class Inventory extends Controller
         return $dbItem->id;
     }
 
-    public function createUpdateInventoryItem($companyId, $com_item_id, $item)
+    public function createUpdateInventoryItem($companyId, $item_id, $item)
     {
         $dbItem = InventoryItem::where('uk_asin', $item[16])->first();
         if (!$dbItem || empty($dbItem)) {
             $dbItem = new InventoryItem;
         }
         $dbItem->company_id = $companyId;
-        $dbItem->item_id = $com_item_id;
+        $dbItem->item_id = $item_id;
         $dbItem->sku = $item[3];
         $dbItem->opening_stock = (int) $item[5];
         $dbItem->default_opening_stock = (int) $item[5];

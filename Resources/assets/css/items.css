@@ -1,0 +1,22 @@
+.long-texts {
+    display: none !important;
+}
+
+.tcb-image {
+    max-width: 100%;
+    height: auto;
+}
+
+.numberorders {
+    border-radius: 100%;
+    width: 25px;
+    height: 25px;
+    background: #ff6004;
+    padding: 3px 5px;
+    text-align: center;
+    box-shadow: 3px 3px 15px -2px #707070;
+    color: white;
+    position: absolute;
+    top: -9px;
+    right: 3px;
+}
