@@ -63,31 +63,6 @@ class SpApi extends Controller
         $this->config->setDebugFile('/var/www/go/storage/logs/spapi.log');
     }
 
-    public function getOrders(Request $request)
-    {
-        
-        $apiInstance = new OrdersApi($this->config);
-        $marketplace_ids = ['A1F83G8C2ARO7P'];
-        $created_after = '2021-06-01';
-        $created_before = '2021-11-30';
-        $data_elements = [];
-        $order_id = '205-9894695-8388318';
-        try {
-            $result = $apiInstance->getOrder(
-                $order_id
-            );
-            dump($result);
-            /*
-            foreach ($result['payload']['orders'] as $order) {
-                dump($order);
-            }
-            */
-
-        } catch (Exception $e) {
-            echo 'Exception when calling OrdersApi->getOrders: ', $e->getMessage(), PHP_EOL;
-        }
-    }
-
     public function getAllItems(Request $request)
     {
         
@@ -311,6 +286,31 @@ class SpApi extends Controller
         // parameter is passed, your custom Guzzle client will be used when uploading the feed document contents to Amazon.
         $docToUpload = new Document($feedDocumentInfo, $feedType);
         $docToUpload->upload($feedContents);
+    }
+
+    public function getOrders(Request $request)
+    {
+        
+        $apiInstance = new OrdersApi($this->config);
+        $marketplace_ids = ['A1F83G8C2ARO7P'];
+        $created_after = '2021-06-01';
+        $created_before = '2021-11-30';
+        $data_elements = [];
+        $order_id = '205-9894695-8388318';
+        try {
+            $result = $apiInstance->getOrder(
+                $order_id
+            );
+            dump($result);
+            /*
+            foreach ($result['payload']['orders'] as $order) {
+                dump($order);
+            }
+            */
+
+        } catch (Exception $e) {
+            echo 'Exception when calling OrdersApi->getOrders: ', $e->getMessage(), PHP_EOL;
+        }
     }
 
     public function getAplusContents()
