@@ -895,7 +895,7 @@ class ListingsApi
 
         // query params
         if (is_array($included_data)) {
-            $included_data = ObjectSerializer::serializeCollection($included_data, 'form', true);
+            $included_data = ObjectSerializer::serializeCollection($included_data, '', true);
         }
         if ($included_data !== null) {
             $queryParams['includedData'] = $included_data;

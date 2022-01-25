@@ -49,9 +49,11 @@ Route::admin('tcb-amazon-sync', function () {
     Route::post('/amazon-settings/mwsapi/update', 'Amazon\Settings@updateMwsApiSettings')->name('amazon.apisettings.updatemws');
 
     //Amazon Routes
-    Route::get('/amazon-fetchAllProducts/{country}', 'Amazon\MwsController@fetchAllProducts')->name('amazon.mwstest');
-    Route::get('/amazon-fetchPaProducts/{country}', 'Amazon\PaController@fetchAllProducts')->name('amazon.patest');
-    Route::get('/amazon-fetchSpProducts/{country}', 'Amazon\SpController@getAllItems')->name('amazon.spitems');
-    Route::get('/amazon/mwsapi/fetch/{item_id}/{ean}/{country}', 'Amazon\MwsController@fetchAmazonItem')->name('amazon.item.fetch');
+    Route::get('/amazon-fetchAllProducts/{country}', 'Amazon\MwsApi@fetchAllProducts')->name('amazon.mwstest');
+    Route::get('/amazon-fetchPaProducts/{country}', 'Amazon\PaApi@fetchAllProducts')->name('amazon.patest');
+    Route::get('/amazon-fetchSpProducts/{country}', 'Amazon\SpApi@getAllItems')->name('amazon.spitems');
+    Route::get('/amazon/mwsapi/fetch/{item_id}/{ean}/{country}', 'Amazon\MwsApi@fetchAmazonItem')->name('amazon.item.fetch');
     Route::get('/amazon-getorders/Uk', 'Amazon\Orders@getOrders')->name('amazon.getOrders');
+    Route::get('/amazon-updatestock/{country}/{sku}/{qty}', 'Amazon\SpApi@updateAmazonItemStock')->name('amazon.updateStock');
+    Route::get('/amazon-getAplus/{country}', 'Amazon\SpApi@getAplusContents')->name('amazon.aplus');
 });

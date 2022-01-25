@@ -59,6 +59,10 @@
 
         {{ Form::textGroup('price', trans('tcb-amazon-sync::items.price'), 'fas fa-tags', [], !empty($amzItem->price) ? $amzItem->price : '', 'col-md-4') }}
 
+        {{ Form::textGroup('lead_time_to_ship_max_days', trans('tcb-amazon-sync::items.shipmaxdays'), '', [], !empty($amzItem->lead_time_to_ship_max_days) ? $amzItem->lead_time_to_ship_max_days : '', 'col-md-4') }}
+
+        {{ Form::textGroup('country_of_origin', trans('tcb-amazon-sync::items.countryorigin'), '', [], !empty($amzItem->country_of_origin) ? $amzItem->country_of_origin : '', 'col-md-4') }}
+
         {{ Form::textGroup('sale_price', trans('tcb-amazon-sync::items.sale_price'), 'fas fa-bookmark', [], !empty($amzItem->sale_price) ? $amzItem->sale_price : '', 'col-md-4') }}
         
         <div class="form-group col-md-4">
@@ -92,6 +96,8 @@
         {{ Form::textGroup('bullet_point_6', trans('tcb-amazon-sync::items.bullet_point_6'), '', [], !empty($amzItem->bullet_point_6) ? $amzItem->bullet_point_6 : '', 'col-md-6') }}
 
         {{ Form::textareaGroup('description', trans('tcb-amazon-sync::items.description'), [], !empty($amzItem->description) ? $amzItem->description : '') }}
+
+        {{ Form::textareaGroup('keywords', trans('tcb-amazon-sync::items.keywords'), [], !empty($amzItem->keywords) ? $amzItem->keywords : '') }}
 
         <div class="form-group col-md-6" id="mainPicture">
             <label class="" for="enable">{{ trans('tcb-amazon-sync::items.images.mainpic') }}</label>

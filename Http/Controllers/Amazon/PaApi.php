@@ -24,7 +24,7 @@ use TheCodeBunny\PaApi\GetItemsResource;
 use TheCodeBunny\PaApi\PartnerType;
 use TheCodeBunny\PaApi\ProductAdvertisingAPIClientException;
 
-class PaController extends Controller
+class PaApi extends Controller
 {
 
     public function fetchAllProducts(Request $request, $country)

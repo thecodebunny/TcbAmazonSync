@@ -31,6 +31,8 @@ return [
     'bullet_point_5'    => 'Bullet Point 5',
     'bullet_point_6'    => 'Bullet Point 6',
     'attributes'        => 'Attributes',
+    'countryorigin'     => 'Country of Origin',
+    'shipmaxdays'       => 'Lead time to Ship (Max Days)',
     'warnings'          => [
         'otherseller'       => 'Other Seller is Selling this Item',
         'shorttitle'        => 'Title too Short',

@@ -314,10 +314,10 @@ class PlainTextItem implements ModelInterface, ArrayAccess, \JsonSerializable
     public function setValue($value)
     {
         if ((mb_strlen($value) > 250)) {
-            throw new \InvalidArgumentException('invalid length for $value when calling PlainTextItem., must be smaller than or equal to 250.');
+            //throw new \InvalidArgumentException('invalid length for $value when calling PlainTextItem., must be smaller than or equal to 250.');
         }
         if ((mb_strlen($value) < 1)) {
-            throw new \InvalidArgumentException('invalid length for $value when calling PlainTextItem., must be bigger than or equal to 1.');
+            //throw new \InvalidArgumentException('invalid length for $value when calling PlainTextItem., must be bigger than or equal to 1.');
         }
 
         $this->container['value'] = $value;

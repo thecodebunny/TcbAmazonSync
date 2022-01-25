@@ -60,6 +60,7 @@ class Settings extends Controller
         $settings = SpApiSetting::where('company_id', $request->get('company_id'))->first();
         if (! $settings) {$settings = new SpApiSetting;}
 
+        $settings->seller_id = $request->get('seller_id');
         $settings->app_name = $request->get('app_name');
         $settings->app_id = $request->get('app_id');
         $settings->client_id = $request->get('client_id');

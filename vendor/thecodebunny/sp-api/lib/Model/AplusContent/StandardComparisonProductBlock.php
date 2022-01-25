@@ -241,7 +241,7 @@ class StandardComparisonProductBlock implements ModelInterface, ArrayAccess, \Js
         }
 
         if (!is_null($this->container['title']) && (mb_strlen($this->container['title']) < 1)) {
-            $invalidProperties[] = "invalid value for 'title', the character length must be bigger than or equal to 1.";
+            //$invalidProperties[] = "invalid value for 'title', the character length must be bigger than or equal to 1.";
         }
 
         if (!is_null($this->container['asin']) && (mb_strlen($this->container['asin']) < 10)) {
@@ -371,10 +371,10 @@ class StandardComparisonProductBlock implements ModelInterface, ArrayAccess, \Js
     public function setTitle($title)
     {
         if (!is_null($title) && (mb_strlen($title) > 80)) {
-            throw new \InvalidArgumentException('invalid length for $title when calling StandardComparisonProductBlock., must be smaller than or equal to 80.');
+            //throw new \InvalidArgumentException('invalid length for $title when calling StandardComparisonProductBlock., must be smaller than or equal to 80.');
         }
         if (!is_null($title) && (mb_strlen($title) < 1)) {
-            throw new \InvalidArgumentException('invalid length for $title when calling StandardComparisonProductBlock., must be bigger than or equal to 1.');
+            //throw new \InvalidArgumentException('invalid length for $title when calling StandardComparisonProductBlock., must be bigger than or equal to 1.');
         }
 
         $this->container['title'] = $title;
@@ -403,7 +403,7 @@ class StandardComparisonProductBlock implements ModelInterface, ArrayAccess, \Js
     {
 
         if (!is_null($asin) && (mb_strlen($asin) < 10)) {
-            throw new \InvalidArgumentException('invalid length for $asin when calling StandardComparisonProductBlock., must be bigger than or equal to 10.');
+            //throw new \InvalidArgumentException('invalid length for $asin when calling StandardComparisonProductBlock., must be bigger than or equal to 10.');
         }
 
         $this->container['asin'] = $asin;

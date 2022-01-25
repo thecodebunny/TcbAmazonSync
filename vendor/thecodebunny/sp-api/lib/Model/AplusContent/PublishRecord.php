@@ -250,7 +250,7 @@ class PublishRecord implements ModelInterface, ArrayAccess, \JsonSerializable
             $invalidProperties[] = "'content_type' can't be null";
         }
         if (!is_null($this->container['content_sub_type']) && (mb_strlen($this->container['content_sub_type']) < 1)) {
-            $invalidProperties[] = "invalid value for 'content_sub_type', the character length must be bigger than or equal to 1.";
+            //$invalidProperties[] = "invalid value for 'content_sub_type', the character length must be bigger than or equal to 1.";
         }
 
         if ($this->container['content_reference_key'] === null) {
@@ -431,7 +431,7 @@ class PublishRecord implements ModelInterface, ArrayAccess, \JsonSerializable
     {
 
         if (!is_null($content_sub_type) && (mb_strlen($content_sub_type) < 1)) {
-            throw new \InvalidArgumentException('invalid length for $content_sub_type when calling PublishRecord., must be bigger than or equal to 1.');
+            //throw new \InvalidArgumentException('invalid length for $content_sub_type when calling PublishRecord., must be bigger than or equal to 1.');
         }
 
         $this->container['content_sub_type'] = $content_sub_type;

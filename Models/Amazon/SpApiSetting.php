@@ -15,6 +15,7 @@ class SpApiSetting extends Model
     protected $fillable = [
         'id',
         'company_id',
+        'seller_id',
         'app_name',
         'client_id',
         'client_secret',

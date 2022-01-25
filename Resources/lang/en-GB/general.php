@@ -40,6 +40,7 @@ return [
         'paname'            =>  'Amazon PA API Settings',
         'mwsname'           =>  'Amazon MWS API Settings',
         'appname'           =>  'Application Name',
+        'sellerid'          =>  'Seller ID',
         'appid'             =>  'App ID',
         'clientid'          =>  'Client ID',
         'clientsecret'      =>  'Client Secret',

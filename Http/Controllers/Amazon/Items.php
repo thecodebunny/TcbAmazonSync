@@ -8,6 +8,9 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use App\Models\Common\Item as ComItem;
 use App\Models\Banking\Transaction;
+
+//TCB Amazon Sync
+use Modules\TcbAmazonSync\Http\Controllers\Amazon\SpApi;
 use Modules\TcbAmazonSync\Models\Amazon\Item as AmzItem;
 use Modules\TcbAmazonSync\Models\Amazon\Order;
 use Modules\TcbAmazonSync\Models\Amazon\Categories;
@@ -74,9 +77,9 @@ class Items extends Controller
 
     public function updateItem(Request $request)
     {
-
+        $spApi = new SpApi($request);
         $amzItem = AmzItem::where('item_id', $request->get('item_id'))->where('id', $request->get('id'))->first();
-        $picFolder = 'items/uk/'. $amzItem->asin;
+        $picFolder = 'items/'. strtolower($amzItem->country) .'/'. $amzItem->asin;
 
         $amzItem->item_id = $request->get('item_id');
         $amzItem->enable = $request->get('enable');
@@ -85,7 +88,10 @@ class Items extends Controller
         $amzItem->sku = $request->get('sku');
         $amzItem->sale_price = $request->get('sale_price');
         $amzItem->price = $request->get('price');
-        $amzItem->quantity = $request->get('quantity');
+        if ($amzItem->quantity != $request->get('quantity')) {
+            $spApi->createStockFeedDocument($amzItem->country, $amzItem->sku, $request->get('quantity'));
+            $amzItem->quantity = $request->get('quantity');
+        }
         $amzItem->title = $request->get('title');
         $amzItem->warehouse = $request->get('warehouse');
         $amzItem->bullet_point_1 = $request->get('bullet_point_1');

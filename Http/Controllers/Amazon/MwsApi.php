@@ -19,7 +19,7 @@ use Thecodebunny\AmzMwsApi\AmazonProductList;
 use Thecodebunny\AmzMwsApi\AmazonProductInfo;
 use Thecodebunny\AmzMwsApi\AmazonOrderItemList;
 
-class MwsController extends Controller
+class MwsApi extends Controller
 {
     private $config;
     private $company_id;
@@ -54,7 +54,6 @@ class MwsController extends Controller
             $amzAsin = $amz->fetchProductList();
             $asin = $amzAsin['GetMatchingProductForIdResult'];
             $item = BaseItem::where('id', $product['item_id'])->first();
-            //$this->addUpdateAsin($product['item_id'], $product['item_id'], $product['ean'], $asin);
             $this->updateAmazonItem($product['item_id'], $product['ean'], $asin);
         }
     }
@@ -67,7 +66,6 @@ class MwsController extends Controller
         $amzAsin = $amz->fetchProductList();
         $asin = $amzAsin['GetMatchingProductForIdResult'];
         var_dump($asin);
-        //$this->addUpdateAsin($item_id, $ean, $asin);
         $this->updateAmazonItem($item_id, $ean, $asin);
     }
 
@@ -100,28 +98,6 @@ class MwsController extends Controller
         $dbItem->ean = $asin['@attributes']['Id'];
         $dbItem->asin = $asin['Products']['Product']['Identifiers']['MarketplaceASIN']['ASIN'];
         $dbItem->save();
-    }
-
-    public function addUpdateAsin($item_id, $ean, $asin)
-    {
-        $amazonItem = AmzAsin::where('ean', $ean)->first();
-        if (! $amazonItem || empty($amazonItem)) {
-            $amazonItem = new AmzAsin;
-        }
-        $amazonItem->company_id = $this->company_id;
-        $amazonItem->ean = $ean;
-        $amazonItem->item_id = $item_id;
-        if ($this->country == 'Uk') {
-            $amazonItem->uk_asin = $asin['Products']['Product']['Identifiers']['MarketplaceASIN']['ASIN'];
-        }
-        $amazonItem->save();
-        $data = [
-            'item_id' => $item_id,
-            'ean'   => $ean,
-            'asin' => $asin,
-        ];
-        echo '<pre>';
-        var_dump($data);
     }
 
 }

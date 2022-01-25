@@ -340,10 +340,10 @@ class ImageComponent implements ModelInterface, ArrayAccess, \JsonSerializable
     public function setAltText($alt_text)
     {
         if ((mb_strlen($alt_text) > 200)) {
-            throw new \InvalidArgumentException('invalid length for $alt_text when calling ImageComponent., must be smaller than or equal to 200.');
+            //throw new \InvalidArgumentException('invalid length for $alt_text when calling ImageComponent., must be smaller than or equal to 200.');
         }
         if ((mb_strlen($alt_text) < 1)) {
-            throw new \InvalidArgumentException('invalid length for $alt_text when calling ImageComponent., must be bigger than or equal to 1.');
+            //throw new \InvalidArgumentException('invalid length for $alt_text when calling ImageComponent., must be bigger than or equal to 1.');
         }
 
         $this->container['alt_text'] = $alt_text;

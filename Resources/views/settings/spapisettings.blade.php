@@ -6,6 +6,7 @@
     
     @php 
     if (! $spsettings){
+        $seller_id = '';
         $app_name = '';
         $app_id = '';
         $client_id = '';
@@ -17,6 +18,7 @@
         $endpoint = '';
         $iam_arn = '';
     } else {
+        $seller_id = $spsettings->seller_id;
         $app_name = $spsettings->app_name;
         $app_id = $spsettings->app_id;
         $client_id = $spsettings->client_id;
@@ -47,6 +49,8 @@
         </div>
         <div class="card-body">
             <div class="row">
+                {{ Form::textGroup('seller_id', trans('tcb-amazon-sync::general.settings.sellerid'), 'lightbulb', ['required' => 'required'], $seller_id) }}
+
                 {{ Form::textGroup('app_name', trans('tcb-amazon-sync::general.settings.appname'), 'lightbulb', ['required' => 'required'], $app_name) }}
 
                 {{ Form::textGroup('app_id', trans('tcb-amazon-sync::general.settings.appid'), 'fingerprint', ['required' => 'required'], $app_id) }}
