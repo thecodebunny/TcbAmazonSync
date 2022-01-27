@@ -10,13 +10,13 @@ use Modules\TcbAmazonSync\Models\Amazon\Categories as AmzCategories;
 class Xml extends Controller
 {
 
-    public function creatSingleInventoryFeed($sku, $quantity)
+    public function creatSingleInventoryFeed($sku, $quantity, $sellerId)
     {
         return '<?xml version="1.0" encoding="utf-8" ?>
         <AmazonEnvelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="amznenvelope.xsd">
             <Header>
                 <DocumentVersion>1.01</DocumentVersion>
-                <MerchantIdentifier>M_SELLER_354577</MerchantIdentifier>
+                <MerchantIdentifier>'. $sellerId .'</MerchantIdentifier>
             </Header>
             <MessageType>Inventory</MessageType>
             <Message>

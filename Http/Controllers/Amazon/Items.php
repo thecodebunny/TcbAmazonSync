@@ -13,8 +13,9 @@ use App\Models\Banking\Transaction;
 use Modules\TcbAmazonSync\Http\Controllers\Amazon\SpApi;
 use Modules\TcbAmazonSync\Models\Amazon\Item as AmzItem;
 use Modules\TcbAmazonSync\Models\Amazon\Order;
-use Modules\TcbAmazonSync\Models\Amazon\Categories;
+use Modules\TcbAmazonSync\Models\Amazon\Issue;
 use Modules\TcbAmazonSync\Models\Amazon\Setting;
+use Modules\TcbAmazonSync\Models\Amazon\Categories;
 use Modules\TcbAmazonSync\Models\Amazon\MwsApiSetting;
 use Modules\TcbAmazonSync\Models\Warehouse;
 //Amazon SP API
@@ -28,6 +29,7 @@ use Thecodebunny\AmzMwsApi\AmazonOrderList;
 
 class Items extends Controller
 {
+    private $request;
     private $config;
     private $company_id;
     private $country;
@@ -35,6 +37,7 @@ class Items extends Controller
 
     public function __construct(Request $request)
     {
+        $this->request = $request;
         $this->country = Route::current()->originalParameter('country');
         $this->company_id = Route::current()->originalParameter('company_id');
     }
@@ -70,14 +73,14 @@ class Items extends Controller
         $orders = Order::where('asin_ids', 'LIKE', '%'.$item->asin.'%')->paginate(10);
         $numberOrders = Order::where('asin_ids', 'LIKE', '%'.$item->asin.'%')->count();
         $ukCategories = Categories::get(['uk_node_id', 'node_path']);
+        $issues = Issue::where('amz_item_id', $item->id)->get();
         $country = $this->country;
-        return $this->response('tcb-amazon-sync::amazon.items.show', compact('numberOrders', 'item','orders','country'));
+        return $this->response('tcb-amazon-sync::amazon.items.show', compact('numberOrders', 'item','orders','country', 'issues'));
         
     }
 
     public function updateItem(Request $request)
     {
-        $spApi = new SpApi($request);
         $amzItem = AmzItem::where('item_id', $request->get('item_id'))->where('id', $request->get('id'))->first();
         $picFolder = 'items/'. strtolower($amzItem->country) .'/'. $amzItem->asin;
 
@@ -88,10 +91,7 @@ class Items extends Controller
         $amzItem->sku = $request->get('sku');
         $amzItem->sale_price = $request->get('sale_price');
         $amzItem->price = $request->get('price');
-        if ($amzItem->quantity != $request->get('quantity')) {
-            $spApi->createStockFeedDocument($amzItem->country, $amzItem->sku, $request->get('quantity'));
-            $amzItem->quantity = $request->get('quantity');
-        }
+        $amzItem->quantity = $request->get('quantity');
         $amzItem->title = $request->get('title');
         $amzItem->warehouse = $request->get('warehouse');
         $amzItem->bullet_point_1 = $request->get('bullet_point_1');
@@ -218,6 +218,13 @@ class Items extends Controller
         // return $request; 
         response()->json($response);
 
+    }
+
+    public function updateAmazonQuantity($id, $qty)
+    {
+        $dbItem = AmzItem::where('id', $id)->first();
+        $spApi = new SpApi($this->request);
+        $spApi->createStockFeedDocument($dbItem, $qty);
     }
 
 

@@ -51,3 +51,69 @@ $("#thefiles").on("change", function() {
     var fileInput = $(this);
     console.log(fileInput[0].value);
 });
+
+$("#updateAmazonStock").on("click", function() {
+    if (confirm('Are you sure? This will change product quantity on Amazon')) {
+        var comp = $("input[name = 'company_id']").val();
+        var country = $("input[name = 'country']").val();
+        var id = $("input[name = 'id']").val();
+        var qty = $("input[name = 'quantity']").val();
+        var url = 'https://go.zoomyo.com/' + comp + '/tcb-amazon-sync/amazon-updatestock/' + country + '/' + id + '/' + qty;
+        console.log(url);
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(response) {
+                $('#successMsg').show();
+                console.log(response);
+            },
+            error: function(response) {
+                console.log(response);
+            },
+        });
+    }
+});
+
+$("#updateAmazonTitle").on("click", function() {
+    if (confirm('Are you sure? This will change product title on Amazon')) {
+        var comp = $("input[name = 'company_id']").val();
+        var country = $("input[name = 'country']").val();
+        var id = $("input[name = 'id']").val();
+        var title = $("input[name = 'title']").val();
+        var url = 'https://go.zoomyo.com/' + comp + '/tcb-amazon-sync/amazon-updatetitle/' + country + '/' + id + '/' + title;
+        console.log(url);
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(response) {
+                $('#successMsg').show();
+                console.log(response);
+            },
+            error: function(response) {
+                console.log(response);
+            },
+        });
+    }
+});
+
+$("#updateAmazonPrice").on("click", function() {
+    if (confirm('Are you sure? This will change the product price on Amazon')) {
+        var comp = $("input[name = 'company_id']").val();
+        var country = $("input[name = 'country']").val();
+        var id = $("input[name = 'id']").val();
+        var price = $("input[name = 'price']").val();
+        var url = 'https://go.zoomyo.com/' + comp + '/tcb-amazon-sync/amazon-updateprice/' + country + '/' + id + '/' + price + '/' + company_currency_code;
+        console.log(company_currency_code);
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(response) {
+                $('#successMsg').show();
+                console.log(response);
+            },
+            error: function(response) {
+                console.log(response);
+            },
+        });
+    }
+});

@@ -48,12 +48,21 @@ Route::admin('tcb-amazon-sync', function () {
     Route::post('/amazon-settings/paapi/update', 'Amazon\Settings@updatePaApiSettings')->name('amazon.apisettings.updatepa');
     Route::post('/amazon-settings/mwsapi/update', 'Amazon\Settings@updateMwsApiSettings')->name('amazon.apisettings.updatemws');
 
-    //Amazon Routes
+    //SP API Routes
+    Route::get('/amazon-fetchSpProducts/{country}', 'Amazon\SpApi@getAllItems')->name('amazon.spitems');
+    Route::get('/amazon/item/get/{id}/{country}', 'Amazon\SpApi@getItem')->name('amazon.item.get');
+    Route::get('/amazon-patchstock/{country}/{sku}/{qty}', 'Amazon\SpApi@updateAmazonItemStock')->name('amazon.patchstock');
+    Route::get('/amazon-getfeed/{feedid}/{country}', 'Amazon\Feeds\Inventory@getFeed')->name('amazon.getFeed');
+    Route::get('/amazon-getAplus/{country}', 'Amazon\SpApi@getAplusContents')->name('amazon.aplus');
+    Route::get('/amazon-updateitem-onamazon/{country}/{id}', 'Amazon\SpApi@updateItemOnAmazon')->name('amazon.updateItemOnAmz');
+    Route::get('/amazon-updatestock/{country}/{id}/{qty}', 'Amazon\SpApi@updateAmazonItemStock')->name('amazon.updateStock');
+    Route::get('/amazon-updatetitle/{country}/{id}/{title}', 'Amazon\SpApi@updateAmazonItemTitle')->name('amazon.updateTitle');
+    Route::get('/amazon-updateprice/{country}/{id}/{price}/{currency}', 'Amazon\SpApi@updateAmazonItemPrice')->name('amazon.updatePrice');
+
+    //Amazon Other API Routes
     Route::get('/amazon-fetchAllProducts/{country}', 'Amazon\MwsApi@fetchAllProducts')->name('amazon.mwstest');
     Route::get('/amazon-fetchPaProducts/{country}', 'Amazon\PaApi@fetchAllProducts')->name('amazon.patest');
-    Route::get('/amazon-fetchSpProducts/{country}', 'Amazon\SpApi@getAllItems')->name('amazon.spitems');
     Route::get('/amazon/mwsapi/fetch/{item_id}/{ean}/{country}', 'Amazon\MwsApi@fetchAmazonItem')->name('amazon.item.fetch');
-    Route::get('/amazon-getorders/Uk', 'Amazon\Orders@getOrders')->name('amazon.getOrders');
-    Route::get('/amazon-updatestock/{country}/{sku}/{qty}', 'Amazon\SpApi@updateAmazonItemStock')->name('amazon.updateStock');
-    Route::get('/amazon-getAplus/{country}', 'Amazon\SpApi@getAplusContents')->name('amazon.aplus');
+    Route::get('/amazon-getorders/{country}', 'Amazon\Orders@getOrders')->name('amazon.getOrders');
+
 });

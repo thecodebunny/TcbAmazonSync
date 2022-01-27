@@ -3,6 +3,9 @@
 @section('title', trans('general.title.edit', ['type' => trans_choice('general.items', 1)]))
 
 @section('content')
+    <div class="p-3 mb-3 bg-danger tcb-warning text-white text-center">
+        <span>{{trans('tcb-amazon-sync::items.skuwarning')}}</span>
+    </div>
     <div class="nai patyo hrd">
         <div class="card-header tcb-card-header">Amazon</div>
         <div class="card-body">

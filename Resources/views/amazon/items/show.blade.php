@@ -8,11 +8,15 @@
 
 @section('new_button')
     <a href="{{ route('tcb-amazon-sync.amazon.asinsetup', ['item_id' => $item->item_id]) }}" class="btn btn-white btn-sm">{{ trans('general.edit') }} Item</a>
+    @if($item->otherseller_warning)
+        <span class="btn btn-warning btn-sm text-white" title="{{ trans('tcb-amazon-sync::items.warnings.otherseller') }}"><i class="fas fa-exclamation-circle"></i> </span>
+    @endif
 @endsection
 
 @section('content')
 <div class="col-xs-12 col-sm-12 col-md-12 align-items-center mb-3">
-    <h2 class="d-inline-flex mb-0">{{ $item->title }}</h2>
+    <h2 class="d-inline-flex mb-0">
+        @if(strlen($item->title) < 150) <span style="color: #FFF !important" class="btn btn-danger btn-sm tcb-warning" data-toggle="tooltip" data-placement="top" title="{{ trans('tcb-amazon-sync::items.warnings.shorttitle') }}"><i class="fas fa-exclamation-circle"></i></span> @endif{{ $item->title }}</h2>
 </div>
     <div class="row">
         <div class="col-md-3">
@@ -105,6 +109,14 @@
                                     <i class="mr-2"></i>{{ trans_choice('tcb-amazon-sync::items.show.sales', 1) }} <span class="numberorders">{{ $numberOrders }}</span>
                                 </a>
                             </li>
+
+                            @if(count($issues))
+                            <li class="nav-item">
+                                <a class="nav-link mb-sm-3 mb-md-0" id="tabs-icons-text-2-tab" data-toggle="tab" href="#issues" role="tab" aria-controls="tabs-icons-text-2" aria-selected="false">
+                                    <i class="mr-2"></i>{{ trans('tcb-amazon-sync::items.issues.issues') }}
+                                </a>
+                            </li>
+                            @endif
                         </ul>
                     </div>
 
@@ -124,6 +136,7 @@
 
                                 <div class="card ">
                                     <div class="card-header with-border">
+                                        @if(! $item->bullet_point_6) <span style="color: #FFF !important" class="btn btn-danger btn-sm tcb-warning" data-toggle="tooltip" data-placement="top" title="{{ trans('tcb-amazon-sync::items.warnings.bulletpoints') }}"><i class="fas fa-exclamation-circle"></i></span> @endif
                                         <h3 class="mb-0">{{ trans('tcb-amazon-sync::items.bulletpoints') }}</h3>
                                     </div>
                                     <div class="card-body">
@@ -140,6 +153,7 @@
 
                                 <div class="card ">
                                     <div class="card-header with-border">
+                                        @if(! $item->picture_6) <span style="color: #FFF !important" class="btn btn-danger btn-sm tcb-warning" data-toggle="tooltip" data-placement="top" title="{{ trans('tcb-amazon-sync::items.warnings.bulletpoints') }}"><i class="fas fa-exclamation-circle"></i></span> @endif
                                         <h3 class="mb-0">{{ trans('tcb-amazon-sync::items.images.images') }}</h3>
                                     </div>
                                     <div class="card-body">
@@ -199,6 +213,47 @@
                                                         <th class="col-md-2">{{ $order->marketplace }}</th>
                                                         <th class="col-md-2">{{ $order->order_status }}</th>
                                                         <th class="col-md-3">{{ $order->order_total }}</th>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="card-footer table-action">
+                                    <div class="row align-items-center">
+                                        {{ $orders->links() }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card tab-pane fade" id="issues">
+                            <div class="card">
+
+                                <div class="card-header border-bottom-0">
+                                    <div class="row">
+                                        <div class="col-12 card-header-search card-header-space">
+                                            <span class="table-text hidden-lg card-header-search-text">{{ trans('tcb-amazon-sync::items.show.sales') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table align-items-center table-flush" id="tbl-transactions">
+                                        <thead class="thead-light">
+                                            <tr class="row table-head-line">
+                                                <th class="col-md-2">{{trans('tcb-amazon-sync::items.issues.severity') }}</th>
+                                                <th class="col-md-2">{{ trans('tcb-amazon-sync::items.issues.message') }}</th>
+                                                <th class="col-md-2">{{ trans('tcb-amazon-sync::items.issues.attributenames') }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(count($issues))
+                                                @foreach($issues as $issue)
+                                                    <tr class="row">
+                                                        <th class="col-md-2">{{ $issue->severity }}</th>
+                                                        <th class="col-md-3">{{ $issue->message }}</th>
+                                                        <th class="col-md-2">{{ $issue->attribute_names }}</th>
                                                     </tr>
                                                 @endforeach
                                             @endif

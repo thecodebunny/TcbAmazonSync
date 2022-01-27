@@ -1403,6 +1403,9 @@ class ListingsApi
         );
 
         $query = \GuzzleHttp\Psr7\Query::build($queryParams);
+        echo '<pre>';
+        print_r($httpBody);
+        echo '</pre>';
         return new Request(
             'PATCH',
             $this->config->getHost() . $resourcePath . ($query ? "?{$query}" : ''),

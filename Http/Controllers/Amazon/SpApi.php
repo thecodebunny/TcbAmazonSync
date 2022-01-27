@@ -2,6 +2,7 @@
 
 namespace Modules\TcbAmazonSync\Http\Controllers\Amazon;
 
+use DebugBar\DebugBar;
 use App\Abstracts\Http\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -29,8 +30,11 @@ use Thecodebunny\SpApi\Api\OrdersApi;
 use Thecodebunny\SpApi\Api\CatalogApi;
 use Thecodebunny\SpApi\Api\ListingsApi;
 use Thecodebunny\SpApi\Api\AplusContentApi;
+use Thecodebunny\SpApi\Api\ProductTypeDefinitionsApi;
 use Thecodebunny\SpApi\Model\Feeds;
+use Thecodebunny\SpApi\Model\Feeds\CreateFeedSpecification;
 use Thecodebunny\SpApi\Model\Listings\ListingsItemPatchRequest;
+use Thecodebunny\SpApi\Model\Listings\PatchOperation;
 
 class SpApi extends Controller
 {
@@ -54,12 +58,10 @@ class SpApi extends Controller
             "lwaRefreshToken" => $this->settings->eu_token,
             "awsAccessKeyId" => $this->settings->ias_access_key,
             "awsSecretAccessKey" => $this->settings->ias_access_token,
-            // If you're not working in the North American marketplace, change
-            // this to another endpoint from lib/Endpoint.php
             "endpoint" => Endpoint::EU,
             "roleArn" => $this->settings->iam_arn
         ]);
-        $this->config->setDebug(true);
+        $this->config->setDebug(false);
         $this->config->setDebugFile('/var/www/go/storage/logs/spapi.log');
     }
 
@@ -84,12 +86,28 @@ class SpApi extends Controller
         }
     }
 
+    public function getItem($id)
+    {
+        
+        if ($this->country == 'Uk') {
+            $mpIds = 'A1F83G8C2ARO7P';
+        }
+        $issue_locale = 'en_US';
+        $dbItem = Item::where('id', $id)->first();
+        $apiInstance = new ListingsApi($this->config);
+        $included_data = ['summaries','attributes','issues','offers','fulfillmentAvailability'];
+        $result = $apiInstance->getListingsItem($this->settings->seller_id, $dbItem->sku, $mpIds, $issue_locale, $included_data);
+        $this->updateAmazonItem($result, $dbItem);
+    }
+
     public function updateAmazonItem($item, $dbItem)
     {
         $summary = $item->getSummaries();
+        $fulfill = $item->getFulfillmentAvailability();
         $attributes = $item->getAttributes();
         $issues = $item->getIssues();
         $offers = $item->getOffers();
+        $dbItem->product_type = $summary[0]->getProductType();
         if ($attributes && !empty($attributes)) {
             if (array_key_exists('brand', $attributes)) {
                 $dbItem->brand = $attributes['brand'][0]->value;
@@ -213,6 +231,7 @@ class SpApi extends Controller
                         $dbItem->price = $attributes['purchasable_offer'][0]->discounted_price[0]->schedule[0]->value_with_tax;
                     }
                 }
+
             }
         }
 
@@ -220,7 +239,6 @@ class SpApi extends Controller
         Issue::where('amz_item_id', $dbItem->id)->delete();
         if( $issues && !empty($issues) ) {
             foreach ($issues as $issue) {
-                dump($issue);
                 $dbIssue = new Issue;
                 $dbIssue->item_id = $dbItem->item_id;
                 $dbIssue->amz_item_id = $dbItem->id;
@@ -231,61 +249,113 @@ class SpApi extends Controller
                 $dbIssue->save();
             }
         }
-        dump( $dbItem );
+        dump( $item );
     }
 
-    public function updateAmazonItemStock($country, $sku, $qty)
+    public function updateAmazonItemStock($country, $id, $qty)
     {
         dump($this->settings);
-        if ($this->country == 'Uk')
+        $seller_id = $this->settings->seller_id;
+        $item = Item::where('id', $id)->where('country', $country)->first();
+        $productType = 'PRODUCT';
+        if ($country == 'Uk')
         {
             $mpIds = 'A1F83G8C2ARO7P';
         }
+
         $apiInstance = new ListingsApi($this->config);
-        $seller_id = $this->settings->seller_id;
-        $sku =  $sku;
         $marketplace_ids = $mpIds;
         $body = new ListingsItemPatchRequest();
         $issue_locale = 'en_US';
-        dump($body);/*
+        $body->setProductType($productType);
+        $patches = [
+            [
+                'op'    => 'replace',
+                'path'  => 'fulfillment_availability',
+                'value' => [[
+                    'fulfillment_channel_code' => 'DEFAULT',
+                    'quantity'  =>  (int)$qty
+                ]]
+            ]];
+        $body->setPatches(($patches));
         try {
-            $result = $apiInstance->patchListingsItem($seller_id, $sku, $mpIds, $body, $issue_locale);
-            print_r($result);
+            $result = $apiInstance->patchListingsItem($seller_id, $item->sku, $mpIds, $body, $issue_locale);
+            dump($result);
         } catch (Exception $e) {
             echo 'Exception when calling ListingsApi->patchListingsItem: ', $e->getMessage(), PHP_EOL;
-        }*/
+        }
     }
 
-    public function createStockFeedDocument($country, $sku, $qty)
+    public function updateAmazonItemTitle($country, $id, $title)
     {
-        $feedType = FeedType::POST_INVENTORY_AVAILABILITY_DATA;
-        $feedsApi = new FeedsApi($this->config);
-        
-        // Create feed document
-        $createFeedDocSpec = new Feeds\CreateFeedDocumentSpecification(['content_type' => $feedType['contentType']]);
-        $feedDocumentInfo = $feedsApi->createFeedDocument($createFeedDocSpec);
-        $feedDocumentId = $feedDocumentInfo->getFeedDocumentId();
-        error_log( '<pre>');
-        error_log($feedDocumentInfo);
-        error_log ('</pre>');
-
-        $dbFeed = Feed::where('feed_document_id', $feedDocumentId)->first();
-        if (! $dbFeed ) {
-            $dbFeed = new Feed;
+        $seller_id = $this->settings->seller_id;
+        $item = Item::where('id', $id)->where('country', $country)->first();
+        $productType = 'PRODUCT';
+        if ($country == 'Uk')
+        {
+            $mpIds = 'A1F83G8C2ARO7P';
         }
-        $dbFeed->feed_type = 'POST_INVENTORY_AVAILABILITY_DATA';
-        $dbFeed->feed_document_id = $feedDocumentId;
-        $dbFeed->api_type = 'SP';
-        $dbFeed->country = $country;
-        $dbFeed->save();
-        
-        // Upload feed contents to document
-        $xml = new Xml;
-        $feedContents = $xml->creatSingleInventoryFeed($sku, $qty);
-        // The Document constructor accepts a custom \GuzzleHttp\Client object as an optional 3rd parameter. If that
-        // parameter is passed, your custom Guzzle client will be used when uploading the feed document contents to Amazon.
-        $docToUpload = new Document($feedDocumentInfo, $feedType);
-        $docToUpload->upload($feedContents);
+
+        $apiInstance = new ListingsApi($this->config);
+        $marketplace_ids = $mpIds;
+        $body = new ListingsItemPatchRequest();
+        $issue_locale = 'en_US';
+        $body->setProductType($productType);
+        $patches = [
+            [
+                'op'    => 'replace',
+                'path'  => 'item_name',
+                'value' => [[
+                    'value' => ''. $title .''
+                ]]
+            ]];
+        $body->setPatches(($patches));
+        try {
+            $result = $apiInstance->patchListingsItem($seller_id, $item->sku, $mpIds, $body, $issue_locale);
+            dump($result);
+        } catch (Exception $e) {
+            echo 'Exception when calling ListingsApi->patchListingsItem: ', $e->getMessage(), PHP_EOL;
+        }
+    }
+
+    public function updateAmazonItemPrice($country, $id, $price, $currency)
+    {
+        $seller_id = $this->settings->seller_id;
+        $item = Item::where('id', $id)->where('country', $country)->first();
+        $productType = 'PRODUCT';
+        if ($country == 'Uk')
+        {
+            $mpIds = 'A1F83G8C2ARO7P';
+        }
+
+        $apiInstance = new ListingsApi($this->config);
+        $marketplace_ids = $mpIds;
+        $body = new ListingsItemPatchRequest();
+        $issue_locale = 'en_US';
+        $body->setProductType($productType);
+        $patches = [
+            [
+                'op'    => 'replace',
+                'path'  => 'purchasable_offer',
+                'value' => [[
+                    "marketplace_id" => ''. $mpIds .'',
+                    'currency' => ''. $currency .'',
+                    'our_price' => [[
+                        'schedule' => [[
+                            'value_with_tax' => $price
+                        ]]
+                    ]]
+                ]]
+            ]];
+        $body->setPatches(($patches));
+        try {
+            $result = $apiInstance->patchListingsItem($seller_id, $item->sku, $mpIds, $body, $issue_locale);
+            \Debugbar::addMessage($result);
+            \Debugbar::addMessage($body);
+            dump($result);
+        } catch (Exception $e) {
+            echo 'Exception when calling ListingsApi->patchListingsItem: ', $e->getMessage(), PHP_EOL;
+        }
     }
 
     public function getOrders(Request $request)

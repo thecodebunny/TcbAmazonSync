@@ -31,8 +31,14 @@ return [
     'bullet_point_5'    => 'Bullet Point 5',
     'bullet_point_6'    => 'Bullet Point 6',
     'attributes'        => 'Attributes',
+    'keywords'          => 'Keywords',
     'countryorigin'     => 'Country of Origin',
     'shipmaxdays'       => 'Lead time to Ship (Max Days)',
+    'productype'        => 'Product Type',
+    'updateamazon'      => 'Update Value on Amazon',
+    'refreshwarning'    => 'Update specific value on Amazon by clicking on refresh button next the input field.',
+    'skuwarning'        => 'Do not change the SKU of product, as Amazon Selling Partner API only accepts the SKU as product identifier.',
+    'bulletpoints'      => 'Bullet Points',
     'warnings'          => [
         'otherseller'       => 'Other Seller is Selling this Item',
         'shorttitle'        => 'Title too Short',
@@ -61,14 +67,14 @@ return [
             'pl'            =>  'Poland ASIN',
         ],
         'enable'            =>  [
-            'uk'            =>  'Upload/Update on UK?',
-            'de'            =>  'Upload/Update on Germany?',
-            'fr'            =>  'Upload/Update on France?',
-            'it'            =>  'Upload/Update on Italy?',
-            'es'            =>  'Upload/Update on Spain?',
-            'se'            =>  'Upload/Update on Sweden?',
-            'nl'            =>  'Upload/Update on Nethelands?',
-            'pl'            =>  'Upload/Update on Poland?'
+            'uk'            =>  'Upload/Update on UK? (For Automatic Updates only)',
+            'de'            =>  'Upload/Update on Germany? (For Automatic Updates only)',
+            'fr'            =>  'Upload/Update on France? (For Automatic Updates only)',
+            'it'            =>  'Upload/Update on Italy? (For Automatic Updates only)',
+            'es'            =>  'Upload/Update on Spain? (For Automatic Updates only)',
+            'se'            =>  'Upload/Update on Sweden? (For Automatic Updates only)',
+            'nl'            =>  'Upload/Update on Nethelands? (For Automatic Updates only)',
+            'pl'            =>  'Upload/Update on Poland? (For Automatic Updates only)'
         ]
     ],
     'images'        =>  [
@@ -85,7 +91,13 @@ return [
         'sales'         =>  'Sales',
         'amzorderid'    =>  'Amazon Order ID',
         'marketplace'   =>  'Marketplace',
-        'Status'       =>  'Status',
+        'Status'        =>  'Status',
         'ordertotal'    =>  'Order Total'
+    ],
+    'issues'          =>  [
+        'issues'            =>  'Issues',
+        'severity'          =>  'Severity',
+        'message'           =>  'Message',
+        'attributenames'    =>  'Attribute Names'
     ]
 ];

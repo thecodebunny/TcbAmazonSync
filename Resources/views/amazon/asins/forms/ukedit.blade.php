@@ -13,19 +13,27 @@
 <div id="ukAsin" class="tab-pane fade show active">
     {!! Form::hidden('item_id', $item->id) !!}
     {!! Form::hidden('id', $amzItem->id) !!}
+    {!! Form::hidden('company_id', $amzItem->company_id) !!}
     {!! Form::hidden('country', 'Uk') !!}
     <div class="row">
-        <div class="col-md-12 mb-3 bg-warning text-white p-2 text-center">
-            @empty($amzItem) @if($amzItem->otherseller_warning) <a style="background: rgb(158, 1, 1); color: white; padding: 5px"><span class="fa fa-bug"> </span>   THERE IS OTHER SELLER ON AMAZON UK   </a>@endif @endempty
+        <div class="col-md-12 mb-3 bg-warning text-white text-center pt-2 pb-2">
+            @if($amzItem->otherseller_warning) <a style="background: rgb(158, 1, 1); color: white; padding: 5px"><span class="fa fa-bug"> </span>   THERE IS OTHER SELLER ON AMAZON UK   </a>@endif
             <input name="enable" type="checkbox" value="{{ !empty($amzItem->enable) ? $amzItem->enable : 0 }}" checked="{{ !empty($amzItem->enable) ? 'checked' : '' }}" class="tcb-checkbox">
             <label class="tcb-inlineblock tcb-checkbox-label" for="enable">{{ trans('tcb-amazon-sync::items.amazon.enable.uk') }}</label>
+            <br>{{ trans('tcb-amazon-sync::items.refreshwarning') }}
         </div>
 
-        {{ Form::textGroup('title', trans('tcb-amazon-sync::items.title'), '', [], !empty($amzItem->title) ? $amzItem->title : '', 'col-md-12') }}
+        <div class="col-md-12">
+            <a id="updateAmazonTitle" title="Update title on Amazon" class="tcb-tip bg-warning text-white p-1" title="{{ trans('tcb-amazon-sync::items.updateamazon') }}"><i class="fas fa-sync-alt"></i></a>
+            {{ Form::textGroup('title', trans('tcb-amazon-sync::items.title'), 'fas fa-heading', [], !empty($amzItem->title) ? $amzItem->title : '', '') }}
+        </div>
 
-        {{ Form::textGroup('quantity', trans('tcb-amazon-sync::items.quantity'), '', [], !empty($amzItem->quantity) ? $amzItem->quantity : '', 'col-md-3') }}
+        <div class="col-md-3">
+            <a id="updateAmazonStock" title="Update Stock on Amazon" class="tcb-tip bg-warning text-white p-1 updateAmazonStock" title="{{ trans('tcb-amazon-sync::items.updateamazon') }}"><i class="fas fa-sync-alt"></i></a>
+            {{ Form::numberGroup('quantity', trans('tcb-amazon-sync::items.quantity'), 'fas fa-sort-numeric-down-alt', [], !empty($amzItem->quantity) ? $amzItem->quantity : '', '') }}
+        </div>
 
-        {{ Form::textGroup('ean', trans('tcb-amazon-sync::items.ean'), 'fab fa-umbraco', [], !empty($amzItem->ean) ? $amzItem->ean : '', 'col-md-3') }}
+        {{ Form::textGroup('ean', trans('tcb-amazon-sync::items.ean'), 'fab fa-id-card', [], !empty($amzItem->ean) ? $amzItem->ean : '', 'col-md-3') }}
             
         {{ Form::textGroup('sku', trans('tcb-amazon-sync::items.sku'), 'fas fa-passport', [], !empty($amzItem->sku) ? $amzItem->sku : '', 'col-md-3') }}
 
@@ -43,36 +51,41 @@
             
         {{ Form::textGroup('brand', trans('tcb-amazon-sync::items.brand'), 'fas fa-copyright', [], !empty($amzItem->brand) ? $amzItem->brand : '', 'col-md-3') }}
             
+        {{ Form::textGroup('product_type', trans('tcb-amazon-sync::items.productype'), 'fas fa-broom', ['readonly'], !empty($amzItem->product_type) ? $amzItem->product_type : '', 'col-md-3') }}
+            
         {{ Form::textGroup('size', trans('tcb-amazon-sync::items.size'), 'fas fa-window-maximize', [], !empty($amzItem->size) ? $amzItem->size : '', 'col-md-3') }}
             
         {{ Form::textGroup('height', trans('tcb-amazon-sync::items.height'), 'fas fa-ruler-vertical', [], !empty($amzItem->height) ? $amzItem->height : '', 'col-md-3') }}
             
-        {{ Form::textGroup('length', trans('tcb-amazon-sync::items.length'), 'fas fa-ruler', [], !empty($amzItem->length) ? $amzItem->length : '', 'col-md-4') }}
+        {{ Form::textGroup('length', trans('tcb-amazon-sync::items.length'), 'fas fa-ruler', [], !empty($amzItem->length) ? $amzItem->length : '', 'col-md-3') }}
             
-        {{ Form::textGroup('width', trans('tcb-amazon-sync::items.width'), 'fas fa-ruler-horizontal', [], !empty($amzItem->width) ? $amzItem->width : '', 'col-md-4') }}
+        {{ Form::textGroup('width', trans('tcb-amazon-sync::items.width'), 'fas fa-ruler-horizontal', [], !empty($amzItem->width) ? $amzItem->width : '', 'col-md-3') }}
             
-        {{ Form::textGroup('weight', trans('tcb-amazon-sync::items.weight'), 'fas fa-weight-hanging', [], !empty($amzItem->weight) ? $amzItem->weight : '', 'col-md-4') }}
+        {{ Form::textGroup('weight', trans('tcb-amazon-sync::items.weight'), 'fas fa-weight-hanging', [], !empty($amzItem->weight) ? $amzItem->weight : '', 'col-md-3') }}
             
-        {{ Form::textGroup('color', trans('tcb-amazon-sync::items.color'), 'fas fa-tint', [], !empty($amzItem->color) ? $amzItem->color : '', 'col-md-4') }}
+        {{ Form::textGroup('color', trans('tcb-amazon-sync::items.color'), 'fas fa-tint', [], !empty($amzItem->color) ? $amzItem->color : '', 'col-md-3') }}
             
-        {{ Form::textGroup('material', trans('tcb-amazon-sync::items.material'), 'fas fa-cubes', [], !empty($amzItem->material) ? $amzItem->material : '', 'col-md-4') }}
+        {{ Form::textGroup('material', trans('tcb-amazon-sync::items.material'), 'fas fa-cubes', [], !empty($amzItem->material) ? $amzItem->material : '', 'col-md-3') }}
 
-        {{ Form::textGroup('price', trans('tcb-amazon-sync::items.price'), 'fas fa-tags', [], !empty($amzItem->price) ? $amzItem->price : '', 'col-md-4') }}
+        <div class="col-md-3">
+            <a id="updateAmazonPrice" title="Update title on Amazon" class="tcb-tip bg-warning text-white p-1" title="{{ trans('tcb-amazon-sync::items.updateamazon') }}"><i class="fas fa-sync-alt"></i></a>
+            {{ Form::textGroup('price', trans('tcb-amazon-sync::items.price'), 'fas fa-tags', [], !empty($amzItem->price) ? $amzItem->price : '', '') }}
+        </div>
 
-        {{ Form::textGroup('lead_time_to_ship_max_days', trans('tcb-amazon-sync::items.shipmaxdays'), '', [], !empty($amzItem->lead_time_to_ship_max_days) ? $amzItem->lead_time_to_ship_max_days : '', 'col-md-4') }}
+        {{ Form::textGroup('lead_time_to_ship_max_days', trans('tcb-amazon-sync::items.shipmaxdays'), 'fas fa-calendar-day', [], !empty($amzItem->lead_time_to_ship_max_days) ? $amzItem->lead_time_to_ship_max_days : '', 'col-md-3') }}
 
-        {{ Form::textGroup('country_of_origin', trans('tcb-amazon-sync::items.countryorigin'), '', [], !empty($amzItem->country_of_origin) ? $amzItem->country_of_origin : '', 'col-md-4') }}
+        {{ Form::textGroup('country_of_origin', trans('tcb-amazon-sync::items.countryorigin'), 'fas fa-globe-europe', [], !empty($amzItem->country_of_origin) ? $amzItem->country_of_origin : '', 'col-md-3') }}
 
-        {{ Form::textGroup('sale_price', trans('tcb-amazon-sync::items.sale_price'), 'fas fa-bookmark', [], !empty($amzItem->sale_price) ? $amzItem->sale_price : '', 'col-md-4') }}
+        {{ Form::textGroup('sale_price', trans('tcb-amazon-sync::items.sale_price'), 'fas fa-bookmark', [], !empty($amzItem->sale_price) ? $amzItem->sale_price : '', 'col-md-3') }}
         
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-3">
             <label class="datelabel form-control-label" for="sale_start_date">{{ trans('tcb-amazon-sync::items.sale_start_date') }}</label>
             <div class="input-group input-group-merge ">
             <input type="text" class="form-control datepicker" name="sale_start_date" placeholder="Enter {{ trans('tcb-amazon-sync::items.sale_start_date') }}">
             </div>
         </div>
         
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-3">
             <label class="datelabel form-control-label" for="sale_end_date">{{ trans('tcb-amazon-sync::items.sale_end_date') }}</label>
             <div class="input-group input-group-merge ">
             <input type="text" class="form-control datepicker" name="sale_end_date" placeholder="Enter {{ trans('tcb-amazon-sync::items.sale_end_date') }}">
@@ -81,19 +94,24 @@
 
         <p class="col-md-8 tcb-helptext p-3">Find your category at <a href="{{ route('tcb-amazon-sync.amazon.categories') }}" target="_blank">Amazon Categories List</a>, and enter UK Node ID value</br>
         <a style="font-weight: bold; font-size: 14px">Selected: <span style="color: rgb(175, 2, 2)">{{ !empty($uk_cat_name) ? $uk_cat_name : '' }}</span></a></p>
-        {{ Form::textGroup('category_id', trans('tcb-amazon-sync::items.category'), '', ['help' => 'Help Text'], !empty($amzItem->category_id) ? $amzItem->category_id : '', 'col-md-4') }}
+        {{ Form::textGroup('category_id', trans('tcb-amazon-sync::items.category'), 'fas fa-list', ['help' => 'Help Text'], !empty($amzItem->category_id) ? $amzItem->category_id : '', 'col-md-4') }}
 
-        {{ Form::textGroup('bullet_point_1', trans('tcb-amazon-sync::items.bullet_point_1'), '', [], !empty($amzItem->bullet_point_1) ? $amzItem->bullet_point_1 : '', 'col-md-6') }}
+        <div class="card-footer with-border col-md-12">
+                <a id="updateAmazonBulletPoints" title="Update Bulletpoints on Amazon" class="tcb-tip bg-warning text-white p-1" title="{{ trans('tcb-amazon-sync::items.updateamazon') }}"><i class="fas fa-sync-alt"></i></a>
+                <h3 class="card-title">{{ trans('tcb-amazon-sync::items.bulletpoints') }}</h3>
+        </div>
 
-        {{ Form::textGroup('bullet_point_2', trans('tcb-amazon-sync::items.bullet_point_2'), '', [], !empty($amzItem->bullet_point_2) ? $amzItem->bullet_point_2 : '', 'col-md-6') }}
+        {{ Form::textGroup('bullet_point_1', trans('tcb-amazon-sync::items.bullet_point_1'), 'fas fa-dot-circle', [], !empty($amzItem->bullet_point_1) ? $amzItem->bullet_point_1 : '', 'col-md-6') }}
 
-        {{ Form::textGroup('bullet_point_3', trans('tcb-amazon-sync::items.bullet_point_3'), '', [], !empty($amzItem->bullet_point_3) ? $amzItem->bullet_point_3 : '', 'col-md-6') }}
+        {{ Form::textGroup('bullet_point_2', trans('tcb-amazon-sync::items.bullet_point_2'), 'fas fa-dot-circle', [], !empty($amzItem->bullet_point_2) ? $amzItem->bullet_point_2 : '', 'col-md-6') }}
 
-        {{ Form::textGroup('bullet_point_4', trans('tcb-amazon-sync::items.bullet_point_4'), '', [], !empty($amzItem->bullet_point_4) ? $amzItem->bullet_point_4 : '', 'col-md-6') }}
+        {{ Form::textGroup('bullet_point_3', trans('tcb-amazon-sync::items.bullet_point_3'), 'fas fa-dot-circle', [], !empty($amzItem->bullet_point_3) ? $amzItem->bullet_point_3 : '', 'col-md-6') }}
 
-        {{ Form::textGroup('bullet_point_5', trans('tcb-amazon-sync::items.bullet_point_5'), '', [], !empty($amzItem->bullet_point_5) ? $amzItem->bullet_point_5 : '', 'col-md-6') }}
+        {{ Form::textGroup('bullet_point_4', trans('tcb-amazon-sync::items.bullet_point_4'), 'fas fa-dot-circle', [], !empty($amzItem->bullet_point_4) ? $amzItem->bullet_point_4 : '', 'col-md-6') }}
 
-        {{ Form::textGroup('bullet_point_6', trans('tcb-amazon-sync::items.bullet_point_6'), '', [], !empty($amzItem->bullet_point_6) ? $amzItem->bullet_point_6 : '', 'col-md-6') }}
+        {{ Form::textGroup('bullet_point_5', trans('tcb-amazon-sync::items.bullet_point_5'), 'fas fa-dot-circle', [], !empty($amzItem->bullet_point_5) ? $amzItem->bullet_point_5 : '', 'col-md-6') }}
+
+        {{ Form::textGroup('bullet_point_6', trans('tcb-amazon-sync::items.bullet_point_6'), 'fas fa-dot-circle', [], !empty($amzItem->bullet_point_6) ? $amzItem->bullet_point_6 : '', 'col-md-6') }}
 
         {{ Form::textareaGroup('description', trans('tcb-amazon-sync::items.description'), [], !empty($amzItem->description) ? $amzItem->description : '') }}
 
@@ -146,7 +164,7 @@
         </button>
     </div>
     <div class="col-md-4">
-        <button id="fetchAmazonItem" class="btn btn-lg btn-icon btn-info" data-url="{{ route('tcb-amazon-sync.amazon.item.fetch', ['item_id' => $item->id, 'ean' => $amzItem->ean, 'country' => 'Uk']) }}">
+        <button id="fetchAmazonItem" class="btn btn-lg btn-icon btn-info" data-url="{{ route('tcb-amazon-sync.amazon.item.get', ['id' => $amzItem->id, 'country' => 'Uk']) }}">
             <span class="btn-inner--text">{{ trans('tcb-amazon-sync::items.amazon.fetch') }}</span>
         </button>
     </div>

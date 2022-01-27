@@ -14,8 +14,12 @@ class Feed extends Model
 
     protected $fillable = [
         'id',
+        'country',
+        'feed_id',
         'feed_type',
+        'url',
         'feed_document_id',
+        'result_feed_document_id',
         'report_type',
         'request_id',
         'generated_report_id',
