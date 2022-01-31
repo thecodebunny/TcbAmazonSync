@@ -30,7 +30,7 @@ class AddToAdminMenu
         $item->route('tcb-amazon-sync.amazon.dashboard', trans('tcb-amazon-sync::general.amzdashboard'), [], 4, ['icon' => 'fas fa-tachometer-alt']);
         $item->route('tcb-amazon-sync.amazon.spapisettings', trans('tcb-amazon-sync::general.amzspsettings'), [], 4, ['icon' => 'fas fa-cog']);
         $item->route('tcb-amazon-sync.amazon.mwsapisettings', trans('tcb-amazon-sync::general.amzmwssettings'), [], 4, ['icon' => 'fas fa-cog']);
-        $item->route('tcb-amazon-sync.amazon.paapisettings', trans('tcb-amazon-sync::general.amzpasettings'), [], 4, ['icon' => 'fas fa-cog']);
+        //$item->route('tcb-amazon-sync.amazon.paapisettings', trans('tcb-amazon-sync::general.amzpasettings'), [], 4, ['icon' => 'fas fa-cog']);
         $item->route('tcb-amazon-sync.amazon.categories', trans('tcb-amazon-sync::general.amzcategories'), [], 4, ['icon' => 'fas fa-list']);
         
         // Add new menu item

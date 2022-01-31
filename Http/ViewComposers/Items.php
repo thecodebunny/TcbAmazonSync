@@ -4,7 +4,7 @@ namespace Modules\TcbAmazonSync\Http\ViewComposers;
 
 use App\Traits\Modules;
 use Illuminate\View\View;
-use Modules\TcbAmazonSync\Models\Warehouse;
+use Modules\TcbAmazonSync\Models\Amazon\Warehouse;
 use Modules\TcbAmazonSync\Models\Amazon\MwsApiSetting;
 use Modules\TcbAmazonSync\Models\Amazon\Categories;
 

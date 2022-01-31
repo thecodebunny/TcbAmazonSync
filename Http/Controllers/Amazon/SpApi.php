@@ -117,7 +117,9 @@ class SpApi extends Controller
             }
             if (array_key_exists('fulfillment_availability', $attributes)) {
                 $dbItem->quantity = $attributes['fulfillment_availability'][0]->quantity;
-                $dbItem->lead_time_to_ship_max_days = $attributes['fulfillment_availability'][0]->lead_time_to_ship_max_days;
+                if(array_key_exists('lead_time_to_ship_max_days', $attributes['fulfillment_availability'][0])) {
+                    $dbItem->lead_time_to_ship_max_days = $attributes['fulfillment_availability'][0]->lead_time_to_ship_max_days;
+                }
             }
             if (array_key_exists('recommended_browse_nodes', $attributes)) {
                 $dbItem->category_id = $attributes['recommended_browse_nodes'][0]->value;
@@ -358,29 +360,104 @@ class SpApi extends Controller
         }
     }
 
+    public function updateAmazonSalePrice($country, $id, $startDate, $endDate, $saleprice, $currency)
+    {
+        $seller_id = $this->settings->seller_id;
+        $item = Item::where('id', $id)->where('country', $country)->first();
+        $productType = 'PRODUCT';
+        if ($country == 'Uk')
+        {
+            $mpIds = 'A1F83G8C2ARO7P';
+        }
+
+        $apiInstance = new ListingsApi($this->config);
+        $marketplace_ids = $mpIds;
+        $body = new ListingsItemPatchRequest();
+        $issue_locale = 'en_US';
+        $body->setProductType($productType);
+        $patches = [
+            [
+                'op'    => 'replace',
+                'path'  => 'purchasable_offer',
+                'value' => [[
+                    "marketplace_id" => ''. $mpIds .'',
+                    'currency' => ''. $currency .'',
+                    'discounted_price' => [[
+                        'schedule' => [[
+                            'end_at' => $endDate,
+                            'start_at' => $startDate,
+                            'value_with_tax' => $price
+                        ]]
+                    ]]
+                ]]
+            ]];
+        $body->setPatches(($patches));
+        try {
+            $result = $apiInstance->patchListingsItem($seller_id, $item->sku, $mpIds, $body, $issue_locale);
+            \Debugbar::addMessage($result);
+            \Debugbar::addMessage($body);
+            dump($result);
+        } catch (Exception $e) {
+            echo 'Exception when calling ListingsApi->patchListingsItem: ', $e->getMessage(), PHP_EOL;
+        }
+    }
+
     public function getOrders(Request $request)
     {
         
         $apiInstance = new OrdersApi($this->config);
         $marketplace_ids = ['A1F83G8C2ARO7P'];
-        $created_after = '2021-06-01';
-        $created_before = '2021-11-30';
+        $created_after = date('Y-m-d', strtotime('-3 days'));
+        //$created_before = '2021-11-30';
         $data_elements = [];
-        $order_id = '205-9894695-8388318';
         try {
-            $result = $apiInstance->getOrder(
-                $order_id
+            $result = $apiInstance->getOrders(
+                $marketplace_ids,
+                $created_after
             );
-            dump($result);
-            /*
-            foreach ($result['payload']['orders'] as $order) {
-                dump($order);
-            }
-            */
+            return $result['payload']['orders'];
 
         } catch (Exception $e) {
             echo 'Exception when calling OrdersApi->getOrders: ', $e->getMessage(), PHP_EOL;
         }
+    }
+
+    public function getOrderBuyer($id)
+    {
+        
+        $apiInstance = new OrdersApi($this->config);
+        $marketplace_ids = ['A1F83G8C2ARO7P'];
+        try {
+            return $apiInstance->getOrderBuyerInfo($id)->getPayload();
+        } catch (Exception $e) {
+            echo 'Exception when calling OrdersApi->getOrderAddress: ', $e->getMessage(), PHP_EOL;
+        }
+
+    }
+
+    public function getOrderAddress($id)
+    {
+        
+        $apiInstance = new OrdersApi($this->config);
+        try {
+            return $apiInstance->getOrderAddress($id)->getPayload();
+        } catch (Exception $e) {
+            echo 'Exception when calling OrdersApi->getOrderAddress: ', $e->getMessage(), PHP_EOL;
+        }
+
+    }
+
+    public function getOrderItems($id)
+    {
+        
+        $apiInstance = new OrdersApi($this->config);
+        try {
+            $items = $apiInstance->getOrderItems($id);
+            return $items->getPayload();
+        } catch (Exception $e) {
+            echo 'Exception when calling OrdersApi->getOrderAddress: ', $e->getMessage(), PHP_EOL;
+        }
+
     }
 
     public function getAplusContents()

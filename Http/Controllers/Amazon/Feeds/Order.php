@@ -7,10 +7,11 @@ use App\Abstracts\Http\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Modules\TcbAmazonSync\Models\Amazon\Feed;
 use Modules\TcbAmazonSync\Models\Amazon\Item;
 use Modules\TcbAmazonSync\Models\Amazon\SpApiSetting;
-use Illuminate\Support\Facades\Storage;
+use Modules\TcbAmazonSync\Models\Amazon\Order as AmzOrder;
 //Amazon SP API
 use Thecodebunny\AmazonSpApi\FeedType;
 use Thecodebunny\AmazonSpApi\Configuration;
@@ -24,9 +25,8 @@ use Thecodebunny\AmzMwsApi\AmazonReportRequest;
 use Thecodebunny\AmzMwsApi\AmazonReportRequestList;
 use Thecodebunny\AmzMwsApi\AmazonInventoryList;
 
-class Inventory extends Controller
+class Order extends Controller
 {
-
     private $config;
 
     public function __construct(Request $request)
@@ -41,9 +41,9 @@ class Inventory extends Controller
         ];
     }
 
-    public function createStockFeedDocument($id, $country, $qty)
+    public function createOrderFeedDocument($id, $country, $qty)
     {
-        $item = Item::where('id', $id)->first();
+        $item = AmzOrder::where('id', $id)->first();
         if ($item->country == 'Uk')
         {
             $mpIds = ['A1F83G8C2ARO7P'];
@@ -123,5 +123,4 @@ class Inventory extends Controller
         echo 'feed doc';
         dump((file_get_contents($result->getUrl())));
     }
-
 }

@@ -19,11 +19,16 @@ class OrderItem extends Model
         'company_id',
         'item_id',
         'country',
+        'image',
+        'sku',
         'order_id',
         'amazon_order_id',
         'amazon_order_item_id',
         'quantity',
-        'price'
+        'price',
+        'currency_code',
+        'promotion_discount',
+        'promotion_discount_tax'
     ];
 
     public function order()

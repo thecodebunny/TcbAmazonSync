@@ -22,7 +22,8 @@ $(".tcb-switch").on("change", function() {
 
 $(".tcb-select").on("change", function() {
     console.log(this.value);
-    $(this).attribute("selected", "selected");
+    $(this).attr("value", this.value);
+    $(this).attr("selected", "selected");
 });
 
 $(".tcb-checkbox").on("change", function() {
@@ -104,6 +105,10 @@ $("#updateAmazonPrice").on("click", function() {
         var price = $("input[name = 'price']").val();
         var url = 'https://go.zoomyo.com/' + comp + '/tcb-amazon-sync/amazon-updateprice/' + country + '/' + id + '/' + price + '/' + company_currency_code;
         console.log(company_currency_code);
+        if (!price || price == '') {
+            alert('Price is required!!!');
+            return false;
+        }
         $.ajax({
             url: url,
             type: "GET",
@@ -115,5 +120,42 @@ $("#updateAmazonPrice").on("click", function() {
                 console.log(response);
             },
         });
+    }
+});
+
+$("#updateAmazonSalePrice").on("click", function() {
+    if (confirm('Are you sure? This will change the product sale price on Amazon')) {
+        var comp = $("input[name = 'company_id']").val();
+        var country = $("input[name = 'country']").val();
+        var id = $("input[name = 'id']").val();
+        var saleprice = $("input[name = 'sale_price']").val();
+        var startdate = $("input[name = 'sale_start_date']").val();
+        var enddate = $("input[name = 'sale_end_date']").val();
+        var url = 'https://go.zoomyo.com/' + comp + '/tcb-amazon-sync/amazon-updatesaleprice/' + country + '/' + id + '/' + startdate + '/' + enddate + '/' + saleprice + '/' + company_currency_code;
+        console.log(url);
+        if (!saleprice || saleprice == '') {
+            alert('Sale Price is required!!!');
+            return false;
+        }
+        if (!startdate || startdate == '') {
+            alert('Sale Start Date is required!!!');
+            return false;
+        }
+        if (!enddate || enddate == '') {
+            alert('Sale End Date is required!!!');
+            return false;
+        }
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(response) {
+                $('#successMsg').show();
+                console.log(response);
+            },
+            error: function(response) {
+                console.log(response);
+            },
+        });
+
     }
 });

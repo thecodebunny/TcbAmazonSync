@@ -17,7 +17,7 @@ use Modules\TcbAmazonSync\Models\Amazon\Issue;
 use Modules\TcbAmazonSync\Models\Amazon\Setting;
 use Modules\TcbAmazonSync\Models\Amazon\Categories;
 use Modules\TcbAmazonSync\Models\Amazon\MwsApiSetting;
-use Modules\TcbAmazonSync\Models\Warehouse;
+use Modules\TcbAmazonSync\Models\Amazon\Warehouse;
 //Amazon SP API
 use Thecodebunny\AmazonSpApi\Configuration;
 use Thecodebunny\AmazonSpApi\Api\CatalogApi;

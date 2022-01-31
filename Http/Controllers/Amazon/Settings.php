@@ -5,7 +5,7 @@ namespace Modules\TcbAmazonSync\Http\Controllers\Amazon;
 use App\Abstracts\Http\Controller;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request as LRequest;
-use Modules\TcbAmazonSync\Models\Warehouse;
+use Modules\TcbAmazonSync\Models\Amazon\Warehouse;
 use Modules\TcbAmazonSync\Models\Amazon\Setting;
 use Modules\TcbAmazonSync\Models\Amazon\SpApiSetting;
 use Modules\TcbAmazonSync\Models\Amazon\PaApiSetting;
@@ -27,7 +27,7 @@ class Settings extends Controller
     {
         $settings = Setting::where('company_id', Route::current()->originalParameter('company_id'))->first();
         $company_id = Route::current()->originalParameter('company_id');
-        $warehouses = Warehouse::enabled()->pluck('name', 'id');
+        $warehouses = Warehouse::where('company_id', Route::current()->originalParameter('company_id'))->get();
         return view('tcb-amazon-sync::settings.amazon', compact('settings', 'company_id', 'warehouses'));
     }
     
@@ -36,6 +36,7 @@ class Settings extends Controller
         $settings = Setting::where('company_id', Route::current()->originalParameter('company_id'))->first();
         if (! $settings) { $settings = new Setting; }
 
+        $settings->default_warehouse = $request->get('default_warehouse');
         $settings->de = $request->get('de');
         $settings->fr = $request->get('fr');
         $settings->it = $request->get('it');
@@ -44,6 +45,12 @@ class Settings extends Controller
         $settings->se = $request->get('se');
         $settings->nl = $request->get('nl');
         $settings->pl = $request->get('pl');
+        $settings->items_update_on_amazon_cron = $request->get('items_update_on_amazon_cron');
+        $settings->items_update_on_amazon_cron_frequency = $request->get('items_update_on_amazon_cron_frequency');
+        $settings->orders_download_cron = $request->get('orders_download_cron');
+        $settings->orders_download_cron_frequency = $request->get('orders_download_cron_frequency');
+        $settings->orders_update_cron = $request->get('orders_update_cron');
+        $settings->orders_update_cron_frequency = $request->get('orders_updatecron_frequency');
 
         $settings->save();
         return redirect(route('tcb-amazon-sync.amazon.settings'));

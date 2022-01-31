@@ -24,12 +24,12 @@
         </div>
 
         <div class="col-md-12">
-            <a id="updateAmazonTitle" title="Update title on Amazon" class="tcb-tip bg-warning text-white p-1" title="{{ trans('tcb-amazon-sync::items.updateamazon') }}"><i class="fas fa-sync-alt"></i></a>
+            <a id="updateAmazonTitle" title="Update title on Amazon" class="tcb-tip bg-warning text-white p-1"><i class="fas fa-sync-alt"></i></a>
             {{ Form::textGroup('title', trans('tcb-amazon-sync::items.title'), 'fas fa-heading', [], !empty($amzItem->title) ? $amzItem->title : '', '') }}
         </div>
 
         <div class="col-md-3">
-            <a id="updateAmazonStock" title="Update Stock on Amazon" class="tcb-tip bg-warning text-white p-1 updateAmazonStock" title="{{ trans('tcb-amazon-sync::items.updateamazon') }}"><i class="fas fa-sync-alt"></i></a>
+            <a id="updateAmazonStock" title="Update Stock on Amazon" class="tcb-tip bg-warning text-white p-1 updateAmazonStock"><i class="fas fa-sync-alt"></i></a>
             {{ Form::numberGroup('quantity', trans('tcb-amazon-sync::items.quantity'), 'fas fa-sort-numeric-down-alt', [], !empty($amzItem->quantity) ? $amzItem->quantity : '', '') }}
         </div>
 
@@ -68,7 +68,7 @@
         {{ Form::textGroup('material', trans('tcb-amazon-sync::items.material'), 'fas fa-cubes', [], !empty($amzItem->material) ? $amzItem->material : '', 'col-md-3') }}
 
         <div class="col-md-3">
-            <a id="updateAmazonPrice" title="Update title on Amazon" class="tcb-tip bg-warning text-white p-1" title="{{ trans('tcb-amazon-sync::items.updateamazon') }}"><i class="fas fa-sync-alt"></i></a>
+            <a id="updateAmazonPrice" title="Update title on Amazon" class="tcb-tip bg-warning text-white p-1"><i class="fas fa-sync-alt"></i></a>
             {{ Form::textGroup('price', trans('tcb-amazon-sync::items.price'), 'fas fa-tags', [], !empty($amzItem->price) ? $amzItem->price : '', '') }}
         </div>
 
@@ -76,7 +76,10 @@
 
         {{ Form::textGroup('country_of_origin', trans('tcb-amazon-sync::items.countryorigin'), 'fas fa-globe-europe', [], !empty($amzItem->country_of_origin) ? $amzItem->country_of_origin : '', 'col-md-3') }}
 
-        {{ Form::textGroup('sale_price', trans('tcb-amazon-sync::items.sale_price'), 'fas fa-bookmark', [], !empty($amzItem->sale_price) ? $amzItem->sale_price : '', 'col-md-3') }}
+        <div class="col-md-3">
+            <a id="updateAmazonSalePrice" title="Update Sale Price on Amazon" class="tcb-tip bg-warning text-white p-1"><i class="fas fa-sync-alt"></i></a>
+            {{ Form::textGroup('sale_price', trans('tcb-amazon-sync::items.sale_price'), 'fas fa-bookmark', [], !empty($amzItem->sale_price) ? $amzItem->sale_price : '', '') }}
+        </div>
         
         <div class="form-group col-md-3">
             <label class="datelabel form-control-label" for="sale_start_date">{{ trans('tcb-amazon-sync::items.sale_start_date') }}</label>
@@ -97,7 +100,7 @@
         {{ Form::textGroup('category_id', trans('tcb-amazon-sync::items.category'), 'fas fa-list', ['help' => 'Help Text'], !empty($amzItem->category_id) ? $amzItem->category_id : '', 'col-md-4') }}
 
         <div class="card-footer with-border col-md-12">
-                <a id="updateAmazonBulletPoints" title="Update Bulletpoints on Amazon" class="tcb-tip bg-warning text-white p-1" title="{{ trans('tcb-amazon-sync::items.updateamazon') }}"><i class="fas fa-sync-alt"></i></a>
+                <a id="updateAmazonBulletPoints" title="Update Bulletpoints on Amazon" class="tcb-tip bg-warning text-white p-1"><i class="fas fa-sync-alt"></i></a>
                 <h3 class="card-title">{{ trans('tcb-amazon-sync::items.bulletpoints') }}</h3>
         </div>
 

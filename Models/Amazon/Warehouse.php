@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\TcbAmazonSync\Models;
+namespace Modules\TcbAmazonSync\Models\Amazon;
 
 use App\Abstracts\Model;
 use Bkwld\Cloner\Cloneable;

@@ -4,7 +4,7 @@ return [
 
     'name'              => 'TcbAmazonSync',
     'description'       => 'Amazon Orders Synchronization',
-    'amzmenu'           => 'Amazon Settings',
+    'amzmenu'           => 'Amazon',
     'amzdashboard'      => 'Dashboard',
     'amzsettings'       => 'Settings',
     'amzspsettings'     => 'SP API Settings',
@@ -23,7 +23,6 @@ return [
     'duplicate'         => 'Duplicate',
     'information'       => 'Product Info',
     'warnings'          => 'Warnings',
-
     'category' => [
         'path'          =>  'Amazon Category Path',
         'rootcat'       =>  'Main Category',
@@ -35,7 +34,7 @@ return [
     ],
 
     'settings' => [
-        'amazon'            =>  'Amazon Settings',
+        'amazon'            =>  'Settings',
         'spname'            =>  'Amazon SP API Settings',
         'paname'            =>  'Amazon PA API Settings',
         'mwsname'           =>  'Amazon MWS API Settings',
@@ -53,6 +52,20 @@ return [
         'spapi'             =>  'Amazon SP APi',
         'mwsapi'            =>  'Amazon MWS APi',
         'paapi'             =>  'Amazon PA APi',
+        'cronupdate'        =>  'Cron Settings',
+        'itemcron'          =>  'Enable Automatic Products Updates?',
+        'itemcronfreq'      =>  'Frequancy for Updating Products automatically.',
+        'ordercron'         =>  'Enable Automatic Orders Downloads?',
+        'ordercronfreq'     =>  'Frequancy for Downloads Orders automatically.',
+        'orderupdatecron'   =>  'Enable Automatic Orders Updates?',
+        'orderupdatecronfreq'=>  'Frequancy for Updating Orders automatically.',
+        'twiceday'          =>  'Twice a Day',
+        'onceday'           =>  'Once a Day',
+        'everyday'          =>  'Every Day',
+        'every2days'        =>  'Every 2 Days',
+        'every3days'        =>  'Every 3 Days',
+        'everyweek'         =>  'Every Week (On Sunday)',
+        'select'            =>  'Select',
         'apisetting'        =>  [
             'name'          =>  'Amazon API Settings',
             'desc'          =>  'Setup API Settings here.',
@@ -69,6 +82,7 @@ return [
             'se'            =>  'Enable for Sweden?',
             'nl'            =>  'Enable for Netherlands?',
             'pl'            =>  'Enable for Poland?',
+            'usa'           =>  'Enable for USA?',
             'associattaguk'     =>  'UK Associate Tag',
             'associattagde'     =>  'DE Associate Tag',
             'associattagfr'     =>  'FR Associate Tag',

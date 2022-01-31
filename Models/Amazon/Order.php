@@ -3,6 +3,7 @@
 namespace Modules\TcbAmazonSync\Models\Amazon;
 
 use App\Abstracts\Model;
+use Kyslik\ColumnSortable\Sortable;
 use Bkwld\Cloner\Cloneable;
 use Modules\Inventory\Database\Factories\Item as ItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,8 +13,16 @@ use App\Models\Common\Contact;
 
 class Order extends Model
 {
+    use Sortable;
 
     protected $table = 'amazon_orders';
+
+    public $sortable = [
+        'id',
+        'purchase_date',
+        'order_status',
+        'order_total'
+    ];
 
     protected $fillable = [
         'id',

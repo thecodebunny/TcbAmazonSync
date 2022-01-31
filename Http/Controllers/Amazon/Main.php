@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use App\Models\Common\Item as ComItem;
-use Modules\TcbAmazonSync\Models\Warehouse;
+use Modules\TcbAmazonSync\Models\Amazon\Warehouse;
 use Modules\TcbAmazonSync\Models\Amazon\Categories;
 use Modules\TcbAmazonSync\Models\Amazon\SpApiSetting;
 use Modules\TcbAmazonSync\Models\Amazon\Setting;

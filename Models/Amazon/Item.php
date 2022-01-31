@@ -4,7 +4,7 @@ namespace Modules\TcbAmazonSync\Models\Amazon;
 
 use App\Abstracts\Model;
 use App\Models\Banking\Transaction;
-use Modules\TcbAmazonSync\Models\Warehouse;
+use Modules\TcbAmazonSync\Models\Amazon\Warehouse;
 use Modules\TcbAmazonSync\Models\Amazon\Issue;
 use Modules\TcbAmazonSync\Models\Amazon\OrderItem;
 use Bkwld\Cloner\Cloneable;

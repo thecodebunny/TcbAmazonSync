@@ -6,7 +6,7 @@ use App\Abstracts\Http\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
-use Modules\TcbAmazonSync\Models\Warehouse as AmzWarehouse;
+use Modules\TcbAmazonSync\Models\Amazon\Warehouse as AmzWarehouse;
 
 class Warehouse extends Controller
 {

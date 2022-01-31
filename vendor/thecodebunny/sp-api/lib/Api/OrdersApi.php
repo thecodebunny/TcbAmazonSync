@@ -2519,12 +2519,14 @@ class OrdersApi
         );
 
         $query = \GuzzleHttp\Psr7\Query::build($queryParams);
-        return new Request(
+        $request = new Request(
             'GET',
             $this->config->getHost() . $resourcePath . ($query ? "?{$query}" : ''),
             $headers,
             $httpBody
         );
+
+        return $request;
     }
 
     /**
