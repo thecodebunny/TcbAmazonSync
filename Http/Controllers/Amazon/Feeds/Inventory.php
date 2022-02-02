@@ -51,7 +51,7 @@ class Inventory extends Controller
         $feedType = FeedType::POST_INVENTORY_AVAILABILITY_DATA;
         $feedsApi = new FeedsApi($this->config);
         // Create feed document
-        $createFeedDocSpec = new Feeds\CreateFeedDocumentSpecification(['content_type' => $feedType['contentType']]);
+        $createFeedDocSpec = new CreateFeedDocumentSpecification(['content_type' => $feedType['contentType']]);
         $feedDocumentInfo = $feedsApi->createFeedDocument($createFeedDocSpec);
         $feedDocumentId = $feedDocumentInfo->getFeedDocumentId();
         dump($feedDocumentInfo);

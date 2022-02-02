@@ -60,7 +60,7 @@ class Orders extends Controller
 
     public function index()
     {
-        $orders = AmzOrder::with('items', 'contact')->sortable()->paginate(50);
+        $orders = AmzOrder::with('items', 'contact')->sortable()->orderBy('created_at', 'desc')->paginate(50);
         return view('tcb-amazon-sync::amazon.orders.index', compact('orders'));
     }
 
@@ -74,6 +74,12 @@ class Orders extends Controller
             $asins[$i] = AmzItem::where('id', $item->amazon_item_id)->first();
         }
         return view('tcb-amazon-sync::amazon.orders.show', compact('order', 'company', 'relatedOrders', 'asins'));
+    }
+
+    public function edit($id)
+    {
+        $order = AmzOrder::where('id', $id)->with('items', 'contact')->first();
+        return view('tcb-amazon-sync::amazon.orders.edit', compact('order'));
     }
 
     public function getOrders()
@@ -129,61 +135,58 @@ class Orders extends Controller
         $dbCustomer->enabled = 1;
         $dbCustomer->created_from = 'Amazon API';
         $dbCustomer->currency_code = $currency;
+        dump($address->getShippingAddress());
         if ($address->getShippingAddress()->getAddressLine1()) {
             $line1 = $address->getShippingAddress()->getAddressLine1() . '<br>';
         } else {
             $line1 = '';
         }
-        if ($address->getShippingAddress()->getAddressLine1()) {
+        if ($address->getShippingAddress()->getAddressLine2()) {
             $line2 = $address->getShippingAddress()->getAddressLine2() . '<br>';
         } else {
             $line2 = '';
         }
-        if ($address->getShippingAddress()->getAddressLine1()) {
+        if ($address->getShippingAddress()->getAddressLine3()) {
             $line3 = $address->getShippingAddress()->getAddressLine3() . '<br>';
         } else {
             $line3 = '';
         }
-        if ($address->getShippingAddress()->getAddressLine1()) {
+        if ($address->getShippingAddress()->getCity()) {
             $city = $address->getShippingAddress()->getCity() . '<br>';
         } else {
             $city = '';
         }
-        if ($address->getShippingAddress()->getAddressLine1()) {
+        if ($address->getShippingAddress()->getCounty()) {
             $county = $address->getShippingAddress()->getCounty() . '<br>';
         } else {
             $county = '';
         }
-        if ($address->getShippingAddress()->getAddressLine1()) {
+        if ($address->getShippingAddress()->getDistrict()) {
             $disctrict = $address->getShippingAddress()->getDistrict() . '<br>';
         } else {
             $disctrict = '';
         }
-        if ($address->getShippingAddress()->getAddressLine1()) {
+        if ($address->getShippingAddress()->getStateOrRegion()) {
             $state = $address->getShippingAddress()->getStateOrRegion() . '<br>';
         } else {
             $state = '';
         }
-        if ($address->getShippingAddress()->getAddressLine1()) {
+        if ($address->getShippingAddress()->getPostalCode()) {
             $zipcode = $address->getShippingAddress()->getPostalCode() . '<br>';
         } else {
             $zipcode = '';
         }
-        if ($address->getShippingAddress()->getAddressLine1()) {
-            $countrycode = $address->getShippingAddress()->CountryCode() . '<br>';
+        if ($address->getShippingAddress()->getCountryCode()) {
+            $countrycode = $address->getShippingAddress()->getCountryCode() . '<br>';
         } else {
             $countrycode = '';
         }
-        if ($address->getShippingAddress()->getAddressLine1()) {
+        if ($address->getShippingAddress()->getPhone()) {
             $phone = $address->getShippingAddress()->getPhone() . '<br>';
         } else {
             $phone = '';
         }
-        if ($address->getShippingAddress()->getAddressLine1()) {
-            $dbCustomer->address = $line1 . $line2 . $line3 . $city . $county . $disctrict . $state . $zipcode . $countrycode . $phone;
-        } else {
-            $line3 = '';
-        }
+        $dbCustomer->address = $line1 . $line2 . $line3 . $city . $county . $disctrict . $state . $zipcode . $countrycode . $phone;
         $dbCustomer->city = $city;
         $dbCustomer->zip_code = $zipcode;
         if ($countrycode == 'GB') {$dbCustomer->country = 'United Kingdom';}
@@ -254,7 +257,7 @@ class Orders extends Controller
         $amzItem = AmzItem::where('company_id', $this->company_id)->where('asin', $item->getAsin())->where('country', $this->country)->first();
         $amzOrder = AmzOrder::where('company_id', $this->company_id)->where('amazon_order_id', $orderId)->where('country', $this->country)->first();
         if ($amzOrder) {
-            if ($amzOrder->asin_ids && !empty($amzOrder->asin_ids) && !strpos($amzOrder->asin_ids, $item->getAsin())) {
+            if ($amzOrder->asin_ids && (! str_contains($amzOrder->asin_ids, $item->getAsin()))) {
                 $amzOrder->asin_ids .= ',' . $item->getAsin();
             } else {
                 $amzOrder->asin_ids = $item->getAsin();

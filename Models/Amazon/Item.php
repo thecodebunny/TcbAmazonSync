@@ -28,6 +28,7 @@ class Item extends Model
         'keywords',
         'amazon_status',
         'asin',
+        'packaging',
         'sale_price',
         'sku',
         'title',

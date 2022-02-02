@@ -116,7 +116,7 @@ class SpApi extends Controller
                 $dbItem->keywords = $attributes['generic_keyword'][0]->value;
             }
             if (array_key_exists('fulfillment_availability', $attributes)) {
-                $dbItem->quantity = $attributes['fulfillment_availability'][0]->quantity;
+                $dbItem->quantity = $fulfill[0]->getQuantity();
                 if(array_key_exists('lead_time_to_ship_max_days', $attributes['fulfillment_availability'][0])) {
                     $dbItem->lead_time_to_ship_max_days = $attributes['fulfillment_availability'][0]->lead_time_to_ship_max_days;
                 }
@@ -511,5 +511,5 @@ class SpApi extends Controller
             echo 'Exception when calling AplusContentApi->getContentDocument: ', $e->getMessage(), PHP_EOL;
         }
     }
-
+    
 }

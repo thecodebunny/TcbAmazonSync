@@ -36,7 +36,7 @@ class Main extends Controller
 
     public function dashboard()
     {
-        
+        return view('tcb-amazon-sync::amazon.dashboard');
     }
 
     public function items()

@@ -15,13 +15,13 @@ Route::admin('tcb-amazon-sync', function () {
     Route::get('/amazon-dashboard', 'Amazon\Main@dashboard')->name('amazon.dashboard');
 
     //Warehouse Routes
-    Route::get('/amazon-warehouses', 'Warehouse@index')->name('amazon.warehouses');
-    Route::get('/amazon-warehouses/create', 'Warehouse@create')->name('amazon.warehouses.create');
-    Route::post('/amazon-warehouses/save', 'Warehouse@save')->name('amazon.warehouse.save');
-    Route::get('/amazon-warehouses/edit/{id}', 'Warehouse@edit')->name('amazon.warehouse.edit');
-    Route::post('/amazon-warehouses/update/{id}', 'Warehouse@update')->name('amazon.warehouse.update');
-    Route::post('/amazon-warehouses/destroy/{id}', 'Warehouse@destroy')->name('amazon.warehouse.destroy');
-    Route::get('/amazon-warehouses/duplicate/{id}', 'Warehouse@duplicate')->name('amazon.warehouse.duplicate');
+    Route::get('/amazon-warehouses', 'Amazon\Warehouse@index')->name('amazon.warehouses');
+    Route::get('/amazon-warehouses/create', 'Amazon\Warehouse@create')->name('amazon.warehouses.create');
+    Route::post('/amazon-warehouses/save', 'Amazon\Warehouse@save')->name('amazon.warehouse.save');
+    Route::get('/amazon-warehouses/edit/{id}', 'Amazon\Warehouse@edit')->name('amazon.warehouse.edit');
+    Route::post('/amazon-warehouses/update/{id}', 'Amazon\Warehouse@update')->name('amazon.warehouse.update');
+    Route::post('/amazon-warehouses/destroy/{id}', 'Amazon\Warehouse@destroy')->name('amazon.warehouse.destroy');
+    Route::get('/amazon-warehouses/duplicate/{id}', 'Amazon\Warehouse@duplicate')->name('amazon.warehouse.duplicate');
 
     //Menu Routes
     Route::get('/amazon-settings', 'Amazon\Settings@settings')->name('amazon.settings');
@@ -39,7 +39,13 @@ Route::admin('tcb-amazon-sync', function () {
     //Amazon Order Routes
     Route::get('/amazon-orders', 'Amazon\Orders@index')->name('amazon.orders.index');
     Route::get('/amazon-orders/{id}', 'Amazon\Orders@show')->name('amazon.orders.show');
+    Route::get('/amazon-orders/edit/{id}', 'Amazon\Orders@edit')->name('amazon.orders.edit');
+    Route::post('/amazon-orders/update/{id}', 'Amazon\Orders@update')->name('amazon.orders.update');
+    Route::get('/amazon-order-confirmshipment/{id}', 'Amazon\Orders@confirmShipment')->name('amazon.orders.confirmshipment');
     Route::get('/amazon-ordersitems-update/{country}', 'Amazon\Orders@toRemove')->name('amazon.orders.itemsupdate');
+
+    //Amazon Shipping Routes
+    Route::get('/amazon-rates/{id}/{country}', 'Amazon\Shipping@getRates')->name('amazon.orders.getrates');
 
     //Amazon API Settings
     Route::get('/amazon-sp-settings', 'Amazon\Settings@spapisettings')->name('amazon.spapisettings');
@@ -65,10 +71,14 @@ Route::admin('tcb-amazon-sync', function () {
 
         //Orders APIs
         Route::get('/amazon-getOrderAddress/{orderid}/{country}', 'Amazon\SpApi@getOrderAddress')->name('amazon.getOrderAddress');
+        Route::get('/amazon-confirmshipment/{country}/{amzOrderId}/{tid}/{tid2}/{tid3}/{tid4}/{tid5}/{id}/{carrier}', 'Amazon\Feeds\Order@createShippingConfirmationFeedDocument')->name('amazon.confirmordershipment');
 
         //Feeds APIs
         Route::get('/amazon-getfeed/{feedid}/{country}', 'Amazon\Feeds\Inventory@getFeed')->name('amazon.getFeed');
-        Route::get('/amazon-getfeed/{feedid}/{country}', 'Amazon\Feeds\Inventory@getFeed')->name('amazon.getFeed');
+
+        //Reports APIs
+        Route::get('/amazon-inventoryreport/{country}', 'Amazon\Reports\Listings@createInventoryReport')->name('amazon.createInventoryReport');
+        Route::get('/amazon-readdoc/{id}', 'Amazon\Reports\Listings@readDoc')->name('amazon.readDoc');
 
     //Amazon Other API Routes
     Route::get('/amazon-fetchAllProducts/{country}', 'Amazon\MwsApi@fetchAllProducts')->name('amazon.mwstest');

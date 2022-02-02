@@ -3,11 +3,14 @@
 @section('title', trans('tcb-amazon-sync::orders.amzorder'))
 
 @section('new_button')
-    @if($order->order_status !== 'Shipped')
-        <a href="" class="btn btn-danger btn-sm">
-            {{ trans('tcb-amazon-sync::general.ship') }}
+    @if(! $order->tracking_id_1)
+        <a data-toggle="modal" data-target="#confirmShipment" class="btn btn-danger btn-sm text-white">
+            {{ trans('tcb-amazon-sync::orders.ship') }}
         </a>
     @endif
+    <a href="{{ route('tcb-amazon-sync.amazon.orders.edit', [$order->id]) }}" class="btn btn-warning btn-sm">
+        {{ trans('tcb-amazon-sync::orders.edit') }}
+    </a>
 @endsection
 
 @push('css')
@@ -20,23 +23,23 @@
 @endpush
 
 @section('content')
-    <div class="row bg-info rounded mb-4" style="font-size: inherit !important;">
-        <div class="col-4 col-lg-5 pt-3">
-            {{ trans('tcb-amazon-sync::general.amzordernumber') }}
+    <div class="shadow row bg-default rounded mb-4" style="font-size: inherit !important;">
+        <div class="col-4 text-white col-lg-5 pt-3">
+            {{ trans('tcb-amazon-sync::orders.amzordernumber') }}
             <br>
             <strong>
                 <span class="float-left mwpx-200 transaction-head-text">
                     <a>
-                        {{ $order->amazon_order_id }}
+                       # {{ $order->amazon_order_id }}
                     </a>
                 </span>
             </strong> 
             <br>
             <br>
         </div>
-        <div class="col-4 col-lg-5 pt-3">
-            @if($order->order_status !== 'Shipped')
-                {{ trans('tcb-amazon-sync::general.trackingids') }}
+        <div class="col-4 text-white col-lg-5 pt-3">
+            @if($order->order_status == 'Shipped')
+                {{ trans('tcb-amazon-sync::orders.trackingids') }}
                 <br>
                 <strong>
                     <span class="float-left mwpx-200 transaction-head-text">
@@ -152,10 +155,10 @@
                                             <img src="{{ asset('/public/'. $item->image) }}" width="80">
                                         </td>
                                         <td class="p-2 text-center">
-                                            <h5 class="">{{ $item->quantity }}</h5>
+                                            <a class="">{{ $item->quantity }}</a>
                                         </td>
                                         <td class="p-2 text-center">
-                                            <h5 class="">{{ $item->sku }}</h5>
+                                            <a class="" href="{{ route('tcb-amazon-sync.items.show', [$item->amazon_item_id, $item->country]) }}">{{ $item->sku }}</a>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -237,5 +240,67 @@
                 @endif
             </tbody>
         </table>
+    </div>
+
+    <!-- Order Shipping Confirmation Modal -->
+    <div id="confirmShipment" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmShipment" aria-hidden="true">
+        <div class="modal-dialog modal- modal-dialog-centered modal-m" role="document">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <div class="card bg-secondary border-0 mb-0 p-3">
+                        <div class="card-header border-bottom text-center">
+                            <h3>{{ trans('tcb-amazon-sync::orders.ship') }} | {{ $order->amazon_order_id }}</h3>
+                        </div>
+                        <div class="card-body">
+                            <form data-action="{{ route('tcb-amazon-sync.amazon.orders.confirmshipment',[$order->id]) }}">
+
+                                {!! Form::hidden('company_id', $order->company_id) !!}
+
+                                {!! Form::hidden('country', $order->country) !!}
+
+                                {!! Form::hidden('amzOrderId', $order->amazon_order_id) !!}
+
+                                {!! Form::hidden('id', $order->id) !!}
+
+                                <div class="form-group">
+                                    <label for="carrier" class="form-control-label">{{ trans('tcb-amazon-sync::orders.carrier') }}</label>
+                                    <select name="carrier" class="form-control tcb-select">
+                                        <option value="DPD">Carrier</option>
+                                        <option value="DPD">DPD</option>
+                                        <option value="DHL">DHL</option>
+                                        <option value="UPS">UPS</option>
+                                        <option value="GLS">GLS</option>
+                                        <option value="Hermes">Hermes</option>
+                                        <option value="Self Delivery">Self Delivery</option>
+                                        <option value="Deutsche Post">Deutsche Post</option>
+                                        <option value="Royoal Mail">Royoal Mail</option>
+                                    </select>
+                                </div>
+    
+                                {{ Form::textGroup('tId', trans('tcb-amazon-sync::orders.trackingid'), 'fab fa-id-card', [], '', '') }}
+                                
+                                {{ Form::textGroup('tId2', trans('tcb-amazon-sync::orders.trackingid2'), 'fab fa-id-card', [], '', 'hidden trackingId2') }}
+                                
+                                {{ Form::textGroup('tId3', trans('tcb-amazon-sync::orders.trackingid3'), 'fab fa-id-card', [], '', 'hidden trackingId3') }}
+                                
+                                {{ Form::textGroup('tId4', trans('tcb-amazon-sync::orders.trackingid4'), 'fab fa-id-card', [], '', 'hidden trackingId4') }}
+                                
+                                {{ Form::textGroup('tId5', trans('tcb-amazon-sync::orders.trackingid5'), 'fab fa-id-card', [], '', 'hidden trackingId5') }}
+
+                            </form>
+                            <div id="shipMessage"></div>
+                        </div>
+                        <div class="card-footer border-top">
+                            <button id="confirmAmazonShipment" class="btn btn-lg btn-icon btn-info" data-url="{{ route('tcb-amazon-sync.amazon.orders.confirmshipment',[$order->id]) }}">
+                                 <span class="btn-inner--text">{{ trans('tcb-amazon-sync::orders.sendtoamazon') }}</span>
+                            </button>
+                            <a id="addTrackingIds" class="btn btn-warning btn-sm text-white">
+                                {{ trans('tcb-amazon-sync::orders.addtrackingid') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @stop

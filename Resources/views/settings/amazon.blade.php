@@ -42,6 +42,9 @@ if (! $settings && empty($settings)) {
 
 @endphp
 
+@section('title', trans_choice('tcb-amazon-sync::general.settings.amazon', 1))
+
+
 @section('content')
 
 {!! Form::open([
@@ -66,7 +69,7 @@ if (! $settings && empty($settings)) {
             
             <div class="form-group col-md-12">
                 <div class="col-md-6">
-                    <label for="items_update_on_amazon_cron_frequency" class="form-control-label">{{ trans('tcb-amazon-sync::general.settings.itemcronfreq') }}</label>
+                    <label for="items_update_on_amazon_cron_frequency" class="form-control-label">{{ trans('tcb-amazon-sync::general.settings.defaultwarehouse') }}</label>
                     <select name="default_warehouse" class="form-control tcb-select">
                         @if ($warehouses)
                             <option value="">{{ trans('tcb-amazon-sync::general.settings.select') }} Warehouse</option>
@@ -116,53 +119,67 @@ if (! $settings && empty($settings)) {
             <div class="card-footer with-border col-md-12">
                 <h3 class="card-title">{{ trans('tcb-amazon-sync::general.settings.cronupdate') }}</h3>
             </div>
-            <div class="col-md-3 mb-3">
-                <input @if($items_update_on_amazon_cron) checked="checked" @endif  name="items_update_on_amazon_cron" type="checkbox" value="{{ $items_update_on_amazon_cron }}" class="tcb-checkbox">
-                <label class="tcb-inlineblock" for="">{{ trans('tcb-amazon-sync::general.settings.itemcron') }}</label>
-            </div>
+
+            <div class="row pt-3 pb-3 col-md-12 border-bottom border-top">
+
+                <div class="col-md-6 mb-3">
+                    <input @if($items_update_on_amazon_cron == 'on') checked="checked" @endif  name="items_update_on_amazon_cron" type="checkbox" value="{{ $items_update_on_amazon_cron }}" class="tcb-checkbox">
+                    <label class="tcb-inlineblock" for="">{{ trans('tcb-amazon-sync::general.settings.itemcron') }}</label>
+                </div>
             
-            <div class="form-group col-md-3">
-                <label for="items_update_on_amazon_cron_frequency" class="form-control-label">{{ trans('tcb-amazon-sync::general.settings.itemcronfreq') }}</label>
-                <select name="items_update_on_amazon_cron_frequency" class="form-control tcb-select">
-                    <option value="">{{ trans('tcb-amazon-sync::general.settings.select') }} Option</option>
-                    <option value="Every Day" @if($items_update_on_amazon_cron_frequency == 'Every Day') selected @endif>{{ trans('tcb-amazon-sync::general.settings.everyday') }}</option>
-                    <option value="Every Day" @if($items_update_on_amazon_cron_frequency == 'Every 2 Days') selected @endif>{{ trans('tcb-amazon-sync::general.settings.every2days') }}</option>
-                    <option value="Every Day" @if($items_update_on_amazon_cron_frequency == 'Every 3 Days') selected @endif>{{ trans('tcb-amazon-sync::general.settings.every3days') }}</option>
-                    <option value="Every Day" @if($items_update_on_amazon_cron_frequency == 'Every Week') selected @endif>{{ trans('tcb-amazon-sync::general.settings.everyweek') }}</option>
-                </select>
+                <div class="form-group col-md-6">
+                    <label for="items_update_on_amazon_cron_frequency" class="form-control-label">{{ trans('tcb-amazon-sync::general.settings.itemcronfreq') }}</label>
+                    <select name="items_update_on_amazon_cron_frequency" class="form-control tcb-select">
+                        <option class="el-select-dropdown__item" value="">{{ trans('tcb-amazon-sync::general.settings.select') }} Option</option>
+                        <option class="el-select-dropdown__item" value="Every Day" @if($items_update_on_amazon_cron_frequency == 'Every Day') selected @endif>{{ trans('tcb-amazon-sync::general.settings.everyday') }}</option>
+                        <option class="el-select-dropdown__item" value="Every 2 Days" @if($items_update_on_amazon_cron_frequency == 'Every 2 Days') selected @endif>{{ trans('tcb-amazon-sync::general.settings.every2days') }}</option>
+                        <option class="el-select-dropdown__item" value="Every 3 Days" @if($items_update_on_amazon_cron_frequency == 'Every 3 Days') selected @endif>{{ trans('tcb-amazon-sync::general.settings.every3days') }}</option>
+                        <option class="el-select-dropdown__item" value="Every Week" @if($items_update_on_amazon_cron_frequency == 'Every Week') selected @endif>{{ trans('tcb-amazon-sync::general.settings.everyweek') }}</option>
+                    </select>
+                </div>
+
             </div>
+
+            <div class="row pt-3 pb-3 col-md-12 border-bottom">
+                
+                <div class="col-md-6 mb-6">
+                    <input @if($orders_download_cron == 'on') checked="checked" @endif  name="orders_download_cron" type="checkbox" value="{{ $orders_download_cron }}" class="tcb-checkbox">
+                    <label class="tcb-inlineblock" for="">{{ trans('tcb-amazon-sync::general.settings.ordercron') }}</label>
+                </div>
             
-            <div class="col-md-3 mb-3">
-                <input @if($orders_download_cron) checked="checked" @endif  name="orders_download_cron" type="checkbox" value="{{ $orders_download_cron }}" class="tcb-checkbox">
-                <label class="tcb-inlineblock" for="">{{ trans('tcb-amazon-sync::general.settings.ordercron') }}</label>
+                <div class="form-group col-md-6">
+                    <label for="orders_download_cron_frequency" class="form-control-label">{{ trans('tcb-amazon-sync::general.settings.ordercronfreq') }}</label>
+                    <select name="orders_download_cron_frequency" class="form-control tcb-select">
+                        <option class="el-select-dropdown__item" value="">{{ trans('tcb-amazon-sync::general.settings.select') }} Option</option>
+                        <option class="el-select-dropdown__item" value="Twice a Day" @if($orders_download_cron_frequency == 'Twice a Day') selected @endif>{{ trans('tcb-amazon-sync::general.settings.twiceday') }}</option>
+                        <option class="el-select-dropdown__item" value="Once a Day" @if($orders_download_cron_frequency == 'Once a Day') selected @endif>{{ trans('tcb-amazon-sync::general.settings.onceday') }}</option>
+                        <option class="el-select-dropdown__item" value="Every 2 Days" @if($orders_download_cron_frequency == 'Every 2 Days') selected @endif>{{ trans('tcb-amazon-sync::general.settings.every2days') }}</option>
+                        <option class="el-select-dropdown__item" value="Every 3 Days" @if($orders_download_cron_frequency == 'Every 3 Days') selected @endif>{{ trans('tcb-amazon-sync::general.settings.every3days') }}</option>
+                        <option class="el-select-dropdown__item" value="Every Week" @if($orders_download_cron_frequency == 'Every Week') selected @endif>{{ trans('tcb-amazon-sync::general.settings.everyweek') }}</option>
+                    </select>
+                </div>
+
             </div>
+
+            <div class="row pt-3 pb-3 col-md-12 border-bottom">
             
-            <div class="form-group col-md-3">
-                <label for="orders_download_cron_frequency" class="form-control-label">{{ trans('tcb-amazon-sync::general.settings.ordercronfreq') }}</label>
-                <select name="orders_download_cron_frequency" class="form-control tcb-select">
-                    <option value="">{{ trans('tcb-amazon-sync::general.settings.select') }} Option</option>
-                    <option value="Every Day" @if($orders_download_cron_frequency == 'Every Day') selected @endif>{{ trans('tcb-amazon-sync::general.settings.everyday') }}</option>
-                    <option value="Every Day" @if($orders_download_cron_frequency == 'Every 2 Days') selected @endif>{{ trans('tcb-amazon-sync::general.settings.every2days') }}</option>
-                    <option value="Every Day" @if($orders_download_cron_frequency == 'Every 3 Days') selected @endif>{{ trans('tcb-amazon-sync::general.settings.every3days') }}</option>
-                    <option value="Every Day" @if($orders_download_cron_frequency == 'Every Week') selected @endif>{{ trans('tcb-amazon-sync::general.settings.everyweek') }}</option>
-                </select>
-            </div>
-            
-            <div class="col-md-3 mb-3">
-                <input @if($orders_update_cron) checked="checked" @endif  name="orders_download_cron" type="checkbox" value="{{ $orders_update_cron }}" class="tcb-checkbox">
-                <label class="tcb-inlineblock" for="">{{ trans('tcb-amazon-sync::general.settings.orderupdatecron') }}</label>
-            </div>
-            
-            <div class="form-group col-md-3">
-                <label for="orders_download_cron_frequency" class="form-control-label">{{ trans('tcb-amazon-sync::general.settings.orderupdatecronfreq') }}</label>
-                <select name="orders_download_cron_frequency" class="form-control tcb-select">
-                    <option value="">{{ trans('tcb-amazon-sync::general.settings.select') }} Option</option>
-                    <option value="Every Day" @if($orders_download_cron_frequency == 'Twice a Day') selected @endif>{{ trans('tcb-amazon-sync::general.settings.twiceday') }}</option>
-                    <option value="Every Day" @if($orders_download_cron_frequency == 'Once a Day') selected @endif>{{ trans('tcb-amazon-sync::general.settings.onceday') }}</option>
-                    <option value="Every Day" @if($orders_download_cron_frequency == 'Every 2 Days') selected @endif>{{ trans('tcb-amazon-sync::general.settings.every2days') }}</option>
-                    <option value="Every Day" @if($orders_download_cron_frequency == 'Every 3 Days') selected @endif>{{ trans('tcb-amazon-sync::general.settings.every3days') }}</option>
-                    <option value="Every Day" @if($orders_download_cron_frequency == 'Every Week') selected @endif>{{ trans('tcb-amazon-sync::general.settings.everyweek') }}</option>
-                </select>
+                <div class="col-md-6 mb-3">
+                    <input @if($orders_update_cron == 'on') checked="checked" @endif  name="orders_download_cron" type="checkbox" value="{{ $orders_update_cron }}" class="tcb-checkbox">
+                    <label class="tcb-inlineblock" for="">{{ trans('tcb-amazon-sync::general.settings.orderupdatecron') }}</label>
+                </div>
+                
+                <div class="form-group col-md-6">
+                    <label for="orders_update_cron_frequency" class="form-control-label">{{ trans('tcb-amazon-sync::general.settings.orderupdatecronfreq') }}</label>
+                    <select name="orders_update_cron_frequency" class="form-control tcb-select">
+                        <option class="el-select-dropdown__item" value="">{{ trans('tcb-amazon-sync::general.settings.select') }} Option</option>
+                        <option class="el-select-dropdown__item" value="Twice a Day" @if($orders_update_cron_frequency == 'Twice a Day') selected @endif>{{ trans('tcb-amazon-sync::general.settings.twiceday') }}</option>
+                        <option class="el-select-dropdown__item" value="Once a Day" @if($orders_update_cron_frequency == 'Once a Day') selected @endif>{{ trans('tcb-amazon-sync::general.settings.onceday') }}</option>
+                        <option class="el-select-dropdown__item" value="Every 2 Days" @if($orders_update_cron_frequency == 'Every 2 Days') selected @endif>{{ trans('tcb-amazon-sync::general.settings.every2days') }}</option>
+                        <option class="el-select-dropdown__item" value="Every 3 Days" @if($orders_update_cron_frequency == 'Every 3 Days') selected @endif>{{ trans('tcb-amazon-sync::general.settings.every3days') }}</option>
+                        <option class="el-select-dropdown__item" value="Every Week" @if($orders_update_cron_frequency == 'Every Week') selected @endif>{{ trans('tcb-amazon-sync::general.settings.everyweek') }}</option>
+                    </select>
+                </div>
+
             </div>
             
         </div>
@@ -170,7 +187,7 @@ if (! $settings && empty($settings)) {
         
     <div class="card-footer">
         <div class="row save-buttons">
-            {{ Form::saveButtons('settings.index') }}
+            {{ Form::saveButtons('tcb-amazon-sync.amazon.settings') }}
         </div>
     </div>
 </div>

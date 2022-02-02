@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'edit'                  => 'Edit Order',
     'sales'                 => 'Sales',
     'amzorderid'            => 'Amazon Order ID',
     'marketplace'           => 'Marketplace',
@@ -14,6 +15,10 @@ return [
     'asins'                 => 'Asin',
     'date'                  => 'Date',
     'status'                => 'Order Status',
+    'date'                  => 'Date',
+    'ship'                  => 'Confim Shipment',
+    'shipmentdate'          => 'Shipment Date',
+    'carrier'               => 'Carrier',
     'earlyshipdate'         => 'Earliest Ship Date',
     'amzupdatedate'         => 'Amazon Update Date',
     'ordertotal'            => "Order Total",
@@ -22,8 +27,16 @@ return [
     'customeraddress'       => 'Customer Address',
     'customeremail'         => 'Customer Email',
     'trackingids'           => 'Tracking IDs',
-    'amzchannel'            => 'Amazon Channel',
+    'trackingid'            => 'Tracking ID',
+    'trackingid2'           => 'Tracking ID 2',
+    'trackingid3'           => 'Tracking ID 3',
+    'trackingid4'           => 'Tracking ID 4',
+    'trackingid5'           => 'Tracking ID 5',
+    'amzchannel6'           => 'Amazon Channel',
     'orderitems'            => 'Ordered Items',
+    'editcustomer'          => 'Edit Customer',
     'othercustomerorders'   => 'Other orders from this customer',
-    'noorders'              => 'There are no other orders from this customer'
+    'noorders'              => 'There are no other orders from this customer',
+    'sendtoamazon'          => 'Send to Amazon',
+    'addtrackingid'         => 'Add more Tracking ID'
 ];

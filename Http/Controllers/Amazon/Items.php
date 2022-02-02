@@ -10,22 +10,32 @@ use App\Models\Common\Item as ComItem;
 use App\Models\Banking\Transaction;
 
 //TCB Amazon Sync
-use Modules\TcbAmazonSync\Http\Controllers\Amazon\SpApi;
 use Modules\TcbAmazonSync\Models\Amazon\Item as AmzItem;
+use Modules\TcbAmazonSync\Models\Amazon\Feed;
 use Modules\TcbAmazonSync\Models\Amazon\Order;
 use Modules\TcbAmazonSync\Models\Amazon\Issue;
 use Modules\TcbAmazonSync\Models\Amazon\Setting;
 use Modules\TcbAmazonSync\Models\Amazon\Categories;
-use Modules\TcbAmazonSync\Models\Amazon\MwsApiSetting;
+use Modules\TcbAmazonSync\Models\Amazon\SpApiSetting;
 use Modules\TcbAmazonSync\Models\Amazon\Warehouse;
+use Modules\TcbAmazonSync\Http\Controllers\Amazon\Xml;
+
 //Amazon SP API
-use Thecodebunny\AmazonSpApi\Configuration;
-use Thecodebunny\AmazonSpApi\Api\CatalogApi;
-use Thecodebunny\AmazonSpApi\SellingPartnerOAuth;
-use Thecodebunny\AmazonSpApi\SellingPartnerRegion;
-use Thecodebunny\AmazonSpApi\SellingPartnerEndpoint;
-//Amazon MWS API
-use Thecodebunny\AmzMwsApi\AmazonOrderList;
+use Modules\TcbAmazonSync\Http\Controllers\Amazon\SpApi;
+use Thecodebunny\SpApi\Endpoint;
+use Thecodebunny\SpApi\FeedType;
+use Thecodebunny\SpApi\Document;
+use Thecodebunny\SpApi\Api\FeedsApi;
+use Thecodebunny\SpApi\Configuration;
+use Thecodebunny\SpApi\Api\OrdersApi;
+use Thecodebunny\SpApi\Api\CatalogApi;
+use Thecodebunny\SpApi\Api\ListingsApi;
+use Thecodebunny\SpApi\Api\AplusContentApi;
+use Thecodebunny\SpApi\Api\ProductTypeDefinitionsApi;
+use Thecodebunny\SpApi\Model\Feeds;
+use Thecodebunny\SpApi\Model\Feeds\CreateFeedSpecification;
+use Thecodebunny\SpApi\Model\Listings\ListingsItemPatchRequest;
+use Thecodebunny\SpApi\Model\Listings\PatchOperation;
 
 class Items extends Controller
 {
@@ -33,13 +43,14 @@ class Items extends Controller
     private $config;
     private $company_id;
     private $country;
-    private $settings;
+    private $spApi;
 
     public function __construct(Request $request)
     {
         $this->request = $request;
         $this->country = Route::current()->originalParameter('country');
         $this->company_id = Route::current()->originalParameter('company_id');
+        $this->spApi = new SpApi($request);
     }
     
     public function index()
@@ -88,6 +99,7 @@ class Items extends Controller
         $amzItem->enable = $request->get('enable');
         $amzItem->ean = $request->get('ean');
         $amzItem->asin = $request->get('asin');
+        $amzItem->packaging = $request->get('packaging');
         $amzItem->sku = $request->get('sku');
         $amzItem->sale_price = $request->get('sale_price');
         $amzItem->price = $request->get('price');
@@ -219,13 +231,5 @@ class Items extends Controller
         response()->json($response);
 
     }
-
-    public function updateAmazonQuantity($id, $qty)
-    {
-        $dbItem = AmzItem::where('id', $id)->first();
-        $spApi = new SpApi($this->request);
-        $spApi->createStockFeedDocument($dbItem, $qty);
-    }
-
 
 }

@@ -5,6 +5,7 @@ return [
     'ean'               => 'EAN / UPC',
     'sku'               => 'SKU',
     'asin'              => 'ASIN',
+    'packaging'         => 'Packaging',
     'sale_price'        => 'Sale Price',
     'sale_start_date'   => 'Sale Start Date',
     'sale_end_date'     => 'Sale End Date',

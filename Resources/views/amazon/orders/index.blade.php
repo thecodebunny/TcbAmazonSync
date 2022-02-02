@@ -30,6 +30,7 @@
                     <th class="col-sm-2 col-md-2 col-lg-1 col-xl-1 d-none d-sm-block">{{ Form::bulkActionAllGroup() }}</th>
                     <th class="col-xs-4 col-sm-4 col-md-3 col-lg-1 col-xl-1">@sortablelink('purchase_date', trans('general.date'), ['filter' => 'active, visible'], ['class' => 'col-aka', 'rel' => 'nofollow'])</th>
                     <th class="col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2 text-right">@sortablelink('order_total', trans('general.amount'))</th>
+                    <th class="col-md-2 col-lg-3 col-xl-3 d-none d-md-block text-left">{{ trans_choice('tcb-amazon-sync::orders.status', 1)}}</th>
                     <th class="col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2 text-right">{{ trans('tcb-amazon-sync::orders.amzchannel') }}</th>
                     <th class="col-md-2 col-lg-3 col-xl-3 d-none d-md-block text-left">{{ trans_choice('general.customers', 1)}}</th>
                     <th class="col-xs-4 col-sm-2 col-md-2 col-lg-1 col-xl-1 text-center"><a>{{ trans('general.actions') }}</a></th>
@@ -46,6 +47,7 @@
                             <td class="col-xs-4 col-sm-4 col-md-3 col-lg-1 col-xl-1"><a class="col-aka" href="{{ route('tcb-amazon-sync.amazon.orders.show', $item->id) }}">@date($item->purchase_date)</a></td>
                         @endif
                         <td class="col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2 text-right">@money($item->order_total, $item->currency_code, true)</td>
+                        <td class="col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2 text-right" @if ($item->order_status !== 'Shipped') style="color: red;" @endif>{{ $item->order_status }}</td>
                         <td class="col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2 text-right">{{ $item->marketplace }}</td>
                         <td class="col-md-2 col-lg-3 col-xl-3 d-none d-md-block text-left">
                             {{ $item->contact->name }}

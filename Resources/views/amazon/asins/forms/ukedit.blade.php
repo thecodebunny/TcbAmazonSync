@@ -1,4 +1,10 @@
-
+@php
+    if ($amzItem->quantity == 0 || empty($amzItem->quantity)) {
+        $qty = 0;
+    } else {
+        $qty = $amzItem->quantity;
+    }
+@endphp
 <div class="card pl-3 pr-3">
 {!! Form::model($amzItem, [
     'method' => 'POST',
@@ -23,19 +29,21 @@
             <br>{{ trans('tcb-amazon-sync::items.refreshwarning') }}
         </div>
 
-        <div class="col-md-12">
+        <div class="col-md-9">
             <a id="updateAmazonTitle" title="Update title on Amazon" class="tcb-tip bg-warning text-white p-1"><i class="fas fa-sync-alt"></i></a>
             {{ Form::textGroup('title', trans('tcb-amazon-sync::items.title'), 'fas fa-heading', [], !empty($amzItem->title) ? $amzItem->title : '', '') }}
         </div>
 
         <div class="col-md-3">
             <a id="updateAmazonStock" title="Update Stock on Amazon" class="tcb-tip bg-warning text-white p-1 updateAmazonStock"><i class="fas fa-sync-alt"></i></a>
-            {{ Form::numberGroup('quantity', trans('tcb-amazon-sync::items.quantity'), 'fas fa-sort-numeric-down-alt', [], !empty($amzItem->quantity) ? $amzItem->quantity : '', '') }}
+            {{ Form::numberGroup('quantity', trans('tcb-amazon-sync::items.quantity'), 'fas fa-sort-numeric-down-alt', [], $qty, '') }}
         </div>
 
         {{ Form::textGroup('ean', trans('tcb-amazon-sync::items.ean'), 'fab fa-id-card', [], !empty($amzItem->ean) ? $amzItem->ean : '', 'col-md-3') }}
             
         {{ Form::textGroup('sku', trans('tcb-amazon-sync::items.sku'), 'fas fa-passport', [], !empty($amzItem->sku) ? $amzItem->sku : '', 'col-md-3') }}
+
+        {{ Form::textGroup('packaging', trans('tcb-amazon-sync::items.packaging'), 'fas fa-boxes', [], !empty($amzItem->packaging) ? $amzItem->packaging : '', 'col-md-3') }}
 
 
         <div class="form-group col-md-3">

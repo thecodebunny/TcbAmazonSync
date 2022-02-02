@@ -159,3 +159,77 @@ $("#updateAmazonSalePrice").on("click", function() {
 
     }
 });
+
+/**
+ * Shipping & Orders API
+ */
+
+// Confirm Shipment
+$("#confirmAmazonShipment").on("click", function() {
+    if (confirm('Are you sure? This will confirm the shipment for this order on Amazon')) {
+        var comp = $("input[name = 'company_id']").val();
+        var country = $("input[name = 'country']").val();
+        var carrier = $("select[name = 'carrier']").val();
+        var id = $("input[name = 'id']").val();
+        var amzOrderId = $("input[name = 'amzOrderId']").val();
+        var tId = $("input[name = 'tId']").val();
+        var tId2 = $("input[name = 'tId2']").val();
+        var tId3 = $("input[name = 'tId3']").val();
+        var tId4 = $("input[name = 'tId4']").val();
+        var tId5 = $("input[name = 'tId5']").val();
+        if (tId2 == '') {
+            tId2 = null;
+        }
+        if (tId3 == '') {
+            tId3 = null;
+        }
+        if (tId4 == '') {
+            tId4 = null;
+        }
+        if (tId5 == '') {
+            tId5 = null;
+        }
+        var url = 'https://go.zoomyo.com/' + comp + '/tcb-amazon-sync/amazon-confirmshipment/' + country + '/' + amzOrderId + '/' + tId + '/' + tId2 + '/' + tId3 + '/' + tId4 + '/' + tId5 + '/' + id + '/' + carrier;
+        console.log(url);
+        if (!tId || tId == '') {
+            alert('Tracking ID is required!!!');
+            return false;
+        }
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(response) {
+                $('#shipMessage').show();
+                $('#shipMessage').html(response);
+                console.log(response);
+            },
+            error: function(response) {
+                console.log(response);
+            },
+        });
+    }
+});
+(function() {
+    var count = 0;
+    $("#addTrackingIds").click(function() {
+        console.log(this);
+        count += 1;
+
+        if (count == 1) {
+            $('.trackingId2').show();
+        }
+
+        if (count == 2) {
+            $('.trackingId3').show();
+        }
+
+        if (count == 3) {
+            $('.trackingId4').show();
+        }
+
+        if (count == 4) {
+            $('.trackingId5').show();
+            $(this).addClass('disabled');
+        }
+    });
+})();

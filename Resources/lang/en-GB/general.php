@@ -41,6 +41,7 @@ return [
         'appname'           =>  'Application Name',
         'sellerid'          =>  'Seller ID',
         'appid'             =>  'App ID',
+        'defaultwarehouse'  =>  'Default Warehouse',
         'clientid'          =>  'Client ID',
         'clientsecret'      =>  'Client Secret',
         'iasaccesskey'      =>  'IAS Access Key',
