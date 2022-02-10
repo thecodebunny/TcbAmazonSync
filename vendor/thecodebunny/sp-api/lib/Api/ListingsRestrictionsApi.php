@@ -189,69 +189,69 @@ class ListingsRestrictionsApi
 
                     return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\RestrictionList', $response->getHeaders());
                 case 400:
-                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]' === '\SplFileObject') {
+                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = (string) $responseBody;
                     }
 
-                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]', $response->getHeaders());
+                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error', $response->getHeaders());
                 case 403:
-                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]' === '\SplFileObject') {
+                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = (string) $responseBody;
                     }
 
-                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]', $response->getHeaders());
+                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error', $response->getHeaders());
                 case 404:
-                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]' === '\SplFileObject') {
+                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = (string) $responseBody;
                     }
 
-                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]', $response->getHeaders());
+                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error', $response->getHeaders());
                 case 413:
-                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]' === '\SplFileObject') {
+                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = (string) $responseBody;
                     }
 
-                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]', $response->getHeaders());
+                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error', $response->getHeaders());
                 case 415:
-                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]' === '\SplFileObject') {
+                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = (string) $responseBody;
                     }
 
-                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]', $response->getHeaders());
+                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error', $response->getHeaders());
                 case 429:
-                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]' === '\SplFileObject') {
+                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = (string) $responseBody;
                     }
 
-                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]', $response->getHeaders());
+                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error', $response->getHeaders());
                 case 500:
-                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]' === '\SplFileObject') {
+                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = (string) $responseBody;
                     }
 
-                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]', $response->getHeaders());
+                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error', $response->getHeaders());
                 case 503:
-                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]' === '\SplFileObject') {
+                    if ('\Thecodebunny\SpApi\Model\ListingsRestrictions\Error' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = (string) $responseBody;
                     }
 
-                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]', $response->getHeaders());
+                    return ObjectSerializer::deserialize($content, '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error', $response->getHeaders());
             }
 
             $returnType = '\Thecodebunny\SpApi\Model\ListingsRestrictions\RestrictionList';
@@ -277,7 +277,7 @@ class ListingsRestrictionsApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]',
+                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -285,7 +285,7 @@ class ListingsRestrictionsApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]',
+                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -293,7 +293,7 @@ class ListingsRestrictionsApi
                 case 404:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]',
+                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -301,7 +301,7 @@ class ListingsRestrictionsApi
                 case 413:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]',
+                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -309,7 +309,7 @@ class ListingsRestrictionsApi
                 case 415:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]',
+                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -317,7 +317,7 @@ class ListingsRestrictionsApi
                 case 429:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]',
+                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -325,7 +325,7 @@ class ListingsRestrictionsApi
                 case 500:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]',
+                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -333,7 +333,7 @@ class ListingsRestrictionsApi
                 case 503:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error[]',
+                        '\Thecodebunny\SpApi\Model\ListingsRestrictions\Error',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);

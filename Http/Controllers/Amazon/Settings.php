@@ -5,8 +5,9 @@ namespace Modules\TcbAmazonSync\Http\Controllers\Amazon;
 use App\Abstracts\Http\Controller;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request as LRequest;
-use Modules\TcbAmazonSync\Models\Amazon\Warehouse;
+use Modules\TcbAmazonSync\Models\Amazon\Brand;
 use Modules\TcbAmazonSync\Models\Amazon\Setting;
+use Modules\TcbAmazonSync\Models\Amazon\Warehouse;
 use Modules\TcbAmazonSync\Models\Amazon\SpApiSetting;
 use Modules\TcbAmazonSync\Models\Amazon\PaApiSetting;
 use Modules\TcbAmazonSync\Models\Amazon\MwsApiSetting;
@@ -35,7 +36,7 @@ class Settings extends Controller
     {
         $settings = Setting::where('company_id', Route::current()->originalParameter('company_id'))->first();
         if (! $settings) { $settings = new Setting; }
-
+        $settings->company_id = Route::current()->originalParameter('company_id');
         $settings->default_warehouse = $request->get('default_warehouse');
         $settings->de = $request->get('de');
         $settings->fr = $request->get('fr');

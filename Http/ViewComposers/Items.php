@@ -34,7 +34,7 @@ class Items
             $amzItem = \Modules\TcbAmazonSync\Models\Amazon\Item::where('item_id', $item->id)->first();
             $sku = $amzItem->sku;
 
-            $view->getFactory()->startPush('header_button_end', view('tcb-amazon-sync::partials.items.edit',  compact('item', 'mwsSettings', 'amzItem', 'sku')));
+            $view->getFactory()->startPush('header_button_end', view('tcb-amazon-sync::partials.items.edit',  compact('item', 'mwsSettings',  'amzItem', 'sku')));
 
             $view->getFactory()->startPush('name_input_end', view('tcb-amazon-sync::partials.items.ean', compact('item', 'amzItem')));
 

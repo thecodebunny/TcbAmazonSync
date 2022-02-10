@@ -61,7 +61,7 @@ class Order extends Controller
         
         $xml = new Xml;
         $shippingDate = date('Y-m-d\TH:i:sP', strtotime('now'));
-        $feedContents = $xml->creatShippingConfirmationFeed($country, $amzOrderId, $tId, $tId2, $tId3, $tId4, $tId5, $shippingDate, $carrier, $this->settings->seller_id);
+        $feedContents = $xml->createPricingFeed($country, $amzOrderId, $tId, $tId2, $tId3, $tId4, $tId5, $shippingDate, $carrier, $this->settings->seller_id);
 
         //return $feedContents;
         $feedType = FeedType::POST_ORDER_FULFILLMENT_DATA;
@@ -81,7 +81,7 @@ class Order extends Controller
         $dbFeed->feed_document_id = $feedDocumentInfo->getFeedDocumentId();
         $dbFeed->api_type = 'SP';
         $dbFeed->url = $feedDocumentInfo->getUrl();
-        $dbFeed->country = $country;
+        $dbFeed->country = $item->country;
         $dbFeed->save();
 
         dump($feedContents);

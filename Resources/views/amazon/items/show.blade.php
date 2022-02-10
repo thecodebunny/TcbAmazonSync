@@ -61,6 +61,112 @@
 
             <div class="card ">
                 <div class="card-header with-border">
+                    <h3 class="mb-0">{{ trans('tcb-amazon-sync::items.amazon.marketplaces') }}</h3>
+                </div>
+                <div class="card-header border-bottom-0 show-transaction-card-header">
+                    <b class="text-sm font-weight-600">{{ trans('tcb-amazon-sync::items.amazon.uk') }}</b>
+                    <a class="float-right text-xs">
+                        @if($item->is_uploaded_uk)
+                            <span class="btn btn-success btn-sm "><i class="fas fa-check-circle"></i></span>
+                        @else
+                            <span class="btn btn-danger btn-sm "><i class="fas fa-times-circle"></i></span>
+                        @endif
+                    </a>
+                </div>
+                <div class="card-header border-bottom-0 show-transaction-card-header">
+                    <b class="text-sm font-weight-600">{{ trans('tcb-amazon-sync::items.amazon.de') }}</b>
+                    <a class="float-right text-xs">
+                        @if($item->is_uploaded_de)
+                            <span class="btn btn-success btn-sm "><i class="fas fa-check-circle"></i></span>
+                        @else
+                            <span class="btn btn-danger btn-sm "><i class="fas fa-times-circle"></i></span>
+                        @endif
+                    </a>
+                </div>
+                <div class="card-header border-bottom-0 show-transaction-card-header">
+                    <b class="text-sm font-weight-600">{{ trans('tcb-amazon-sync::items.amazon.fr') }}</b>
+                    <a class="float-right text-xs">
+                        @if($item->is_uploaded_fr)
+                            <span class="btn btn-success btn-sm "><i class="fas fa-check-circle"></i></span>
+                        @else
+                            <span class="btn btn-danger btn-sm "><i class="fas fa-times-circle"></i></span>
+                        @endif
+                    </a>
+                </div>
+                <div class="card-header border-bottom-0 show-transaction-card-header">
+                    <b class="text-sm font-weight-600">{{ trans('tcb-amazon-sync::items.amazon.it') }}</b>
+                    <a class="float-right text-xs">
+                        @if($item->is_uploaded_it)
+                            <span class="btn btn-success btn-sm "><i class="fas fa-check-circle"></i></span>
+                        @else
+                            <span class="btn btn-danger btn-sm "><i class="fas fa-times-circle"></i></span>
+                        @endif
+                    </a>
+                </div>
+                <div class="card-header border-bottom-0 show-transaction-card-header">
+                    <b class="text-sm font-weight-600">{{ trans('tcb-amazon-sync::items.amazon.es') }}</b>
+                    <a class="float-right text-xs">
+                        @if($item->is_uploaded_es)
+                            <span class="btn btn-success btn-sm "><i class="fas fa-check-circle"></i></span>
+                        @else
+                            <span class="btn btn-danger btn-sm "><i class="fas fa-times-circle"></i></span>
+                        @endif
+                    </a>
+                </div>
+                <div class="card-header border-bottom-0 show-transaction-card-header">
+                    <b class="text-sm font-weight-600">{{ trans('tcb-amazon-sync::items.amazon.se') }}</b>
+                    <a class="float-right text-xs">
+                        @if($item->is_uploaded_se)
+                            <span class="btn btn-success btn-sm "><i class="fas fa-check-circle"></i></span>
+                        @else
+                            <span class="btn btn-danger btn-sm "><i class="fas fa-times-circle"></i></span>
+                        @endif
+                    </a>
+                </div>
+                <div class="card-header border-bottom-0 show-transaction-card-header">
+                    <b class="text-sm font-weight-600">{{ trans('tcb-amazon-sync::items.amazon.nl') }}</b>
+                    <a class="float-right text-xs">
+                        @if($item->is_uploaded_nl)
+                            <span class="btn btn-success btn-sm "><i class="fas fa-check-circle"></i></span>
+                        @else
+                            <span class="btn btn-danger btn-sm "><i class="fas fa-times-circle"></i></span>
+                        @endif
+                    </a>
+                </div>
+                <div class="card-header border-bottom-0 show-transaction-card-header">
+                    <b class="text-sm font-weight-600">{{ trans('tcb-amazon-sync::items.amazon.pl') }}</b>
+                    <a class="float-right text-xs">
+                        @if($item->is_uploaded_pl)
+                            <span class="btn btn-success btn-sm "><i class="fas fa-check-circle"></i></span>
+                        @else
+                            <span class="btn btn-danger btn-sm "><i class="fas fa-times-circle"></i></span>
+                        @endif
+                    </a>
+                </div>
+                <div class="card-header border-bottom-0 show-transaction-card-header">
+                    <b class="text-sm font-weight-600">{{ trans('tcb-amazon-sync::items.amazon.us') }}</b>
+                    <a class="float-right text-xs">
+                        @if($item->is_uploaded_us)
+                            <span class="btn btn-success btn-sm "><i class="fas fa-check-circle"></i></span>
+                        @else
+                            <span class="btn btn-danger btn-sm "><i class="fas fa-times-circle"></i></span>
+                        @endif
+                    </a>
+                </div>
+                <div class="card-header border-bottom-0 show-transaction-card-header">
+                    <b class="text-sm font-weight-600">{{ trans('tcb-amazon-sync::items.amazon.ca') }}</b>
+                    <a class="float-right text-xs">
+                        @if($item->is_uploaded_ca)
+                            <span class="btn btn-success btn-sm "><i class="fas fa-check-circle"></i></span>
+                        @else
+                            <span class="btn btn-danger btn-sm "><i class="fas fa-times-circle"></i></span>
+                        @endif
+                    </a>
+                </div>
+            </div>
+
+            <div class="card ">
+                <div class="card-header with-border">
                     <h3 class="mb-0">{{ trans('tcb-amazon-sync::items.attributes') }}</h3>
                 </div>
                 <div class="card-header border-bottom-0 show-transaction-card-header">
@@ -209,7 +315,11 @@
                                                 @foreach($orders as $order)
                                                     <tr class="row">
                                                         <th class="col-md-2">{{ $order->purchase_date }}</th>
-                                                        <th class="col-md-3">{{ $order->amazon_order_id }}</th>
+                                                        <th class="col-md-3">
+                                                            <a href="{{route('tcb-amazon-sync.amazon.orders.show', [$order->id])}}">
+                                                                {{ $order->amazon_order_id }}
+                                                            </a>
+                                                        </th>
                                                         <th class="col-md-2">{{ $order->marketplace }}</th>
                                                         <th class="col-md-2">{{ $order->order_status }}</th>
                                                         <th class="col-md-3">{{ $order->order_total }}</th>
@@ -233,7 +343,7 @@
                                 <div class="card-header border-bottom-0">
                                     <div class="row">
                                         <div class="col-12 card-header-search card-header-space">
-                                            <span class="table-text hidden-lg card-header-search-text">{{ trans('tcb-amazon-sync::items.show.sales') }}</span>
+                                            <span class="table-text hidden-lg card-header-search-text">{{ trans('tcb-amazon-sync::items.issues.issues') }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -243,7 +353,7 @@
                                         <thead class="thead-light">
                                             <tr class="row table-head-line">
                                                 <th class="col-md-2">{{trans('tcb-amazon-sync::items.issues.severity') }}</th>
-                                                <th class="col-md-2">{{ trans('tcb-amazon-sync::items.issues.message') }}</th>
+                                                <th class="col-md-8">{{ trans('tcb-amazon-sync::items.issues.message') }}</th>
                                                 <th class="col-md-2">{{ trans('tcb-amazon-sync::items.issues.attributenames') }}</th>
                                             </tr>
                                         </thead>
@@ -252,8 +362,8 @@
                                                 @foreach($issues as $issue)
                                                     <tr class="row">
                                                         <th class="col-md-2">{{ $issue->severity }}</th>
-                                                        <th class="col-md-3">{{ $issue->message }}</th>
-                                                        <th class="col-md-2">{{ $issue->attribute_names }}</th>
+                                                        <th class="col-md-8 text-wrap">{{ $issue->message }}</th>
+                                                        <th class="col-md-2 text-wrap">{{ $issue->attribute_names }}</th>
                                                     </tr>
                                                 @endforeach
                                             @endif

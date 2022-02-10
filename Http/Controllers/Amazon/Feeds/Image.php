@@ -7,48 +7,60 @@ use App\Abstracts\Http\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Modules\TcbAmazonSync\Models\Amazon\Feed;
 use Modules\TcbAmazonSync\Models\Amazon\Item;
+use Modules\TcbAmazonSync\Http\Controllers\Amazon\Xml;
 use Modules\TcbAmazonSync\Models\Amazon\SpApiSetting;
-use Illuminate\Support\Facades\Storage;
+use Modules\TcbAmazonSync\Models\Amazon\MwsApiSetting;
+use Modules\TcbAmazonSync\Models\Amazon\Order as AmzOrder;
 //Amazon SP API
-use Thecodebunny\AmazonSpApi\FeedType;
-use Thecodebunny\AmazonSpApi\Configuration;
-use Thecodebunny\AmazonSpApi\Api\CatalogApi;
-use Thecodebunny\AmazonSpApi\SellingPartnerOAuth;
-use Thecodebunny\AmazonSpApi\SellingPartnerRegion;
-use Thecodebunny\AmazonSpApi\SellingPartnerEndpoint;
-//Amazon MWS API
-use Thecodebunny\AmzMwsApi\AmazonReport;
-use Thecodebunny\AmzMwsApi\AmazonReportRequest;
-use Thecodebunny\AmzMwsApi\AmazonReportRequestList;
-use Thecodebunny\AmzMwsApi\AmazonInventoryList;
+use Thecodebunny\SpApi\Document;
+use Thecodebunny\SpApi\FeedType;
+use Thecodebunny\SpApi\Endpoint;
+use Thecodebunny\SpApi\Configuration;
+use Thecodebunny\SpApi\Api\FeedsApi;
+use Thecodebunny\SpApi\Api\CatalogApi;
+use Thecodebunny\SpApi\SellingPartnerOAuth;
+use Thecodebunny\SpApi\SellingPartnerRegion;
+use Thecodebunny\SpApi\SellingPartnerEndpoint;
+use Thecodebunny\SpApi\Model\Feeds\CreateFeedSpecification;
+use Thecodebunny\SpApi\Model\Feeds\CreateFeedDocumentSpecification;
 
-class Inventory extends Controller
+class Image extends Controller
 {
-
     private $config;
 
     public function __construct(Request $request)
     {
-        $settings = MwsApiSetting::where('company_id', Route::current()->parameter('company_id'))->first();
-        $this->config = [
-            'merchantId' => $settings->merchant_id,
-            'marketplaceId' => 'A1PA6795UKMFR9',
-            'keyId' => $settings->key_id,
-            'secretKey' => $settings->secret_key,
-            'amazonServiceUrl' => 'https://mws-eu.amazonservices.com/',
-        ];
+        $this->country = Route::current()->originalParameter('country');
+        $this->companyId = Route::current()->originalParameter('company_id');
+        $this->settings = SpApiSetting::where('company_id',$this->companyId )->first();
+        if ($this->country == 'Uk') {
+            $endpoint = Endpoint::EU;
+        }
+        $this->config = new Configuration([
+            "lwaClientId" => $this->settings->client_id,
+            "lwaClientSecret" => $this->settings->client_secret,
+            "lwaRefreshToken" => $this->settings->eu_token,
+            "awsAccessKeyId" => $this->settings->ias_access_key,
+            "awsSecretAccessKey" => $this->settings->ias_access_token,
+            "endpoint" => Endpoint::EU,
+            "roleArn" => $this->settings->iam_arn
+        ]);
+        $this->config->setDebug(false);
+        $this->config->setDebugFile('/var/www/go/storage/logs/spapi.log');
     }
 
-    public function createStockFeedDocument($id, $country, $qty)
+    public function createImageFeedDocument($id)
     {
         $item = Item::where('id', $id)->first();
+        var_dump($id);
         if ($item->country == 'Uk')
         {
             $mpIds = ['A1F83G8C2ARO7P'];
         }
-        $feedType = FeedType::POST_INVENTORY_AVAILABILITY_DATA;
+        $feedType = FeedType::POST_PRODUCT_IMAGE_DATA;
         $feedsApi = new FeedsApi($this->config);
         // Create feed document
         $createFeedDocSpec = new CreateFeedDocumentSpecification(['content_type' => $feedType['contentType']]);
@@ -60,15 +72,16 @@ class Inventory extends Controller
         if (! $dbFeed ) {
             $dbFeed = new Feed;
         }
-        $dbFeed->feed_type = 'POST_INVENTORY_AVAILABILITY_DATA';
+        $dbFeed->feed_type = 'POST_PRODUCT_IMAGE_DATA';
         $dbFeed->feed_document_id = $feedDocumentInfo->getFeedDocumentId();
         $dbFeed->api_type = 'SP';
         $dbFeed->url = $feedDocumentInfo->getUrl();
-        $dbFeed->country = $country;
+        $dbFeed->country = $item->country;
         $dbFeed->save();
         
         $xml = new Xml;
-        $feedContents = $xml->creatSingleInventoryFeed($item->sku, $qty, $this->settings->seller_id);
+        $feedContents = $xml->createImagesFeed($item->id, $this->settings->seller_id);
+        dump($feedContents);
         $docToUpload = new Document($feedDocumentInfo, $feedType);
         $docToUpload->upload($feedContents);
 
@@ -103,7 +116,7 @@ class Inventory extends Controller
         if ($result->getProcessingStatus() !== 'DONE') {
             $dbFeed->status = $result->getProcessingStatus();
             $dbFeed->save();
-            sleep(180);
+            sleep(60);
             $this->getFeed($dbFeed->feed_id);
         } else {
             $dbFeed->status = $result->getProcessingStatus();
@@ -111,7 +124,7 @@ class Inventory extends Controller
             $dbFeed->save();
             $this->getFeedDocument($dbFeed);
         }
-        //dump($result);
+        dump($result);
     }
 
     public function getFeedDocument($dbFeed)
@@ -120,8 +133,23 @@ class Inventory extends Controller
         $result = $apiInstance->getFeedDocument($dbFeed->result_feed_document_id);
         $dbFeed->result_feed_url = $result->getUrl();
         $dbFeed->save();
+        
         echo 'feed doc';
-        dump((file_get_contents($result->getUrl())));
+        $xml = file_get_contents($result->getUrl());
+        $xmlLoad = simplexml_load_string($xml);
+        $encoded = json_encode($xmlLoad);
+        $finalResult = json_decode($encoded);
+        dump($finalResult);
+        //$saleReponse['heading'] = '<h2 class="text-white">'. $finalResult['Message']['StatusCode'] .'</h2>';
+        //$saleReponse['message'] = 'Images Uploaded : ' . $finalResult['Message']['ProcessingSummary']['MessagesProcessed'] .'<br>';
+        //$saleReponse['message'] .= 'Images Succcessfully Uploaded : ' . $finalResult['Message']['ProcessingSummary']['MessagesSuccessful'] .'<br>';
+        //$saleReponse['message'] .= 'Images With Error : ' . $finalResult['Message']['ProcessingSummary']['MessagesWithError'] .'<br>';
+        //$saleReponse['message'] .= 'Images With Warning : ' . $finalResult['Message']['ProcessingSummary']['MessagesWithWarning'] .'<br>';
+        //dump($finalResult);
+        $response = [
+            'message' => $finalResult
+        ];
+        return $response;
     }
 
 }

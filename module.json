@@ -6,9 +6,12 @@
     "providers": [
         "Modules\\TcbAmazonSync\\Providers\\Event",
         "Modules\\TcbAmazonSync\\Providers\\Main",
-        "Modules\\TcbAmazonSync\\Providers\\DynamicRelations"
+        "Modules\\TcbAmazonSync\\Providers\\DynamicRelations",
+        "Yajra\\DataTables\\DataTablesServiceProvider"
     ],
-    "aliases": {},
+    "aliases": {
+        "DataTables": "Yajra\\DataTables\\Facades\\DataTables"
+    },
     "files": [],
     "requires": [],
     "reports": [],

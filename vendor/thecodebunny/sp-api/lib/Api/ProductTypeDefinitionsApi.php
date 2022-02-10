@@ -906,6 +906,8 @@ class ProductTypeDefinitionsApi
             $queryParams['keywords'] = $keywords;
         }
 
+        dump($keywords);
+
         // query params
         if (is_array($marketplace_ids)) {
             $marketplace_ids = ObjectSerializer::serializeCollection($marketplace_ids, 'form', true);

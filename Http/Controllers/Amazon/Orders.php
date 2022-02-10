@@ -90,13 +90,9 @@ class Orders extends Controller
 
     public function createOrders($orders)
     {
-        if (count($orders) > 1) {
-            foreach ($orders as $order) {
-                //sleep(30);
-                $this->createDbOrder($order);
-            }
-        } else {
-            $this->createDbOrder($orders);
+        foreach ($orders as $order) {
+            //sleep(30);
+            $this->createDbOrder($order);
         }
     }
     

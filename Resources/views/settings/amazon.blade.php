@@ -117,9 +117,8 @@ if (! $settings && empty($settings)) {
                 <label class="tcb-inlineblock" for="">{{ trans('tcb-amazon-sync::general.settings.apisetting.usa') }}</label>
             </div>
             <div class="card-footer with-border col-md-12">
-                <h3 class="card-title">{{ trans('tcb-amazon-sync::general.settings.cronupdate') }}</h3>
+                <h3 class="card-title pb-2">{{ trans('tcb-amazon-sync::general.settings.cronupdate') }}</h3>
             </div>
-
             <div class="row pt-3 pb-3 col-md-12 border-bottom border-top">
 
                 <div class="col-md-6 mb-3">

@@ -3,18 +3,26 @@
 namespace Modules\TcbAmazonSync\Models\Amazon;
 
 use App\Abstracts\Model;
+use Bkwld\Cloner\Cloneable;
 use App\Models\Banking\Transaction;
+use Kyslik\ColumnSortable\Sortable;
 use Modules\TcbAmazonSync\Models\Amazon\Warehouse;
 use Modules\TcbAmazonSync\Models\Amazon\Issue;
 use Modules\TcbAmazonSync\Models\Amazon\OrderItem;
-use Bkwld\Cloner\Cloneable;
 use Modules\Inventory\Database\Factories\Item as ItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Item extends Model
 {
+    use Sortable;
 
     protected $table = 'amazon_items';
+
+    public $sortable = [
+        'id',
+        'quantity',
+        'price'
+    ];
 
     protected $fillable = [
         'id',
@@ -37,7 +45,6 @@ class Item extends Model
         'color',
         'quantity',
         'lead_time_to_ship_max_days',
-        'size',
         'price',
         'category_id',
         'main_picture',
@@ -53,6 +60,15 @@ class Item extends Model
         'bullet_point_4',
         'bullet_point_5',
         'bullet_point_6',
+        'size',
+        'weight',
+        'weight_measure',
+        'length',
+        'length_measure',
+        'height',
+        'height_measure',
+        'width',
+        'width_measure',
     ];
 
     public function item()

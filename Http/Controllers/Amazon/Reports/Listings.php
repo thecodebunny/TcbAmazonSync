@@ -9,12 +9,16 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
+//Common
+use App\Models\Common\Item;
+
 //Module TCB Amazon Sync
-use Modules\TcbAmazonSync\Models\Amazon\Item;
+use Modules\TcbAmazonSync\Models\Amazon\Item as AmzItem;
 use Modules\TcbAmazonSync\Models\Amazon\Report as AmzReport;
 use Modules\TcbAmazonSync\Models\Amazon\SpApiSetting;
 use Modules\TcbAmazonSync\Models\Amazon\MwsApiSetting;
 use Modules\TcbAmazonSync\Http\Controllers\Amazon\Xml;
+use Modules\TcbAmazonSync\Http\Controllers\Amazon\SpApi;
 
 
 //Amazon SP API
@@ -31,10 +35,12 @@ class Listings extends Controller
     private $config;
     private $settings;
     private $companyId;
+    private $request;
     private $mpIds;
 
     public function __construct(Request $request)
     {
+        $this->request = $request;
         $this->country = Route::current()->originalParameter('country');
         $this->companyId = Route::current()->originalParameter('company_id');
         $this->settings = SpApiSetting::where('company_id',$this->companyId )->first();
@@ -118,7 +124,7 @@ class Listings extends Controller
         try {
             $result = $apiInstance->getReportDocument($report_document_id, $report_type);
             $fileName = $dbReport->report_id . '.txt';
-            $folder = '/reports/listings/' . date("Y-m-d") . '/' . $fileName;
+            $folder = '/reports/listings/'. $this->country .'/' . date("Y-m-d") . '/' . $fileName;
             $content = file_get_contents($result->getUrl());
             Storage::disk('public')->put($folder, $content, 'public');
             $dbReport->directory = $folder;
@@ -134,8 +140,70 @@ class Listings extends Controller
         $report = AmzReport::where('id', $id)->first();
         $directory = $report->directory;
         $content = Storage::disk('public')->get($directory);
+        $listings = explode(PHP_EOL, $content);
+        $listings = array_slice($listings, 1, -1);
+        foreach($listings as $listing) {
+            $item = explode("\t", $listing);
+            dump($item);
+            $dbItem = AmzItem::where('country', $this->country)->where('asin', $item[16])->where('sku', $item[3])->first();
+            if (! $dbItem || empty($dbItem)) {
+                $this->createNewCommonItem($item);
+            }
+        }
+    }
 
-        dump($content);
+    public function createNewCommonItem($item)
+    {
+        $cItem = new Item;
+        $cItem->company_id = $this->companyId;
+        $cItem->name = htmlspecialchars($item[0]);
+
+        if($item[5] && !empty($item[4])) {
+            $cItem->sale_price = $item[4];
+        } else {
+            $cItem->sale_price = 0;
+        }
+        
+        $cItem->purchase_price = 0;
+
+        if($item[5] && !empty($item[5])) {
+            $cItem->quantity = $item[5];
+        } else {
+            $cItem->quantity = 0;
+        }
+
+        $cItem->category_id = 5;
+        $cItem->save();
+        $amzItem = AmzItem::where('item_id', $cItem->id)->first();
+        if (! $amzItem || empty($amzItem)) {
+            $amzItem = new AmzItem;
+        }
+        $amzItem->country = $this->country;
+        $amzItem->company_id = $this->companyId;
+        $amzItem->item_id = $cItem->id;
+        $amzItem->sku = $item[3];
+        $amzItem->asin = $item[16];
+        $amzItem->title = $item[0];
+        if($item[5] && !empty($item[5])) {
+            $amzItem->quantity = $item[5];
+        } else {
+            $amzItem->quantity = 0;
+        }
+
+        if($item[5] && !empty($item[4])) {
+            $cItem->price = $item[4];
+        } else {
+            $cItem->price = 0;
+        }
+        
+        $amzItem->save();
+        $this->createUpdateAmzItem($amzItem->id, $this->country);
+    }
+
+    public function createUpdateAmzItem($id, $country)
+    {
+        $spApi = new SpApi($this->request);
+        $spApi->getAmzItem($id, $country);
     }
 
 }

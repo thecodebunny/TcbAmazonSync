@@ -2,12 +2,15 @@
 
 namespace Modules\TcbAmazonSync\Http\Controllers\Amazon;
 
+use DB;
+use Log;
 use App\Abstracts\Http\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Models\Banking\Transaction;
 use Illuminate\Support\Facades\Route;
 use App\Models\Common\Item as ComItem;
-use App\Models\Banking\Transaction;
+use Illuminate\Support\Facades\Storage;
 
 //TCB Amazon Sync
 use Modules\TcbAmazonSync\Models\Amazon\Item as AmzItem;
@@ -55,8 +58,10 @@ class Items extends Controller
     
     public function index()
     {
-        $items = AmzItem::where('company_id',$this->company_id)->where('country', $this->country)->paginate(50);
-        return view('tcb-amazon-sync::amazon.items.index', compact('items'));
+        $items = AmzItem::where('company_id',$this->company_id)->paginate(50);
+        $count = count($items);
+        $country = $this->country;
+        return view('tcb-amazon-sync::amazon.items.index', compact('count', 'country'));
     }
 
     public function create()
@@ -68,6 +73,170 @@ class Items extends Controller
     public function createItem()
     {
         
+    }
+
+    public function datatable(Request $request)
+    {
+        $columns = array( 
+            0 => 'id',
+            1 => 'title',
+            2 => 'sku',
+            3 => 'asin',
+            4 => 'warnings',
+            5 => 'category',
+            6 => 'quantity',
+            7 => 'price',
+            8 => 'action',
+        );
+
+        $items = DB::table('amazon_items')->where('deleted_at', NULL)->select('*');
+
+        $totalData = $items->count();
+
+        $totalFiltered = $totalData; 
+
+        $orderColumn = $request->input( 'order.0.column' );
+        $orderDirection = $request->input( 'order.0.dir' );
+        $length = $request->input( 'length' );
+        $start = $request->input( 'start' );
+
+        if ($request->has( 'search' )) {
+            if ($request->input( 'search.value' ) != '') {
+                $searchTerm = $request->input( 'search.value' );
+                
+                $items->Where( 'amazon_items.title', 'Like', '%' . $searchTerm . '%' )
+                        ->orWhere('amazon_items.keywords', 'LIKE',"%{$searchTerm}%")
+                        ->orWhere('amazon_items.sku', 'LIKE',"%{$searchTerm}%")
+                        ->orWhere('amazon_items.brand', 'LIKE',"%{$searchTerm}%")
+                        ->orWhere('amazon_items.asin', 'LIKE',"%{$searchTerm}%")
+                        ->orWhere('amazon_items.ean', 'LIKE',"%{$searchTerm}%")
+                        ->orWhere('amazon_items.description', 'LIKE',"%{$searchTerm}%")
+                        ->orWhere('amazon_items.category_id', 'LIKE',"%{$searchTerm}%")
+                        ->orWhere('amazon_items.bullet_point_1', 'LIKE',"%{$searchTerm}%")
+                        ->orWhere('amazon_items.bullet_point_2', 'LIKE',"%{$searchTerm}%")
+                        ->orWhere('amazon_items.bullet_point_3', 'LIKE',"%{$searchTerm}%")
+                        ->orWhere('amazon_items.bullet_point_4', 'LIKE',"%{$searchTerm}%")
+                        ->orWhere('amazon_items.bullet_point_5', 'LIKE',"%{$searchTerm}%")
+                        ->orWhere('amazon_items.bullet_point_6', 'LIKE',"%{$searchTerm}%");
+            }
+        }
+        
+        if ($request->has( 'order' )) {
+            if ($request->input( 'order.0.column' ) != '' && $request->input( 'order.0.column' ) != 4) {
+                $items->orderBy( $columns[intval( $orderColumn )], $orderDirection );
+            }
+        }
+
+        $totalFiltered = $items->count();
+
+        config()->set('database.connections.mysql.strict', false);
+        $items = $items->where('deleted_at', NULL)->orWhere('deleted_at', '')->get();
+        $items = $items->skip($start)->take($length);
+
+        $data = array();
+
+        if(!empty($items))
+        {
+            foreach ($items as $item)
+            {
+                if($item->deleted_at == NULL || empty($item->deleted_at)) {
+                if ($item->main_picture) {
+                    $mainPic = '<img src="'.asset('/public/' . $item->main_picture).'" class="avatar image-style p-1 mr-3 item-img hidden-md col-aka tcb-image" />';
+                } else {
+                    $mainPic = '<img src="'.asset('/public/tcb-amazon-sync/img/no-image.png').'" class="avatar image-style p-1 mr-3 item-img hidden-md col-aka tcb-image" />';
+                }
+
+                if ($item->otherseller_warning) {
+                    $warning = '<span style="color: #FFF !important" class="btn btn-danger btn-sm text-white" data-toggle="tooltip" data-placement="top" title=" '.trans('tcb-amazon-sync::items.warnings.otherseller') .'"><i class="fas fa-store"></i></span>';
+                } else {
+                    $warning = '';
+                }
+
+                if (! $item->keywords) {
+                    $keywords = '<span style="color: #FFF !important" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="'. trans('tcb-amazon-sync::items.warnings.keywords') .'"><i class="fas fa-key"></i></span>';
+                } else {
+                    $keywords = '';
+                }
+
+                if (strlen($item->title) < 150) {
+                    $title = '<span style="color: #FFF !important" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="'. trans('tcb-amazon-sync::items.warnings.shorttitle') .'"><i class="fas fa-heading"></i></span>';
+                } else {
+                    $title = '';
+                }
+
+                if (! $item->bullet_point_5) {
+                    $point = '<span style="color: #FFF !important" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="'. trans('tcb-amazon-sync::items.warnings.bulletpoints') .'"><i class="fas fa-list-ul"></i></span>';
+                } else {
+                    $point = '';
+                }
+
+                if (! $item->picture_6) {
+                    $pic = '<span style="color: #FFF !important" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="'. trans('tcb-amazon-sync::items.warnings.images') .'"><i class="fas fa-images"></i></span>';
+                } else {
+                    $pic = '';
+                }
+
+                if (! $item->description) {
+                    $desc = '<span style="color: #FFF !important" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="'. trans('tcb-amazon-sync::items.warnings.description') .'"><i class="fas fa-audio-description"></i></span>';
+                } else {
+                    $desc = '';
+                }
+
+                $allWarnings = $warning . $keywords . $title . $point . $pic . $desc;
+
+                if ($request->country == 'Uk' && !$item->is_uploaded_uk) {
+                    $uploadButton = '<a id="uploadAmazonItem" class="dropdown-item" data-url="'. route('tcb-amazon-sync.amazon.item.upload',  ['id' => $item->id, 'country' => 'Uk']) .'"><i class="fas fa-upload"></i>'. trans('tcb-amazon-sync::items.amazon.upload') .'</a>';
+                } elseif ($request->country == 'Uk' && $item->is_uploaded_uk) {
+                    $uploadButton = '<a id="updateAmazonItem" class="dropdown-item" data-url="'. route('tcb-amazon-sync.amazon.item.updateOnline',  ['id' => $item->id, 'country' => 'Uk']) .'"><i class="fas fa-upload"></i>'. trans('tcb-amazon-sync::items.amazon.updateonline') .'</a>';
+                }
+
+                $actions = '<div class="dropdown">
+                        <a class="btn btn-neutral btn-sm text-light items-align-center p-2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-ellipsis-h text-muted"></i>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
+                            <li>
+                                <a class="dropdown-item" href="'. route('tcb-amazon-sync.items.show', ['id' => $item->id, 'country' => $request->country]) .'">
+                                    <i class="fas fa-eye"></i> '. trans('general.show') .'
+                                </a>
+                            </li>
+                            <div class="dropdown-divider"></div>
+                            <li>
+                                <a class="dropdown-item" href="'. route('tcb-amazon-sync.amazon.asinsetup', $item->item_id) .'">
+                                    <i class="fas fa-edit"></i> '. trans('general.edit') .'
+                                </a>
+                            </li>
+                            <div class="dropdown-divider"></div>
+                            <li>
+                                ' . $uploadButton . '
+                            </li>
+                        </ul>
+                    </div>';
+                
+                $nestedData['id'] = $item->id;
+                $nestedData['title'] = $mainPic . ' <a href="'. route('tcb-amazon-sync.items.show', ['id' => $item->id, 'country' => $request->country]) .'">' . substr($item->title,0,30).'...</a>';
+                $nestedData['sku'] = $item->sku;
+                $nestedData['asin'] = $item->asin;
+                $nestedData['warnings'] = $allWarnings;
+                $nestedData['category'] = $item->category_id;
+                $nestedData['quantity'] = $item->quantity;
+                $nestedData['price'] = $item->price;
+                $nestedData['action'] = $actions;
+
+                $data[] = $nestedData;
+                }
+
+            }
+        }
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),  
+            "recordsTotal"    => intval($totalData),  
+            "recordsFiltered" => intval($totalFiltered), 
+            "data"            => $data   
+        );
+
+        return $json_data; 
     }
 
     public function edit($id, $country)
@@ -95,16 +264,34 @@ class Items extends Controller
         $amzItem = AmzItem::where('item_id', $request->get('item_id'))->where('id', $request->get('id'))->first();
         $picFolder = 'items/'. strtolower($amzItem->country) .'/'. $amzItem->asin;
 
+        if(! $request->get('currency_code')) {
+            
+        }
+
         $amzItem->item_id = $request->get('item_id');
         $amzItem->enable = $request->get('enable');
         $amzItem->ean = $request->get('ean');
         $amzItem->asin = $request->get('asin');
         $amzItem->packaging = $request->get('packaging');
+        $amzItem->product_type = $request->get('product_type');
         $amzItem->sku = $request->get('sku');
+        $amzItem->brand = $request->get('brand');
+        $amzItem->height = $request->get('height');
+        $amzItem->length = $request->get('length');
+        $amzItem->width = $request->get('width');
+        $amzItem->weight = $request->get('weight');
+        $amzItem->material = $request->get('material');
+        $amzItem->country_of_origin = $request->get('country_of_origin');
         $amzItem->sale_price = $request->get('sale_price');
+        $amzItem->sale_start_date = $request->get('sale_start_date');
+        $amzItem->sale_end_date = $request->get('sale_end_date');
+        $amzItem->currency_code = $request->get('currency_code');
         $amzItem->price = $request->get('price');
+        $amzItem->category_id = $request->get('category_id');
         $amzItem->quantity = $request->get('quantity');
         $amzItem->title = $request->get('title');
+        $amzItem->size = $request->get('size');
+        $amzItem->color = $request->get('color');
         $amzItem->warehouse = $request->get('warehouse');
         $amzItem->bullet_point_1 = $request->get('bullet_point_1');
         $amzItem->bullet_point_2 = $request->get('bullet_point_2');
@@ -113,98 +300,90 @@ class Items extends Controller
         $amzItem->bullet_point_5 = $request->get('bullet_point_5');
         $amzItem->bullet_point_6 = $request->get('bullet_point_6');
         $amzItem->description = $request->get('description');
+        $amzItem->keywords = $request->get('keywords');
+        $amzItem->weight_measure = $request->get('weight_measure');
+        $amzItem->height_measure = $request->get('height_measure');
+        $amzItem->width_measure = $request->get('width_measure');
+        $amzItem->length_measure = $request->get('length_measure');
+        $amzItem->lead_time_to_ship_max_days = $request->get('lead_time_to_ship_max_days');
 
         // Upload Main Image
         if ($request->file('main_picture')) {
             $mainPic = $request->file('main_picture');
             $fileName   = $mainPic->getClientOriginalName();
-            $newPath = $picFolder .'/' .$fileName;
-            $path = $request->file('main_picture')->storeAs(
-                $picFolder, $fileName, 'local'
+            $picFolder = 'items/'. $amzItem->country .'/'. $request->get('asin') . '/mainImage/';
+            Storage::disk('public')->deleteDirectory('items/'. $amzItem->country .'/'. $request->get('asin') . '/mainImage/');
+            $request->file('main_picture')->storeAs(
+                $picFolder, $fileName, 'public'
             );
-            if ($amzItem->main_picture && $amzItem->main_picture !== $newPath) {
-                Storage::delete($amzItem->main_picture);
-            }
-            $amzItem->main_picture = $path;
+            $amzItem->main_picture = $picFolder .'/'. $fileName;
         }
 
         // Upload Other Images
         if ($request->file('picture_1')) {
             $pic1 = $request->file('picture_1');
-            $fileName   = '1-' . $amzItem->uk_asin;
-            $pic1Path = $picFolder .'/' .$fileName;
-            $path1 = $request->file('picture_1')->storeAs(
+            $fileName   = $pic1->getClientOriginalName();
+            $picFolder = 'items/'. $amzItem->country .'/'. $request->get('asin') . '/variants/';
+            Storage::disk('public')->delete($amzItem->picture_1);
+            $request->file('picture_1')->storeAs(
                 $picFolder, $fileName, 'public'
             );
-            if ($amzItem->picture_1 && $amzItem->picture_1 !== $pic1Path) {
-                Storage::delete($amzItem->picture_1);
-            }
-            $amzItem->picture_1 = $path1;
+            $amzItem->picture_1 = $picFolder .'/'. $fileName;
         }
 
         if ($request->file('picture_2')) {
             $pic2 = $request->file('picture_2');
-            $fileName   = '2-' . $amzItem->uk_asin;
-            $pic2Path = $picFolder .'/mainImage/' .$fileName;
-            $path2 = $request->file('picture_2')->storeAs(
+            $fileName   = $pic2->getClientOriginalName();
+            $picFolder = 'items/'. $amzItem->country .'/'. $request->get('asin') . '/variants/';
+            Storage::disk('public')->delete($amzItem->picture_2);
+            $request->file('picture_2')->storeAs(
                 $picFolder, $fileName, 'public'
             );
-            if ($amzItem->picture_2 && $amzItem->picture_2 !== $pic2Path) {
-                Storage::delete($amzItem->picture_2);
-            }
-            $amzItem->picture_2 = $path2;
+            $amzItem->picture_2 = $picFolder .'/'. $fileName;
         }
 
         if ($request->file('picture_3')) {
             $pic3 = $request->file('picture_3');
-            $fileName   = '3-' . $amzItem->uk_asin;
-            $pic3Path = $picFolder .'/variants/' .$fileName;
-            $path3 = $request->file('picture_3')->storeAs(
+            $fileName   = $pic3->getClientOriginalName();
+            $picFolder = 'items/'. $amzItem->country .'/'. $request->get('asin') . '/variants/';
+            Storage::disk('public')->delete($amzItem->picture_3);
+            $request->file('picture_3')->storeAs(
                 $picFolder, $fileName, 'public'
             );
-            if ($amzItem->picture_3 && $amzItem->picture_3 !== $pic3Path) {
-                Storage::delete($amzItem->picture_3);
-            }
-            $amzItem->picture_3 = $path3;
+            $amzItem->picture_3 = $picFolder .'/'. $fileName;
         }
 
         if ($request->file('picture_4')) {
             $pic4 = $request->file('picture_4');
-            $fileName   = '4-' . $amzItem->uk_asin;
-            $pic4Path = $picFolder .'/variants/' .$fileName;
-            $path4 = $request->file('picture_4')->storeAs(
+            $fileName   = $pic4->getClientOriginalName();
+            $picFolder = 'items/'. $amzItem->country .'/'. $request->get('asin') . '/variants/';
+            Storage::disk('public')->delete($amzItem->picture_4);
+            $request->file('picture_4')->storeAs(
                 $picFolder, $fileName, 'public'
             );
-            if ($amzItem->picture_4 && $amzItem->picture_4 !== $pic4Path) {
-                Storage::delete($amzItem->picture_4);
-            }
-            $amzItem->picture_4 = $path4;
+            $amzItem->picture_4 = $picFolder .'/'. $fileName;
         }
 
         if ($request->file('picture_5')) {
             $pic5 = $request->file('picture_5');
-            $fileName   = '5-' . $amzItem->uk_asin;
-            $pic5Path = $picFolder .'/' .$fileName;
-            $path5 = $request->file('picture_5')->storeAs(
+            $fileName   = $pic5->getClientOriginalName();
+            $picFolder = 'items/'. $amzItem->country .'/'. $request->get('asin') . '/variants/';
+            Storage::disk('public')->delete($amzItem->picture_5);
+            $request->file('picture_5')->storeAs(
                 $picFolder, $fileName, 'public'
             );
-            if ($amzItem->picture_5 && $amzItem->picture_5 !== $pic5Path) {
-                Storage::delete($amzItem->picture_5);
-            }
-            $amzItem->picture_5 = $path5;
+            $amzItem->picture_5 = $picFolder .'/'. $fileName;
         }
 
         if ($request->file('picture_6')) {
             $pic6 = $request->file('picture_6');
-            $fileName   = '6-' . $amzItem->uk_asin;
-            $pic6Path = $picFolder .'/' .$fileName;
-            $path6 = $request->file('picture_6')->storeAs(
+            $fileName   = $pic6->getClientOriginalName();
+            $picFolder = 'items/'. $amzItem->country .'/'. $request->get('asin') . '/variants/';
+            Storage::disk('public')->delete($amzItem->picture_6);
+            $request->file('picture_6')->storeAs(
                 $picFolder, $fileName, 'public'
             );
-            if ($amzItem->picture_6 && $amzItem->picture_6 !== $pic6Path) {
-                Storage::delete($amzItem->picture_6);
-            }
-            $amzItem->picture_6 = $path6;
+            $amzItem->picture_6 = $picFolder .'/'. $fileName;
         }
 
         $amzItem->save();
@@ -226,8 +405,6 @@ class Items extends Controller
 
             flash($message)->error()->important();
         }
-        // return $this->response('tcb-amazon-sync::amazon.formoutput', compact('file'));
-        // return $request; 
         response()->json($response);
 
     }
