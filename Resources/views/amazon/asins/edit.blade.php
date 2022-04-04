@@ -2,6 +2,9 @@
 
 @section('title', trans('general.title.edit', ['type' => trans_choice('general.items', 1)]))
 
+@section('new_button')
+@endsection
+
 @section('content')
     <div class="p-3 mb-3 bg-danger tcb-warning text-white text-center">
         <span>{{trans('tcb-amazon-sync::items.skuwarning')}}</span>
@@ -12,7 +15,7 @@
             <ul class="nav nav-pills nav-justified" id="amazonTab" role="tablist">
                 @if ($settings->uk)
                 <li class="nav-item">
-                    <a class="nav-link active" id="uk-tab" data-toggle="tab" href="#ukAsin" role="tab" aria-controls="home" aria-selected="true">{{trans('tcb-amazon-sync::items.amazon.uk')}}@empty($uk_item) @if($uk_item->otherseller_warning) <span style="background: rgb(158, 1, 1); color: white; padding: 5px" class="fa fa-bug"> </span>@endif @endempty</a>
+                    <a class="nav-link active" id="uk-tab" data-toggle="tab" href="#ukAsin" role="tab" aria-controls="home" aria-selected="true">{{trans('tcb-amazon-sync::items.amazon.uk')}}<span style="background: rgb(158, 1, 1); color: white; padding: 5px" class="fa fa-bug"> </span></a>
                 </li>
                 @endif
                 @if ($settings->de)
@@ -53,10 +56,8 @@
             </ul>
             <div class="tab-content" id="pills-tabContent">
                 @if ($settings->uk)
-                    @if ($amzItem && !empty($amzItem))
-                        @include('tcb-amazon-sync::amazon.asins.forms.ukedit')
-                    @else
-                        @include('tcb-amazon-sync::amazon.asins.forms.ukcreate')
+                    @if ($amzItems['Uk'] && !empty($amzItems['Uk']))
+                        @include('tcb-amazon-sync::amazon.asins.forms.edit', array('country'=>'Uk'))
                     @endif
                 @endif
             </div>

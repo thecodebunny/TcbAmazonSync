@@ -1,0 +1,1 @@
+<script src="{{ asset('modules/TcbAmazonSync/Resources/assets/js/main.js?v=' . module_version('tcb-amazon-sync')) }}"></script>

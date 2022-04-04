@@ -18,12 +18,6 @@ use Modules\TcbAmazonSync\Models\Amazon\Item as AmzItem;
 use Modules\TcbAmazonSync\Models\Amazon\Asin as AmzAsin;
 use Modules\TcbAmazonSync\Models\Amazon\Order as AmzOrder;
 use Modules\TcbAmazonSync\Models\Amazon\OrderItem as AmzOrderItem;
-//Amazon SP API
-use Thecodebunny\AmazonSpApi\Configuration;
-use Thecodebunny\AmazonSpApi\Api\CatalogApi;
-use Thecodebunny\AmazonSpApi\SellingPartnerOAuth;
-use Thecodebunny\AmazonSpApi\SellingPartnerRegion;
-use Thecodebunny\AmazonSpApi\SellingPartnerEndpoint;
 //Amazon MWS API
 use Thecodebunny\AmzMwsApi\AmazonOrderList;
 use Thecodebunny\AmzMwsApi\AmazonProductList;
@@ -91,7 +85,7 @@ class Orders extends Controller
     public function createOrders($orders)
     {
         foreach ($orders as $order) {
-            //sleep(30);
+            sleep(30);
             $this->createDbOrder($order);
         }
     }
@@ -110,6 +104,7 @@ class Orders extends Controller
             $dbOrder = AmzOrder::where('company_id', $this->company_id)->where('amazon_order_id', $order->getAmazonOrderId())->first();
             if ($dbOrder && !empty($dbOrder)) {
                 $dbOrder->order_status = 'Canceled';
+                $dbOrder->save();
             }
         }
     }
@@ -132,6 +127,7 @@ class Orders extends Controller
         $dbCustomer->created_from = 'Amazon API';
         $dbCustomer->currency_code = $currency;
         dump($address->getShippingAddress());
+        if ($address->getShippingAddress()) {
         if ($address->getShippingAddress()->getAddressLine1()) {
             $line1 = $address->getShippingAddress()->getAddressLine1() . '<br>';
         } else {
@@ -183,6 +179,7 @@ class Orders extends Controller
             $phone = '';
         }
         $dbCustomer->address = $line1 . $line2 . $line3 . $city . $county . $disctrict . $state . $zipcode . $countrycode . $phone;
+        }
         $dbCustomer->city = $city;
         $dbCustomer->zip_code = $zipcode;
         if ($countrycode == 'GB') {$dbCustomer->country = 'United Kingdom';}
@@ -308,6 +305,12 @@ class Orders extends Controller
             $dbItem->sku = $amzItem->sku;
             $dbItem->save();
         }
+    }
+
+    public function testApi($id)
+    {
+        $order = $this->spApi->getOrderBuyer($id);
+        dump($order);
     }
 
 }

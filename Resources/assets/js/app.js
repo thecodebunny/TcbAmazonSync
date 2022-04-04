@@ -1,6 +1,6 @@
 $("#sidenav-main").addClass("sidebar");
 var base_host = window.location.host;
-$('link[rel=stylesheet][href*="argon.css"]').attr('href', '//modules/TcbAmazonSync/Resources/assets/argon/css/argon.css?v=1.7.5');
+$('link[rel=stylesheet][href*="argon.css"]').attr('href', '/modules/TcbAmazonSync/Resources/assets/argon/css/argon.css?v=1.7.5');
 $('link[rel=stylesheet][href*="custom.css"]').remove();
 $('link[rel=stylesheet][href*="akaunting-color.css"]').remove();
 $('#amazonTab a').on('click', function(e) {

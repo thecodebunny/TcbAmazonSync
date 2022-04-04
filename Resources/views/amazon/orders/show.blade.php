@@ -3,13 +3,13 @@
 @section('title', trans('tcb-amazon-sync::orders.amzorder'))
 
 @section('new_button')
-    @if(! $order->tracking_id_1)
+    @if($order->order_status !== 'Shipped')
         <a data-toggle="modal" data-target="#confirmShipment" class="btn btn-danger btn-sm text-white">
             {{ trans('tcb-amazon-sync::orders.ship') }}
         </a>
     @endif
-    <a href="{{ route('tcb-amazon-sync.amazon.orders.edit', [$order->id]) }}" class="btn btn-warning btn-sm">
-        {{ trans('tcb-amazon-sync::orders.edit') }}
+    <a href="{{ route('tcb-amazon-sync.amazon.orders.index') }}" class="btn btn-warning btn-sm">
+        {{ trans('tcb-amazon-sync::orders.allorders') }}
     </a>
 @endsection
 
@@ -152,7 +152,7 @@
                                     @foreach($order->items as $item)
                                     <tr class="align-items-center border-top-1">
                                         <td class="p-2">
-                                            <img src="{{ asset('/public/'. $item->image) }}" width="80">
+                                            <img src="{{ $item->image }}" width="80">
                                         </td>
                                         <td class="p-2 text-center">
                                             <a class="">{{ $item->quantity }}</a>

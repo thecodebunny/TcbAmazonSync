@@ -43,6 +43,7 @@ return [
     'updateamazon'      => 'Update Value on Amazon',
     'refreshwarning'    => 'Update specific value on Amazon by clicking on refresh button next the input field.',
     'skuwarning'        => 'Do not change the SKU of product, as Amazon Selling Partner API only accepts the SKU as product identifier.',
+    'backtoindex'       => 'Back to All Items',
     'bulletpoints'      => 'Bullet Points',
     'brandnew'          => 'Add New Brand',
     'weightmeasure'     => 'Weight Measurement Unit',

@@ -3,6 +3,7 @@
 return [
     'edit'                  => 'Edit Order',
     'sales'                 => 'Sales',
+    'allorders'             => 'All Orders',
     'amzorderid'            => 'Amazon Order ID',
     'marketplace'           => 'Marketplace',
     'Status'                => 'Status',
@@ -32,7 +33,7 @@ return [
     'trackingid3'           => 'Tracking ID 3',
     'trackingid4'           => 'Tracking ID 4',
     'trackingid5'           => 'Tracking ID 5',
-    'amzchannel'           => 'Amazon Channel',
+    'amzchannel'            => 'Amazon Channel',
     'orderitems'            => 'Ordered Items',
     'editcustomer'          => 'Edit Customer',
     'othercustomerorders'   => 'Other orders from this customer',

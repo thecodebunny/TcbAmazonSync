@@ -573,7 +573,7 @@ class ListingsApi
             try {
                 $response = $this->client->send($signedRequest, $options);
             } catch (RequestException $e) {
-                throw new ApiException(
+                return new ApiException(
                     "[{$e->getCode()}] {$e->getResponse()->getBody()->getContents()}",
                     $e->getCode(),
                     $e->getResponse() ? $e->getResponse()->getHeaders() : null,

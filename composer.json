@@ -2,7 +2,8 @@
     "require": {
         "thecodebunny/pa-api": "dev-main",
         "thecodebunny/sp-api": "dev-main",
-        "thecodebunny/amz-mws-api": "dev-main"
+        "thecodebunny/amz-mws-api": "dev-main",
+        "yajra/laravel-datatables-oracle": "~9.0"
     },
     "replace": {
         "guzzlehttp/guzzle": "*",
@@ -15,5 +16,8 @@
         "test": [
             "composer install --prefer-dist --no-interaction --no-scripts --no-suggest --no-progress --no-ansi"
         ]
+    },
+    "require-dev": {
+        "bennett-treptow/laravel-migration-generator": "^4.2"
     }
 }

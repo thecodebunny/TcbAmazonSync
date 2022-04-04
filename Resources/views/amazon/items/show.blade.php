@@ -8,6 +8,7 @@
 
 @section('new_button')
     <a href="{{ route('tcb-amazon-sync.amazon.asinsetup', ['item_id' => $item->item_id]) }}" class="btn btn-white btn-sm">{{ trans('general.edit') }} Item</a>
+    <a href="{{ route('tcb-amazon-sync.amazon.items.index', [$country]) }}" class="btn btn-info btn-sm">{{ trans('tcb-amazon-sync::items.backtoindex') }}</a>
     @if($item->otherseller_warning)
         <span class="btn btn-warning btn-sm text-white" title="{{ trans('tcb-amazon-sync::items.warnings.otherseller') }}"><i class="fas fa-exclamation-circle"></i> </span>
     @endif
@@ -22,7 +23,7 @@
         <div class="col-md-3">
             <div class='card'>
                 <div class="card-header border-bottom-0 show-transaction-card-header">
-                    <img class="text-sm font-weight-600 img-center tcb-image" src="{{ $item->main_picture ? asset('/public/' . $item->main_picture) : asset('/public/tcb-amazon-sync/img/no-image.png') }}" class="img-thumbnail" height="200" width="200" alt="{{ $item->title }}">
+                    <img class="text-sm font-weight-600 img-center tcb-image" src="{{ $item->main_picture ? $item->main_picture : asset('/public/tcb-amazon-sync/img/no-image.png') }}" class="img-thumbnail" height="200" width="200" alt="{{ $item->title }}">
                 </div>
             </div>
 

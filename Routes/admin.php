@@ -92,6 +92,7 @@ Route::admin('tcb-amazon-sync', function () {
         Route::get('/amazon-updateimages/{id}', 'Amazon\Feeds\Image@createImageFeedDocument')->name('amazon.updateImages');
 
         //Orders APIs
+        Route::get('/amazon-testApi/{country}', 'Amazon\SpApi@testOrders')->name('amazon.testApi');
         Route::get('/amazon-getOrderAddress/{orderid}', 'Amazon\SpApi@getOrderAddress')->name('amazon.getOrderAddress');
         Route::get('/amazon-confirmshipment/{amzOrderId}/{tid}/{tid2}/{tid3}/{tid4}/{tid5}/{id}/{carrier}', 'Amazon\Feeds\Order@createShippingConfirmationFeedDocument')->name('amazon.confirmordershipment');
 

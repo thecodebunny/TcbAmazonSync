@@ -5,6 +5,7 @@ namespace Modules\TcbAmazonSync\Providers;
 use App\Models\Common\Item;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider as Provider;
 
 class Main extends Provider
@@ -30,13 +31,33 @@ class Main extends Provider
         $this->loadViewComponents();
         $this->loadTranslations();
         $this->loadMigrations();
-        //$this->loadConfig();
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \Modules\TcbAmazonSync\Console\DownloadOrders::class,
+                \Modules\TcbAmazonSync\Console\UpdateItemsOnAmazon::class,
+                \Modules\TcbAmazonSync\Console\UpdateItemsInErp::class,
+            ]);
+        }
         Item::observe('Modules\TcbAmazonSync\Observers\Common\Item');
+        View::composer(
+            ['layouts.admin', 'partials.admin.footer'], 'Modules\TcbAmazonSync\Http\ViewComposers\Admin'
+        );
+        View::composer(
+            ['partials.admin.navbar'], 'Modules\TcbAmazonSync\Http\ViewComposers\NavBar'
+        );
         View::composer(
             ['common.items.create', 'common.items.edit'], 'Modules\TcbAmazonSync\Http\ViewComposers\Items'
         );
         View::composer(
             ['tcb-amazon-sync::items.edit'], 'Modules\TcbAmazonSync\Http\ViewComposers\Categories'
+        );
+
+        $this->registerStorage();
+    
+        // Merge configs
+        $this->mergeConfigFrom(
+            __DIR__ . '/../Config/filesystems.php',
+            'digitalocean'
         );
     }
 
@@ -109,6 +130,23 @@ class Main extends Provider
         foreach ($routes as $route) {
             $this->loadRoutesFrom(__DIR__ . '/../Routes/' . $route);
         }
+    }
+
+    protected function registerStorage()
+    {
+        $module= 'tcb-amazon-sync';
+        Config::set('filesystems.disks.do', [
+            'driver' => 's3',
+            'key' => 'Q3IGNROGHI2VGP26UG5U',
+            'secret' => 'uorBsrtCWgVE+JaamtozLYY+Ad/zdKjh/Uz/o6KWJT4',
+            'region' => 'fra1',
+            'bucket' => 'zoomyoerp',
+            'folder' => '/ERP/Amazon/',
+            'url' => 'https://zoomyoerp.fra1.digitaloceanspaces.com/',
+            'endpoint' => 'https://zoomyoerp.fra1.digitaloceanspaces.com',
+            'bucket_endpoint' => true,
+            'visibility' => 'public',
+        ]);
     }
 
     /**

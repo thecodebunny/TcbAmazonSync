@@ -1,6 +1,6 @@
 @extends('tcb-amazon-sync::layouts.tcbmaster')
 
-@section('title', trans_choice('general.items', 2))
+@section('title', trans_choice('tcb-amazon-sync::orders.sales', 2))
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('modules/TcbAmazonSync/Resources/assets/css/tcb.css?v=' . module_version('tcb-amazon-sync')) }}" type="text/css">
@@ -28,9 +28,9 @@
             <thead class="thead-light">
                 <tr class="row table-head-line">
                     <th class="col-sm-2 col-md-2 col-lg-1 col-xl-1 d-none d-sm-block">{{ Form::bulkActionAllGroup() }}</th>
-                    <th class="col-xs-4 col-sm-4 col-md-3 col-lg-1 col-xl-1">@sortablelink('purchase_date', trans('general.date'), ['filter' => 'active, visible'], ['class' => 'col-aka', 'rel' => 'nofollow'])</th>
-                    <th class="col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2 text-right">@sortablelink('order_total', trans('general.amount'))</th>
-                    <th class="col-md-2 col-lg-3 col-xl-3 d-none d-md-block text-left">{{ trans_choice('tcb-amazon-sync::orders.status', 1)}}</th>
+                    <th class="col-xs-4 col-sm-2 col-md-2 col-lg-1 col-xl-1">@sortablelink('purchase_date', trans('general.date'), ['filter' => 'active, visible'], ['class' => 'col-aka', 'rel' => 'nofollow'])</th>
+                    <th class="col-xs-4 col-sm-2 col-md-2 col-lg-2 col-xl-2 text-right">@sortablelink('order_total', trans('general.amount'))</th>
+                    <th class="col-md-2 col-lg-2 col-xl-2 d-none d-md-block text-center">{{ trans_choice('tcb-amazon-sync::orders.status', 1)}}</th>
                     <th class="col-xs-4 col-sm-4 col-md-3 col-lg-2 col-xl-2 text-right">{{ trans('tcb-amazon-sync::orders.amzchannel') }}</th>
                     <th class="col-md-2 col-lg-3 col-xl-3 d-none d-md-block text-left">{{ trans_choice('general.customers', 1)}}</th>
                     <th class="col-xs-4 col-sm-2 col-md-2 col-lg-1 col-xl-1 text-center"><a>{{ trans('general.actions') }}</a></th>

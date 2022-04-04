@@ -1,0 +1,11 @@
+.amazon {
+    background: black;
+    text-align: center;
+    border-radius: 100%;
+    padding-right: 6px !important;
+    padding-left: 6px !important;
+}
+
+.amazon span {
+    color: orange !important;
+}

@@ -1,13 +1,15 @@
 $(document).ready(function() {
     $(function() {
-        $('input.datepicker').datepicker({
-            dateFormat: 'yy-mm-dd',
-            showButtonPanel: true,
-            changeMonth: true,
-            changeYear: true,
-            defaultDate: +0,
-            showAnim: "drop"
-        });
+        if ($('input.datepicker').length) {
+            $('input.datepicker').datepicker({
+                dateFormat: 'yy-mm-dd',
+                showButtonPanel: true,
+                changeMonth: true,
+                changeYear: true,
+                defaultDate: +0,
+                showAnim: "drop"
+            });
+        }
     });
 
 
@@ -68,12 +70,17 @@ $(document).ready(function() {
                 cache: false,
                 contentType: false,
                 success: function(response) {
-                    if (response.status == 500) {
-                        alert(response.responseText);
+                    console.log(response);
+                    if (response.statusmessage == 'SUCCESS') {
+                        $('#successModal .modal-content').addClass('bg-gradient-success');
                     } else {
-                        $('#successMsgAmazon').show();
+                        $('#successModal .modal-content').addClass('bg-gradient-danger');
                     }
-                    console.log(response.status);
+                    $('#successModal .modal-header .modal-title').html(response.heading);
+                    $('#successModal .modal-body').html(response.message);
+                    $('#successModal').addClass('show');
+                    $('#successModal').show('slow');
+                    $('body').addClass('modal-open');
                 },
                 error: function(response) {
                     console.log(response);

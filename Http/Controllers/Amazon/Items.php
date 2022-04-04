@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Banking\Transaction;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Config;
 use App\Models\Common\Item as ComItem;
 use Illuminate\Support\Facades\Storage;
 
@@ -141,7 +142,7 @@ class Items extends Controller
             {
                 if($item->deleted_at == NULL || empty($item->deleted_at)) {
                 if ($item->main_picture) {
-                    $mainPic = '<img src="'.asset('/public/' . $item->main_picture).'" class="avatar image-style p-1 mr-3 item-img hidden-md col-aka tcb-image" />';
+                    $mainPic = '<img src="'. $item->main_picture . '" class="avatar image-style p-1 mr-3 item-img hidden-md col-aka tcb-image" />';
                 } else {
                     $mainPic = '<img src="'.asset('/public/tcb-amazon-sync/img/no-image.png').'" class="avatar image-style p-1 mr-3 item-img hidden-md col-aka tcb-image" />';
                 }
@@ -261,6 +262,7 @@ class Items extends Controller
 
     public function updateItem(Request $request)
     {
+        $settings = Setting::where('company_id', $this->company_id)->first();
         $amzItem = AmzItem::where('item_id', $request->get('item_id'))->where('id', $request->get('id'))->first();
         $picFolder = 'items/'. strtolower($amzItem->country) .'/'. $amzItem->asin;
 
@@ -310,80 +312,80 @@ class Items extends Controller
         // Upload Main Image
         if ($request->file('main_picture')) {
             $mainPic = $request->file('main_picture');
-            $fileName   = $mainPic->getClientOriginalName();
-            $picFolder = 'items/'. $amzItem->country .'/'. $request->get('asin') . '/mainImage/';
-            Storage::disk('public')->deleteDirectory('items/'. $amzItem->country .'/'. $request->get('asin') . '/mainImage/');
-            $request->file('main_picture')->storeAs(
-                $picFolder, $fileName, 'public'
+            $fileName   = 'main-' . $mainPic->getClientOriginalName();
+            $picFolder = $settings->folder . '/' . $amzItem->asin . '/' . $amzItem->country;
+            Storage::disk('do')->delete(str_replace($settings->url,'',$amzItem->main_picture));
+            Storage::disk('do')->put(
+                $picFolder . '/' . $fileName, file_get_contents($request->file('main_picture'))
             );
-            $amzItem->main_picture = $picFolder .'/'. $fileName;
+            $amzItem->main_picture = $settings->url . '/'. $picFolder .'/'. $fileName;
         }
 
         // Upload Other Images
         if ($request->file('picture_1')) {
             $pic1 = $request->file('picture_1');
-            $fileName   = $pic1->getClientOriginalName();
-            $picFolder = 'items/'. $amzItem->country .'/'. $request->get('asin') . '/variants/';
-            Storage::disk('public')->delete($amzItem->picture_1);
-            $request->file('picture_1')->storeAs(
-                $picFolder, $fileName, 'public'
+            $fileName   = '1-' . $amzItem->asin . '-' . $pic1->getClientOriginalName();
+            $picFolder = $settings->folder . '/' . $amzItem->asin . '/' . $amzItem->country;
+            Storage::disk('do')->delete(str_replace($settings->url,'',$amzItem->picture_1));
+            Storage::disk('do')->put(
+                $picFolder . '/' . $fileName, file_get_contents($request->file('picture_1'))
             );
-            $amzItem->picture_1 = $picFolder .'/'. $fileName;
+            $amzItem->picture_1 = $settings->url . '/'. $picFolder .'/'. $fileName;
         }
 
         if ($request->file('picture_2')) {
             $pic2 = $request->file('picture_2');
-            $fileName   = $pic2->getClientOriginalName();
-            $picFolder = 'items/'. $amzItem->country .'/'. $request->get('asin') . '/variants/';
-            Storage::disk('public')->delete($amzItem->picture_2);
-            $request->file('picture_2')->storeAs(
-                $picFolder, $fileName, 'public'
+            $fileName   = '2-' . $amzItem->asin . '-' . $pic2->getClientOriginalName();
+            $picFolder = $settings->folder . '/' . $amzItem->asin . '/' . $amzItem->country;
+            Storage::disk('do')->delete(str_replace($settings->url,'',$amzItem->picture_2));
+            Storage::disk('do')->put(
+                $picFolder . '/' . $fileName, file_get_contents($request->file('picture_2'))
             );
-            $amzItem->picture_2 = $picFolder .'/'. $fileName;
+            $amzItem->picture_2 = $settings->url . '/'. $picFolder .'/'. $fileName;
         }
 
         if ($request->file('picture_3')) {
             $pic3 = $request->file('picture_3');
-            $fileName   = $pic3->getClientOriginalName();
-            $picFolder = 'items/'. $amzItem->country .'/'. $request->get('asin') . '/variants/';
-            Storage::disk('public')->delete($amzItem->picture_3);
-            $request->file('picture_3')->storeAs(
-                $picFolder, $fileName, 'public'
+            $fileName   = '3-' . $amzItem->asin . '-' . $pic3->getClientOriginalName();
+            $picFolder = $settings->folder . '/' . $amzItem->asin . '/' . $amzItem->country;
+            Storage::disk('do')->delete(str_replace($settings->url,'',$amzItem->picture_3));
+            Storage::disk('do')->put(
+                $picFolder . '/' . $fileName, file_get_contents($request->file('picture_3'))
             );
-            $amzItem->picture_3 = $picFolder .'/'. $fileName;
+            $amzItem->picture_3 = $settings->url . '/'. $picFolder .'/'. $fileName;
         }
 
         if ($request->file('picture_4')) {
             $pic4 = $request->file('picture_4');
-            $fileName   = $pic4->getClientOriginalName();
-            $picFolder = 'items/'. $amzItem->country .'/'. $request->get('asin') . '/variants/';
-            Storage::disk('public')->delete($amzItem->picture_4);
-            $request->file('picture_4')->storeAs(
-                $picFolder, $fileName, 'public'
+            $fileName   = '4-' . $amzItem->asin . '-' . $pic4->getClientOriginalName();
+            $picFolder = $settings->folder . '/' . $amzItem->asin . '/' . $amzItem->country;
+            Storage::disk('do')->delete(str_replace($settings->url,'',$amzItem->picture_4));
+            Storage::disk('do')->put(
+                $picFolder . '/' . $fileName, file_get_contents($request->file('picture_4'))
             );
-            $amzItem->picture_4 = $picFolder .'/'. $fileName;
+            $amzItem->picture_4 = $settings->url . '/'. $picFolder .'/'. $fileName;
         }
 
         if ($request->file('picture_5')) {
             $pic5 = $request->file('picture_5');
-            $fileName   = $pic5->getClientOriginalName();
-            $picFolder = 'items/'. $amzItem->country .'/'. $request->get('asin') . '/variants/';
-            Storage::disk('public')->delete($amzItem->picture_5);
-            $request->file('picture_5')->storeAs(
-                $picFolder, $fileName, 'public'
+            $fileName   = '5-' . $amzItem->asin . '-' . $pic5->getClientOriginalName();
+            $picFolder = $settings->folder . '/' . $amzItem->asin . '/' . $amzItem->country;
+            Storage::disk('do')->delete(str_replace($settings->url,'',$amzItem->picture_5));
+            Storage::disk('do')->put(
+                $picFolder . '/' . $fileName, file_get_contents($request->file('picture_5'))
             );
-            $amzItem->picture_5 = $picFolder .'/'. $fileName;
+            $amzItem->picture_5 = $settings->url . '/'. $picFolder .'/'. $fileName;
         }
 
         if ($request->file('picture_6')) {
             $pic6 = $request->file('picture_6');
-            $fileName   = $pic6->getClientOriginalName();
-            $picFolder = 'items/'. $amzItem->country .'/'. $request->get('asin') . '/variants/';
-            Storage::disk('public')->delete($amzItem->picture_6);
-            $request->file('picture_6')->storeAs(
-                $picFolder, $fileName, 'public'
+            $fileName   = '6-' . $amzItem->asin . '-' . $pic6->getClientOriginalName();
+            $picFolder = $settings->folder . '/' . $amzItem->asin . '/' . $amzItem->country;
+            Storage::disk('do')->delete(str_replace($settings->url,'',$amzItem->picture_6));
+            Storage::disk('do')->put(
+                $picFolder . '/' . $fileName, file_get_contents($request->file('picture_6'))
             );
-            $amzItem->picture_6 = $picFolder .'/'. $fileName;
+            $amzItem->picture_6 = $settings->url . '/'. $picFolder .'/'. $fileName;
         }
 
         $amzItem->save();
@@ -397,7 +399,7 @@ class Items extends Controller
 
         if ($response['success']) {
 
-            $message = trans('messages.success.updated', ['type' => trans_choice('general.settings', 2)]);
+            $message = trans('messages.success.updated', ['type' => trans_choice('general.settings', 2)]) . config('filesystems.do.folder');
 
             flash($message)->success();
         } else {
@@ -406,6 +408,7 @@ class Items extends Controller
             flash($message)->error()->important();
         }
         response()->json($response);
+        return config('tcb-amazon-sync::filesystems.do.endpoint') . '/'. config('tcb-amazon-sync::filesystems.do.folder');
 
     }
 

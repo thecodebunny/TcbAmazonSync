@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use App\Models\Common\Item as ComItem;
+use Modules\TcbAmazonSync\Models\Amazon\Item as AmzItem;
 use Modules\TcbAmazonSync\Models\Amazon\Brand;
 use Modules\TcbAmazonSync\Models\Amazon\Setting;
 use Modules\TcbAmazonSync\Models\Amazon\Warehouse;
@@ -56,28 +57,171 @@ class Main extends Controller
         $pTypes = ProductType::all();
         $brands = Brand::all();
         $currencies = \App\Models\Setting\Currency::all();
-        if($amzItem->country = 'Uk') {
-            $uk_item = true;
-            $uk_type = Categories::where('uk_node_id', $amzItem->category_id)->first();
-            if($uk_type) {$uk_cat_name = $uk_type->node_path;} else {$uk_cat_name = '';};
-        } else {
-            $uk_item == false;
+        if($settings->uk) {
+            $dbUkItem = AmzItem::where('item_id', $item_id)->where('country', 'Uk')->where('company_id', $this->company_id)->first();
+            if (!$dbUkItem) {
+                $amzItems['Uk']['item'] = $this->createAmzItem($item, 'Uk');
+                $amzItems['Uk']['cat_name'] = '';
+            } else {
+                $amzItems['Uk']['item'] = $dbUkItem;
+                $cat = Categories::where('uk_node_id', $dbUkItem->category_id)->first();
+                if($cat) {
+                    $amzItems['Uk']['cat_name'] = $cat->node_path;
+                } else {
+                    $amzItems['Uk']['cat_name'] = '';
+                }
+            }
+        }
+        if($settings->de) {
+            $dbDeItem = AmzItem::where('item_id', $item_id)->where('country', 'De')->where('company_id', $this->company_id)->first();
+            if (!$dbDeItem) {
+                $amzItems['De']['item'] = $this->createAmzItem($item, 'De');
+                $amzItems['De']['cat_name'] = '';
+            } else {
+                $amzItems['De']['item'] = $dbDeItem;
+                $cat = Categories::where('uk_node_id', $dbDeItem->category_id)->first();
+                if($cat) {
+                    $amzItems['De']['cat_name'] = $cat->node_path;
+                } else {
+                    $amzItems['De']['cat_name'] = '';
+                }
+            }
+        }
+        if($settings->fr) {
+            $dbFrItem = AmzItem::where('item_id', $item_id)->where('country', 'Fr')->where('company_id', $this->company_id)->first();
+            if (!$dbFrItem) {
+                $amzItems['Fr']['item'] = $this->createAmzItem($item, 'Fr');
+                $amzItems['Fr']['cat_name'] = '';
+            } else {
+                $amzItems['Fr']['item'] = $dbFrItem;
+                $cat = Categories::where('uk_node_id', $dbFrItem->category_id)->first();
+                if($cat) {
+                    $amzItems['Fr']['cat_name'] = $cat->node_path;
+                } else {
+                    $amzItems['Fr']['cat_name'] = '';
+                }
+            }
+        }
+        if($settings->it) {
+            $dbItItem = AmzItem::where('item_id', $item_id)->where('country', 'It')->where('company_id', $this->company_id)->first();
+            if (!$dbItItem) {
+                $amzItems['It']['item'] = $this->createAmzItem($item, 'It');
+                $amzItems['It']['cat_name'] = '';
+            } else {
+                $amzItems['It']['item'] = $dbItItem;
+                $cat = Categories::where('uk_node_id', $dbItItem->category_id)->first();
+                if($cat) {
+                    $amzItems['It']['cat_name'] = $cat->node_path;
+                } else {
+                    $amzItems['It']['cat_name'] = '';
+                }
+            }
+        }
+        if($settings->es) {
+            $dbEsItem = AmzItem::where('item_id', $item_id)->where('country', 'Es')->where('company_id', $this->company_id)->first();
+            if (!$dbEsItem) {
+                $amzItems['Es']['item'] = $this->createAmzItem($item, 'Es');
+                $amzItems['Es']['cat_name'] = '';
+            } else {
+                $amzItems['Es']['item'] = $dbEsItem;
+                $cat = Categories::where('uk_node_id', $dbEsItem->category_id)->first();
+                if($cat) {
+                    $amzItems['Es']['cat_name'] = $cat->node_path;
+                } else {
+                    $amzItems['Es']['cat_name'] = '';
+                }
+            }
+        }
+        if($settings->se) {
+            $dbSeItem = AmzItem::where('item_id', $item_id)->where('country', 'Se')->where('company_id', $this->company_id)->first();
+            if (!$dbSeItem) {
+                $amzItems['Se']['item'] = $this->createAmzItem($item, 'Se');
+                $amzItems['Se']['cat_name'] = '';
+            } else {
+                $amzItems['Se']['item'] = $dbSeItem;
+                $cat = Categories::where('uk_node_id', $dbSeItem->category_id)->first();
+                if($cat) {
+                    $amzItems['Se']['cat_name'] = $cat->node_path;
+                } else {
+                    $amzItems['Se']['cat_name'] = '';
+                }
+            }
+        }
+        if($settings->nl) {
+            $dbNlItem = AmzItem::where('item_id', $item_id)->where('country', 'Nl')->where('company_id', $this->company_id)->first();
+            if (!$dbNlItem) {
+                $amzItems['Nl']['item'] = $this->createAmzItem($item, 'Nl');
+                $amzItems['Nl']['cat_name'] = '';
+            } else {
+                $amzItems['Nl']['item'] = $dbNlItem;
+                $cat = Categories::where('uk_node_id', $dbNlItem->category_id)->first();
+                if($cat) {
+                    $amzItems['Nl']['cat_name'] = $cat->node_path;
+                } else {
+                    $amzItems['Nl']['cat_name'] = '';
+                }
+            }
+        }
+        if($settings->pl) {
+            $dbPlItem = AmzItem::where('item_id', $item_id)->where('country', 'Pl')->where('company_id', $this->company_id)->first();
+            if (!$dbPlItem) {
+                $amzItems['Pl']['item'] = $this->createAmzItem($item, 'Pl');
+                $amzItems['Pl']['cat_name'] = '';
+            } else {
+                $amzItems['Pl']['item'] = $dbPlItem;
+                $cat = Categories::where('uk_node_id', $dbPlItem->category_id)->first();
+                if($cat) {
+                    $amzItems['Pl']['cat_name'] = $cat->node_path;
+                } else {
+                    $amzItems['Pl']['cat_name'] = '';
+                }
+            }
+        }
+        if($settings->us) {
+            $dbUsItem = AmzItem::where('item_id', $item_id)->where('country', 'Us')->where('company_id', $this->company_id)->first();
+            if (!$dbUsItem) {
+                $amzItems['Us']['item'] = $this->createAmzItem($item, 'Us');
+                $amzItems['Us']['cat_name'] = '';
+            } else {
+                $amzItems['Us']['item'] = $dbUsItem;
+                $cat = Categories::where('uk_node_id', $dbUsItem->category_id)->first();
+                if($cat) {
+                    $amzItems['Us']['cat_name'] = $cat->node_path;
+                } else {
+                    $amzItems['Us']['cat_name'] = '';
+                }
+            }
         }
 
         return $this->response(
             'tcb-amazon-sync::amazon.asins.edit', 
             compact(
                 'item', 
-                'amzItem',
-                'uk_item',
+                'amzItems',
                 'settings', 
                 'brands', 
-                'uk_cat_name',
                 'warehouses',
                 'pTypes',
                 'currencies'
             )
         );
+    }
+
+    public function createAmazonItem($item, $country)
+    {
+        $brand = Brand::where('default_brand', 1)->first();
+        $warehouse = Warehouse::where('default_warehouse', 1)->first();
+        $dbItem = new AmzItem;
+        $dbItem->item_id = $item->id;
+        $dbItem->brand = $brand->id;
+        $dbItem->country = $country;
+        $dbItem->company_id = $this->company_id;
+        $dbItem->warehouse = $warehouse->id;
+        $dbItem->quantity = $item->quantity;
+        $dbItem->title = $item->name;
+        $dbItem->description = $item->description;
+        $dbItem->save();
+        return $dbItem;
     }
 
     public function ptIndex()

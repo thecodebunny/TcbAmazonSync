@@ -46,12 +46,19 @@ class Settings extends Controller
         $settings->se = $request->get('se');
         $settings->nl = $request->get('nl');
         $settings->pl = $request->get('pl');
+        $settings->do_access_key = $request->get('do_access_key');
+        $settings->do_secret_key = $request->get('do_secret_key');
+        $settings->region = $request->get('region');
+        $settings->bucket = $request->get('bucket');
+        $settings->folder = $request->get('folder');
+        $settings->url = $request->get('url');
+        $settings->endpoint = $request->get('endpoint');
         $settings->items_update_on_amazon_cron = $request->get('items_update_on_amazon_cron');
         $settings->items_update_on_amazon_cron_frequency = $request->get('items_update_on_amazon_cron_frequency');
+        $settings->items_update_in_erp_cron = $request->get('items_update_in_erp_cron');
+        $settings->items_update_in_erp_cron_frequency = $request->get('items_update_in_erp_cron_frequency');
         $settings->orders_download_cron = $request->get('orders_download_cron');
         $settings->orders_download_cron_frequency = $request->get('orders_download_cron_frequency');
-        $settings->orders_update_cron = $request->get('orders_update_cron');
-        $settings->orders_update_cron_frequency = $request->get('orders_updatecron_frequency');
 
         $settings->save();
         return redirect(route('tcb-amazon-sync.amazon.settings'));

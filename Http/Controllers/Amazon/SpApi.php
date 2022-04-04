@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Modules\TcbAmazonSync\Models\Amazon\Item;
 use Modules\TcbAmazonSync\Models\Amazon\Issue;
 use Modules\TcbAmazonSync\Models\Amazon\Aplus;
+use Modules\TcbAmazonSync\Models\Amazon\Setting;
 use Modules\TcbAmazonSync\Models\Amazon\Categories;
 use Modules\TcbAmazonSync\Models\Amazon\ProductType;
 use Modules\TcbAmazonSync\Models\Amazon\SpApiSetting;
@@ -43,6 +44,7 @@ class SpApi extends Controller
     private $settings;
     private $companyId;
     private $request;
+    private $basesettings;
 
     public function __construct(Request $request)
     {
@@ -50,6 +52,7 @@ class SpApi extends Controller
         $this->country = Route::current()->originalParameter('country');
         $this->companyId = Route::current()->originalParameter('company_id');
         $this->settings = SpApiSetting::where('company_id',$this->companyId )->first();
+        $this->basesettings = Setting::where('company_id',$this->companyId )->first();
         if ($this->country == 'Uk') {
             $endpoint = Endpoint::EU;
         }
@@ -140,6 +143,46 @@ class SpApi extends Controller
         if ($item->country == 'Uk') {
             $mpId = 'A1F83G8C2ARO7P';
             $item->is_uploaded_uk = true;
+            $item->save();
+        }
+        if($dbItem->country == 'De'){
+            $mpId = ['A1PA6795UKMFR9'];
+            $item->is_uploaded_de = true;
+            $item->save();
+        }
+        if($dbItem->country == 'Fr'){
+            $mpId = ['A13V1IB3VIYZZH'];
+            $item->is_uploaded_fr = true;
+            $item->save();
+        }
+        if($dbItem->country == 'It'){
+            $mpId = ['APJ6JRA9NG5V4'];
+            $item->is_uploaded_it = true;
+            $item->save();
+        }
+        if($dbItem->country == 'Es'){
+            $mpId = ['A1RKKUPIHCS9HS'];
+            $item->is_uploaded_es = true;
+            $item->save();
+        }
+        if($dbItem->country == 'Se'){
+            $mpId = ['A2NODRKZP88ZB9'];
+            $item->is_uploaded_se = true;
+            $item->save();
+        }
+        if($dbItem->country == 'Nl'){
+            $mpId = ['A1805IZSGTT6HS'];
+            $item->is_uploaded_nl = true;
+            $item->save();
+        }
+        if($dbItem->country == 'Pl'){
+            $mpId = ['A1C3SOZRARQ6R3'];
+            $item->is_uploaded_pl = true;
+            $item->save();
+        }
+        if($dbItem->country == 'Us'){
+            $mpId = ['ATVPDKIKX0DER'];
+            $item->is_uploaded_us = true;
             $item->save();
         }
         if($item->asin) {
@@ -333,10 +376,10 @@ class SpApi extends Controller
             'product_description'=> $itemDescription,
         ];
         $body->setAttributes($attributes);
-        dump($attributes);
+        //dump($attributes);
         try {
             $result = $apiInstance->putListingsItem($this->settings->seller_id, $item->sku, $mpId, $body, $issue_locale);
-            dump($result);
+            //dump($result);
             if($result->getStatus() == 'ACCEPTED') {
                 if ($this->country == 'Uk') {
                     $item->is_uploaded_uk = true;
@@ -385,7 +428,7 @@ class SpApi extends Controller
                     }
                 }
             }
-            dump($itemResponse);
+            //dump($itemResponse);
             return $itemResponse;
         } catch (Exception $e) {
             echo 'Exception when calling ListingsApi->putListingsItem: ', $e->getMessage(), PHP_EOL;
@@ -398,6 +441,38 @@ class SpApi extends Controller
         if ($this->country == 'Uk') {
             $mpIds = 'A1F83G8C2ARO7P';
             $items = Item::where('company_id', $this->companyId)->where('country', $this->country)->where('is_uploaded_uk', true)->all();
+        }
+        if($dbItem->country == 'De'){
+            $mpIds = ['A1PA6795UKMFR9'];
+            $items = Item::where('company_id', $this->companyId)->where('country', $this->country)->where('is_uploaded_de', true)->all();
+        }
+        if($dbItem->country == 'Fr'){
+            $mpIds = ['A13V1IB3VIYZZH'];
+            $items = Item::where('company_id', $this->companyId)->where('country', $this->country)->where('is_uploaded_fr', true)->all();
+        }
+        if($dbItem->country == 'It'){
+            $mpIds = ['APJ6JRA9NG5V4'];
+            $items = Item::where('company_id', $this->companyId)->where('country', $this->country)->where('is_uploaded_it', true)->all();
+        }
+        if($dbItem->country == 'Es'){
+            $mpIds = ['A1RKKUPIHCS9HS'];
+            $items = Item::where('company_id', $this->companyId)->where('country', $this->country)->where('is_uploaded_es', true)->all();
+        }
+        if($dbItem->country == 'Se'){
+            $mpIds = ['A2NODRKZP88ZB9'];
+            $items = Item::where('company_id', $this->companyId)->where('country', $this->country)->where('is_uploaded_se', true)->all();
+        }
+        if($dbItem->country == 'Nl'){
+            $mpIds = ['A1805IZSGTT6HS'];
+            $items = Item::where('company_id', $this->companyId)->where('country', $this->country)->where('is_uploaded_nl', true)->all();
+        }
+        if($dbItem->country == 'Pl'){
+            $mpIds = ['A1C3SOZRARQ6R3'];
+            $items = Item::where('company_id', $this->companyId)->where('country', $this->country)->where('is_uploaded_pl', true)->all();
+        }
+        if($dbItem->country == 'Us'){
+            $mpIds = ['ATVPDKIKX0DER'];
+            $items = Item::where('company_id', $this->companyId)->where('country', $this->country)->where('is_uploaded_us', true)->all();
         }
         $issue_locale = 'en_US';
         $seller_id = $this->settings->seller_id;
@@ -421,6 +496,30 @@ class SpApi extends Controller
         if ($dbItem->country == 'Uk') {
             $mpIds = 'A1F83G8C2ARO7P';
         }
+        if($dbItem->country == 'De'){
+            $mpIds = ['A1PA6795UKMFR9'];
+        }
+        if($dbItem->country == 'Fr'){
+            $mpIds = ['A13V1IB3VIYZZH'];
+        }
+        if($dbItem->country == 'It'){
+            $mpIds = ['APJ6JRA9NG5V4'];
+        }
+        if($dbItem->country == 'Es'){
+            $mpIds = ['A1RKKUPIHCS9HS'];
+        }
+        if($dbItem->country == 'Se'){
+            $mpIds = ['A2NODRKZP88ZB9'];
+        }
+        if($dbItem->country == 'Nl'){
+            $mpIds = ['A1805IZSGTT6HS'];
+        }
+        if($dbItem->country == 'Pl'){
+            $mpIds = ['A1C3SOZRARQ6R3'];
+        }
+        if($dbItem->country == 'Us'){
+            $mpIds = ['ATVPDKIKX0DER'];
+        }
         $apiInstance = new ListingsApi($this->config);
         $included_data = ['summaries','attributes','issues','offers','fulfillmentAvailability'];
         $result = $apiInstance->getListingsItem($this->settings->seller_id, $dbItem->sku, $mpIds, $issue_locale, $included_data);
@@ -435,6 +534,30 @@ class SpApi extends Controller
         if ($dbItem->country == 'Uk') {
             $mpIds = 'A1F83G8C2ARO7P';
         }
+        if($dbItem->country == 'De'){
+            $mpIds = ['A1PA6795UKMFR9'];
+        }
+        if($dbItem->country == 'Fr'){
+            $mpIds = ['A13V1IB3VIYZZH'];
+        }
+        if($dbItem->country == 'It'){
+            $mpIds = ['APJ6JRA9NG5V4'];
+        }
+        if($dbItem->country == 'Es'){
+            $mpIds = ['A1RKKUPIHCS9HS'];
+        }
+        if($dbItem->country == 'Se'){
+            $mpIds = ['A2NODRKZP88ZB9'];
+        }
+        if($dbItem->country == 'Nl'){
+            $mpIds = ['A1805IZSGTT6HS'];
+        }
+        if($dbItem->country == 'Pl'){
+            $mpIds = ['A1C3SOZRARQ6R3'];
+        }
+        if($dbItem->country == 'Us'){
+            $mpIds = ['ATVPDKIKX0DER'];
+        }
         $apiInstance = new ListingsApi($this->config);
         $included_data = ['summaries','attributes','issues','offers','fulfillmentAvailability'];
         try {
@@ -447,7 +570,7 @@ class SpApi extends Controller
 
     public function updateAmazonItem($item, $dbItem)
     {
-        dump($item);
+        //dump($item);
         $summary = $item->getSummaries();
         $fulfill = $item->getFulfillmentAvailability();
         $attributes = $item->getAttributes();
@@ -527,61 +650,67 @@ class SpApi extends Controller
             }
             if (array_key_exists('main_product_image_locator', $attributes)) {
                 $mainPic = file_get_contents($attributes['main_product_image_locator'][0]->media_location);
-                $mainName = basename($attributes['main_product_image_locator'][0]->media_location);
-                $picFolder = 'items/'. $this->country .'/'. $dbItem->asin . '/mainImage/' . $mainName;
-                Storage::disk('public')->deleteDirectory('items/'. $this->country .'/'. $dbItem->asin . '/mainImage/');
-                Storage::disk('public')->put($picFolder, $mainPic, 'public');
-                $dbItem->main_picture = $picFolder;
+                $mainName = 'main-' . basename($attributes['main_product_image_locator'][0]->media_location);
+                $picFolder = $this->basesettings->folder . '/' . $dbItem->asin . '/' . $dbItem->country;
+                Storage::disk('do')->delete(str_replace($this->basesettings->url,'',$dbItem->main_picture));
+                Storage::disk('do')->put($picFolder . '/' . $mainName, $mainPic);
+                $dbItem->main_picture = $this->basesettings->url . '/'. $picFolder .'/'. $mainName;
             }
-            Storage::disk('public')->deleteDirectory('items/'. $this->country .'/'. $dbItem->asin . '/variants/');
             if (array_key_exists('other_product_image_locator_1', $attributes)) {
-                $pic1 = file_get_contents($attributes['other_product_image_locator_1'][0]->media_location);
-                $pic1Name = basename($attributes['other_product_image_locator_1'][0]->media_location);
-                $pic1Folder = 'items/'. $this->country .'/'. $dbItem->asin . '/variants/1-' . $pic1Name;
-                Storage::disk('public')->put($pic1Folder, $pic1, 'public');
-                $dbItem->picture_1 = $pic1Folder;
+                $fileContent = file_get_contents($attributes['other_product_image_locator_1'][0]->media_location);
+                $fileName = '1-' . basename($attributes['other_product_image_locator_1'][0]->media_location);
+                $picFolder = $this->basesettings->folder . '/' . $dbItem->asin . '/' . $dbItem->country;
+                Storage::disk('do')->delete(str_replace($this->basesettings->url,'',$dbItem->picture_1));
+                Storage::disk('do')->put($picFolder . '/' . $fileName, $fileContent);
+                $dbItem->picture_1 = $this->basesettings->url . '/'. $picFolder .'/'. $fileName;
             }
             if (array_key_exists('other_product_image_locator_2', $attributes)) {
-                $pic2 = file_get_contents($attributes['other_product_image_locator_2'][0]->media_location);
-                $pic2Name = basename($attributes['other_product_image_locator_2'][0]->media_location);
-                $pic2Folder = 'items/'. $this->country .'/'. $dbItem->asin . '/variants/2-' . $pic2Name;
-                Storage::disk('public')->put($pic2Folder, $pic2, 'public');
-                $dbItem->picture_2 = $pic2Folder;
+                $fileContent = file_get_contents($attributes['other_product_image_locator_2'][0]->media_location);
+                $fileName = '2-' . basename($attributes['other_product_image_locator_2'][0]->media_location);
+                $picFolder = $this->basesettings->folder . '/' . $dbItem->asin . '/' . $dbItem->country;
+                Storage::disk('do')->delete(str_replace($this->basesettings->url,'',$dbItem->picture_2));
+                Storage::disk('do')->put($picFolder . '/' . $fileName, $fileContent);
+                $dbItem->picture_2 = $this->basesettings->url . '/'. $picFolder .'/'. $fileName;
             }
             if (array_key_exists('other_product_image_locator_3', $attributes)) {
-                $pic3 = file_get_contents($attributes['other_product_image_locator_3'][0]->media_location);
-                $pic3Name = basename($attributes['other_product_image_locator_3'][0]->media_location);
-                $pic3Folder = 'items/'. $this->country .'/'. $dbItem->asin . '/variants/3-' . $pic3Name;
-                Storage::disk('public')->put($pic3Folder, $pic3, 'public');
-                $dbItem->picture_3 = $pic3Folder;
+                $fileContent = file_get_contents($attributes['other_product_image_locator_3'][0]->media_location);
+                $fileName = '3-' . basename($attributes['other_product_image_locator_3'][0]->media_location);
+                $picFolder = $this->basesettings->folder . '/' . $dbItem->asin . '/' . $dbItem->country;
+                Storage::disk('do')->delete(str_replace($this->basesettings->url,'',$dbItem->picture_3));
+                Storage::disk('do')->put($picFolder . '/' . $fileName, $fileContent);
+                $dbItem->picture_3 = $this->basesettings->url . '/'. $picFolder .'/'. $fileName;
             }
             if (array_key_exists('other_product_image_locator_4', $attributes)) {
-                $pic4 = file_get_contents($attributes['other_product_image_locator_4'][0]->media_location);
-                $pic4Name = basename($attributes['other_product_image_locator_4'][0]->media_location);
-                $pic4Folder = 'items/'. $this->country .'/'. $dbItem->asin . '/variants/4-' . $pic4Name;
-                Storage::disk('public')->put($pic4Folder, $pic4, 'public');
-                $dbItem->picture_4 = $pic4Folder;
+                $fileContent = file_get_contents($attributes['other_product_image_locator_4'][0]->media_location);
+                $fileName = '4-' . basename($attributes['other_product_image_locator_4'][0]->media_location);
+                $picFolder = $this->basesettings->folder . '/' . $dbItem->asin . '/' . $dbItem->country;
+                Storage::disk('do')->delete(str_replace($this->basesettings->url,'',$dbItem->picture_4));
+                Storage::disk('do')->put($picFolder . '/' . $fileName, $fileContent);
+                $dbItem->picture_4 = $this->basesettings->url . '/'. $picFolder .'/'. $fileName;
             }
             if (array_key_exists('other_product_image_locator_5', $attributes)) {
-                $pic5 = file_get_contents($attributes['other_product_image_locator_5'][0]->media_location);
-                $pic5Name = basename($attributes['other_product_image_locator_5'][0]->media_location);
-                $pic5Folder = 'items/'. $this->country .'/'. $dbItem->asin . '/variants/5-' . $pic5Name;
-                Storage::disk('public')->put($pic5Folder, $pic5, 'public');
-                $dbItem->picture_5 = $pic5Folder;
+                $fileContent = file_get_contents($attributes['other_product_image_locator_5'][0]->media_location);
+                $fileName = '5-' . basename($attributes['other_product_image_locator_5'][0]->media_location);
+                $picFolder = $this->basesettings->folder . '/' . $dbItem->asin . '/' . $dbItem->country;
+                Storage::disk('do')->delete(str_replace($this->basesettings->url,'',$dbItem->picture_5));
+                Storage::disk('do')->put($picFolder . '/' . $fileName, $fileContent);
+                $dbItem->picture_5 = $this->basesettings->url . '/'. $picFolder .'/'. $fileName;
             }
             if (array_key_exists('other_product_image_locator_6', $attributes)) {
-                $pic6 = file_get_contents($attributes['other_product_image_locator_6'][0]->media_location);
-                $pic6Name = basename($attributes['other_product_image_locator_6'][0]->media_location);
-                $pic6Folder = 'items/'. $this->country .'/'. $dbItem->asin . '/variants/6-' . $pic6Name;
-                Storage::disk('public')->put($pic6Folder, $pic6, 'public');
-                $dbItem->picture_6 = $pic6Folder;
+                $fileContent = file_get_contents($attributes['other_product_image_locator_6'][0]->media_location);
+                $fileName = '6-' . basename($attributes['other_product_image_locator_6'][0]->media_location);
+                $picFolder = $this->basesettings->folder . '/' . $dbItem->asin . '/' . $dbItem->country;
+                Storage::disk('do')->delete(str_replace($this->basesettings->url,'',$dbItem->picture_6));
+                Storage::disk('do')->put($picFolder . '/' . $fileName, $fileContent);
+                $dbItem->picture_6 = $this->basesettings->url . '/'. $picFolder .'/'. $fileName;
             }
             if (array_key_exists('other_product_image_locator_7', $attributes)) {
-                $pic7 = file_get_contents($attributes['other_product_image_locator_7'][0]->media_location);
-                $pic7Name = basename($attributes['other_product_image_locator_7'][0]->media_location);
-                $pic7Folder = 'items/'. $this->country .'/'. $dbItem->asin . '/variants/7-' . $pic7Name;
-                Storage::disk('public')->put($pic7Folder, $pic7, 'public');
-                $dbItem->picture_7 = $pic7Folder;
+                $fileContent = file_get_contents($attributes['other_product_image_locator_7'][0]->media_location);
+                $fileName = basename($attributes['other_product_image_locator_7'][0]->media_location);
+                $picFolder = $this->basesettings->folder . '/' . $dbItem->asin . '/' . $dbItem->country;
+                Storage::disk('do')->delete(str_replace($this->basesettings->url,'',$dbItem->picture_7));
+                Storage::disk('do')->put($picFolder . '/' . $fileName, $fileContent);
+                $dbItem->picture_7 = $this->basesettings->url . '/'. $picFolder .'/'. $fileName;
             }
             if (array_key_exists('purchasable_offer', $attributes)) {
                 if (isset($attributes['purchasable_offer'][0]->our_price)) {
@@ -616,6 +745,22 @@ class SpApi extends Controller
                 $dbIssue->save();
             }
         }
+        if($summary) {
+            $offerResponse['statusmessage'] = 'SUCCESS';
+            $offerResponse['heading'] = '<h2 class="text-white">SUCCESS</h2>';
+            $offerResponse['message'] = 'Sale Price Successfully Updated.';
+        } else {
+            $offerResponse['statusmessage'] = '<h2 class="text-white">ERROR</h2>';
+            $offerResponse['message'] = 'There has been an error while updating sale price.<br>';
+            if($item['issues']) {
+                foreach($item['issues'] as $issue) {
+                    $offerResponse['message'] .= $issue->message. '<br>';
+                    $offerResponse['message'] .= $issue->attribute_names[0] . '<br>';
+                }
+            }
+        }
+        //dump($item);
+        return $offerResponse;
     }
 
     public function updateAmazonItemBulletPoints($id)
@@ -1174,7 +1319,7 @@ class SpApi extends Controller
         
         $apiInstance = new OrdersApi($this->config);
         $marketplace_ids = ['A1F83G8C2ARO7P'];
-        $created_after = date('Y-m-d', strtotime('-3 days'));
+        $created_after = date('Y-m-d', strtotime('-30 days'));
         //$created_before = '2021-11-30';
         $data_elements = [];
         try {
@@ -1278,5 +1423,24 @@ class SpApi extends Controller
             echo 'Exception when calling AplusContentApi->getContentDocument: ', $e->getMessage(), PHP_EOL;
         }
     }
-    
+
+    public function testOrders(Request $request)
+    {
+        
+        $apiInstance = new OrdersApi($this->config);
+        $marketplace_ids = ['A1F83G8C2ARO7P'];
+        $created_after = date('Y-m-d', strtotime('-1 days'));
+        //$created_before = '2021-11-30';
+        $data_elements = ['buyerInfo'];
+        try {
+            $result = $apiInstance->getOrders(
+                $marketplace_ids,
+                $created_after
+            );
+            dump($result['payload']['orders']);
+
+        } catch (Exception $e) {
+            echo 'Exception when calling OrdersApi->getOrders: ', $e->getMessage(), PHP_EOL;
+        }
+    }
 }
