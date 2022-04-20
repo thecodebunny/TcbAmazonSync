@@ -58,6 +58,12 @@ class Orders extends Controller
         return view('tcb-amazon-sync::amazon.orders.index', compact('orders'));
     }
 
+    public function unshipped()
+    {
+        $orders = AmzOrder::where('order_status','Unshipped')->with('items', 'contact')->sortable()->orderBy('created_at', 'desc')->paginate(50);
+        return view('tcb-amazon-sync::amazon.orders.index', compact('orders'));
+    }
+
     public function show($id)
     {
         $order = AmzOrder::where('id', $id)->with('items', 'contact')->first();

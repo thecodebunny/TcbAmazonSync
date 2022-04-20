@@ -19,7 +19,7 @@ class NavBar
      */
     public function compose(View $view)
     {
-        $unshippedOrders = Order::where('order_status', '<>', 'Shipped')->get();
+        $unshippedOrders = Order::where('order_status', 'Unshipped')->get();
         if (! $unshippedOrders || empty($unshippedOrders)) {
             $unshippedOrders = ['NONE'];
         }

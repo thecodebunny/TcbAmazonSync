@@ -12,7 +12,7 @@
     </a>
     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0 overflow-hidden">
         <div class="list-group list-group-flush">
-            <a href="https://go.zoomyo.com/1/common/notifications#new-apps"
+            <a href="{{ route('tcb-amazon-sync.amazon.orders.unshipped') }}"
                 class="list-group-item list-group-item-action">
                 <div class="row align-items-center">
                     <div class="col-auto">

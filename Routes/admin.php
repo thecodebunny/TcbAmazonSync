@@ -52,6 +52,7 @@ Route::admin('tcb-amazon-sync', function () {
 
     //Amazon Order Routes
     Route::get('/amazon-orders', 'Amazon\Orders@index')->name('amazon.orders.index');
+    Route::get('/amazon-orders/unshipped', 'Amazon\Orders@unshipped')->name('amazon.orders.unshipped');
     Route::get('/amazon-orders/{id}', 'Amazon\Orders@show')->name('amazon.orders.show');
     Route::get('/amazon-orders/edit/{id}', 'Amazon\Orders@edit')->name('amazon.orders.edit');
     Route::post('/amazon-orders/update/{id}', 'Amazon\Orders@update')->name('amazon.orders.update');
